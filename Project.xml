@@ -80,7 +80,6 @@
 	<define name="PRELOAD_ALL" unless="web" />
 	<define name="NO_PRELOAD_ALL" unless="PRELOAD_ALL" />
 
-	<assets path="assets/fonts" />
 	<assets path="assets/preload" rename="assets" exclude="*.ogg" if="web" />
 	<assets path="assets/preload" rename="assets" exclude="*.mp3" unless="web" />
 	<section if="TITLE_SCREEN_EASTER_EGG">
@@ -129,14 +128,14 @@
 	</section>
 
 	<section if="TURKIYE_BUILD">
-		<assets path="assets_turkish/fonts" />
+		<assets path="assets_turkish/fonts" rename="assets/fonts" />
 		<assets path="assets_turkish/preload" rename="assets" unless="web" />
-		<assets path="assets_turkish/shared" library="shared" unless="web" />
+		<assets path="assets_turkish/shared" rename="assets/shared" library="shared" unless="web" />
 	</section>
 	<section unless="TURKIYE_BUILD">
-		<assets path="assets_english/fonts" />
+		<assets path="assets_english/fonts" rename="assets/fonts" />
 		<assets path="assets_english/preload" rename="assets" unless="web" />
-		<assets path="assets_english/shared" library="shared" unless="web" />
+		<assets path="assets_english/shared" rename="assets/shared" library="shared" unless="web" />
 	</section>
 
 	<!-- _______________________________ Libraries ______________________________ -->
