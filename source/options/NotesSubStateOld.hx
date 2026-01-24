@@ -4,7 +4,6 @@ import flash.text.TextField;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.addons.display.FlxBackdrop;
-import flixel.addons.display.FlxGridOverlay;
 import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.math.FlxMath;
 import flixel.text.FlxText;
@@ -55,12 +54,6 @@ class NotesSubStateOld extends MusicBeatSubstate
 		bg.scrollFactor.set();
 		bg.alpha = 0.5;
 		add(bg);
-
-		var grid:FlxBackdrop = new FlxBackdrop(FlxGridOverlay.createGrid(80, 80, 160, 160, true, 0x33FFFFFF, 0x0));
-		grid.velocity.set(40, 40);
-		grid.alpha = 0;
-		FlxTween.tween(grid, {alpha: 1}, 0.5, {ease: FlxEase.quadOut});
-		add(grid);
 
 		blackBG = new FlxSprite(posX - 25, 0).makeGraphic(850, 200, FlxColor.BLACK);
 		blackBG.alpha = 0.4;
@@ -174,7 +167,7 @@ class NotesSubStateOld extends MusicBeatSubstate
 				} else if(controls.UI_RIGHT_P) {
 					updateValue(1);
 					FlxG.sound.play(Paths.sound('scrollMenu'));
-				} else if(controls.RESET || mobileButtonJustPressed('C')) {
+				} else if(controls.RESET #if TOUCH_CONTROLS || mobilePad.buttonC.justPressed #end) {
 					resetValue(curSelected, typeSelected);
 					FlxG.sound.play(Paths.sound('scrollMenu'));
 				}
@@ -208,53 +201,83 @@ class NotesSubStateOld extends MusicBeatSubstate
 				FlxG.sound.play(Paths.sound('scrollMenu'));
 			}
 			if (controls.UI_LEFT_P) {
-				changeSelection(0, -1);
+				changeType(-1);
 				FlxG.sound.play(Paths.sound('scrollMenu'));
 			}
 			if (controls.UI_RIGHT_P) {
-				changeSelection(0, 1);
+				changeType(1);
 				FlxG.sound.play(Paths.sound('scrollMenu'));
 			}
-			if(controls.RESET || mobileButtonJustPressed('C')) {
+			if(controls.RESET #if TOUCH_CONTROLS || mobilePad.buttonC.justPressed #end) {
 				for (i in 0...3) {
 					resetValue(curSelected, i);
 				}
 				FlxG.sound.play(Paths.sound('scrollMenu'));
 			}
-			if (controls.BACK) {
-				ClientPrefs.saveSettings();
-				FlxG.sound.play(Paths.sound('cancelMenu'));
+			if (controls.ACCEPT && nextAccept <= 0) {
+				FlxG.sound.play(Paths.sound('scrollMenu'));
+				changingNote = true;
+				holdTime = 0;
+				for (i in 0...grpNumbers.length) {
+					var item = grpNumbers.members[i];
+					item.alpha = 0;
+					if ((curSelected * 3) + typeSelected == i) {
+						item.alpha = 1;
+					}
+				}
+				for (i in 0...grpNotes.length) {
+					var item = grpNotes.members[i];
+					item.alpha = 0;
+					if (curSelected == i) {
+						item.alpha = 1;
+					}
+				}
+				super.update(elapsed);
+				return;
+			}
+		}
+
+		if (controls.BACK || (changingNote && controls.ACCEPT)) {
+			if(!changingNote) {
 				close();
-			}
-		}
-
-		if(controls.ACCEPT) {
-			FlxG.sound.play(Paths.sound('scrollMenu'));
-			changingNote = !changingNote;
-			var item:Alphabet = grpNumbers.members[(curSelected * 3) + typeSelected];
-			if(changingNote) {
-				item.alpha = 1;
 			} else {
-				item.alpha = 0.6;
+				changeSelection();
 			}
+			changingNote = false;
+			FlxG.sound.play(Paths.sound('cancelMenu'));
 		}
 
+		if(nextAccept > 0) {
+			nextAccept -= 1;
+		}
 		super.update(elapsed);
 	}
 
-	function changeSelection(change:Int = 0, changeType:Int = 0) {
-		curSelected += change;
-		typeSelected += changeType;
-
-		if (curSelected < 0)
-			curSelected = Note.maniaKeys - 1;
-		if (curSelected >= Note.maniaKeys)
-			curSelected = 0;
-
+	function changeType(change:Int = 0) {
+		typeSelected += change;
 		if (typeSelected < 0)
 			typeSelected = 2;
 		if (typeSelected > 2)
 			typeSelected = 0;
+
+		curValue = ClientPrefs.data.arrowHSV[curSelected][typeSelected];
+		updateValue();
+
+		for (i in 0...grpNumbers.length) {
+			var item = grpNumbers.members[i];
+			item.alpha = 0.6;
+			if ((curSelected * 3) + typeSelected == i) {
+				item.alpha = 1;
+			}
+		}
+	}
+
+	function changeSelection(change:Int = 0, changeType:Int = 0) {
+		curSelected += change;
+		if (curSelected < 0)
+			curSelected = Note.maniaKeys-1;
+		if (curSelected >= Note.maniaKeys)
+			curSelected = 0;
 
 		if (Note.maniaKeys > 4) {
 			var rawY:Float = (curSelected * 165) + 35;
@@ -264,16 +287,8 @@ class NotesSubStateOld extends MusicBeatSubstate
 			targetCamY = 0;
 		}
 
-		for (i in 0...grpNotes.length) {
-			var item = grpNotes.members[i];
-			item.alpha = 0.6;
-			item.scale.set(0.75, 0.75);
-
-			if (curSelected == i) {
-				item.alpha = 1;
-				item.scale.set(1, 1);
-			}
-		}
+		curValue = ClientPrefs.data.arrowHSV[curSelected][typeSelected];
+		updateValue();
 
 		for (i in 0...grpNumbers.length) {
 			var item = grpNumbers.members[i];
@@ -282,6 +297,19 @@ class NotesSubStateOld extends MusicBeatSubstate
 				item.alpha = 1;
 			}
 		}
+		for (i in 0...grpNotes.length) {
+			var item = grpNotes.members[i];
+			item.alpha = 0.6;
+			item.scale.set(0.75, 0.75);
+
+			if (curSelected == i) {
+				item.alpha = 1;
+				item.scale.set(1, 1);
+				hsbText.y = item.y - 70;
+				blackBG.y = item.y - 20;
+			}
+		}
+		FlxG.sound.play(Paths.sound('scrollMenu'));
 	}
 
 	function resetValue(selected:Int, type:Int) {
@@ -332,6 +360,7 @@ class NotesSubStateOld extends MusicBeatSubstate
 		for (letter in item.letters)
 		{
 			letter.offset.x += add;
+			if(roundedValue < 0) letter.offset.x += 10;
 		}
 	}
 

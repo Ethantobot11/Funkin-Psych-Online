@@ -783,6 +783,12 @@ class NotesSubState extends MusicBeatSubstate
 	}
 
 	function setShaderColor(value:FlxColor) dataArray[curSelectedNote][curSelectedMode] = value;
-	function getShaderColor() return dataArray[curSelectedNote][curSelectedMode];
+	function getShaderColor() {
+		try {
+			return dataArray[curSelectedNote][curSelectedMode];
+		} catch(e:Dynamic) {
+			return FlxColor.WHITE; //Prevent null object
+		}
+	}
 	function getShader() return Note.globalRgbShaders[curSelectedNote];
 }

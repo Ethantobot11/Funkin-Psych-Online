@@ -37,8 +37,6 @@ class VisualsUISubState extends BaseOptionsMenu
 		}
 
 		// options
-		var optionSplashSkin:Option;
-		var optionNoteSkin:Option;
 		var option:Option = new Option('Disable RGB',
 			"If checked, disables the rgb shader globally.",
 			'disableRGB',
@@ -53,12 +51,12 @@ class VisualsUISubState extends BaseOptionsMenu
 			if(!NoteSkinData.noteSkinArray.contains(ClientPrefs.data.noteSkin))
 				ClientPrefs.data.noteSkin = ClientPrefs.defaultData.noteSkin; //Reset to default if saved noteskin couldnt be found
 
-			optionNoteSkin = new Option('Note Skins:',
+			var option:Option = new Option('Note Skins:',
 				"Select your prefered Note skin.",
 				'noteSkin',
 				'string',
 				NoteSkinData.noteSkinArray);
-			addOption(optionNoteSkin);
+			addOption(option);
 			option.onChange = onChangeNoteSkin;
 			noteOptionID = optionsArray.length - 1;
 		}
@@ -70,12 +68,12 @@ class VisualsUISubState extends BaseOptionsMenu
 				ClientPrefs.data.splashSkin = ClientPrefs.defaultData.splashSkin; //Reset to default if saved splashskin couldnt be found
 
 			noteSplashes.insert(0, ClientPrefs.defaultData.splashSkin); //Default skin always comes first
-			optionSplashSkin = new Option('Note Splashes:',
+			var option:Option = new Option('Note Splashes:',
 				"Select your prefered Note Splash variation or turn it off.",
 				'splashSkin',
 				'string',
 				noteSplashes);
-			addOption(optionSplashSkin);
+			addOption(option);
 		}
 
 		var option:Option = new Option('Note Splash Opacity',
