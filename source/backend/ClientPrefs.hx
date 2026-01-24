@@ -747,7 +747,7 @@ class ClientPrefs {
 
 	public static inline function genArrowColors(keys:Int, ?isPixel:Bool = false):Array<Array<FlxColor>> {
 		var arr = [];
-		#if !TURKIYE_BUILD
+		#if TURKIYE_BUILD
 		try {
 		#end
 			var colColors = isPixel ? [
@@ -768,7 +768,7 @@ class ClientPrefs {
 			for (key in 0...keys) {
 				arr.push(colColors.get(colArray[key]));
 			}
-		#if !TURKIYE_BUILD
+		#if TURKIYE_BUILD
 		} catch(e:Dynamic) {}
 		#end
 		return arr;
@@ -776,7 +776,7 @@ class ClientPrefs {
 
 	public static inline function genArrowColorsExtraMap(?isPixel:Bool = false):Map<String, Array<Array<FlxColor>>> {
 		var map = new Map();
-		#if !TURKIYE_BUILD
+		#if TURKIYE_BUILD
 		try {
 		#end
 			for (keys in Note.maniaKeysList) {
@@ -784,7 +784,7 @@ class ClientPrefs {
 					continue;
 				map.set('${keys}k', genArrowColors(keys, isPixel));
 			}
-		#if !TURKIYE_BUILD
+		#if TURKIYE_BUILD
 		} catch(e:Dynamic) {}
 		#end
 		return map;
