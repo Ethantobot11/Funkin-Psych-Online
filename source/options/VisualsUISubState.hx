@@ -45,7 +45,7 @@ class VisualsUISubState extends BaseOptionsMenu
 			'bool');
 		addOption(option);
 		option.onChange = () -> {
-			close();
+			MusicBeatState.getState().resetSubState(); //temporarily here
 		};
 
 		if(NoteSkinData.noteSkins.length > 0 && !ClientPrefs.data.disableRGB)

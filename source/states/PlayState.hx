@@ -3092,6 +3092,10 @@ class PlayState extends MusicBeatState
 		}
 
 		super.closeSubState();
+		if (GameClient.isConnected()) {
+			mobileManager?.hitbox?.visible = true;
+			mobileManager?.mobilePad?.visible = true;
+		}
 
 		effectMusic(FlxG.sound.music, true);
 		effectMusic(vocals, true);
@@ -3775,6 +3779,10 @@ class PlayState extends MusicBeatState
 				}
 		}
 
+		if (GameClient.isConnected()) {
+			mobileManager?.hitbox?.visible = false;
+			mobileManager?.mobilePad?.visible = false;
+		}
 		openSubState(new PauseSubState(self.getScreenPosition().x, self.getScreenPosition().y));
 		//}
 

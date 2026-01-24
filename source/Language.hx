@@ -1,4 +1,4 @@
-/* This class has language variables in it, used for Türkiye editor of Psych Extended Online */
+/* This class has language variables in it, used for Türkiye edition of Psych Extended Online */
 
 class Language {
 	public static var turkishTexts:Map<String, String> = [
@@ -22,7 +22,7 @@ class Language {
 		"'s Replay"	 => "'nin Replay'i",
 		"Paused - "	 => "Durduruldu - ",
 		"TOUCH YOUR SCREEN TO START"	 => "BAŞLAMAK IÇIN EKRANA TIKLA",
-		"PRESS ACCEPT TO START"	 => "BAŞLAMAK IÇIN ACCEPT'A BASIN",
+		"PRESS ACCEPT TO START"	 => "BASLAMAK IÇIN ACCEPT'A BASIN",
 
 		// Pause Menüsü Elemanları
 		"Resume"                => "Devam Et",
@@ -105,8 +105,18 @@ class Language {
 			Uyarıldın!",
 
 		//Hardcoded Zorluklar
+		"NIGHTMARE" => "KABUS",
 		"HARD" => "ZOR",
 		"EASY" => "KOLAY",
+
+		//Ayarlar
+		"Note Colors" => "Nota Renkleri",
+		"Controls" => "Kontroller",
+		"Adjust Delay and Combo" => "Gecikme ve Kombo",
+		"Graphics" => "Grafikler",
+		"Visuals" => "Gorseller",
+		"Gameplay" => "Oynanis",
+		"Mobile" => "Mobil",
 
 	];
 	//normal texts will go there when turkish version done

@@ -29,7 +29,7 @@ class OptionsState extends MusicBeatState
 				else openSubState(new options.NotesSubState());
 			case 'Controls':
 				openSubState(new options.ControlsSubState());
-			case 'Graphics and Performance':
+			case 'Graphics':
 				openSubState(new options.GraphicsSettingsSubState());
 			case 'Visuals':
 				openSubState(new options.VisualsUISubState());
@@ -73,7 +73,7 @@ class OptionsState extends MusicBeatState
 
 		for (i in 0...options.length)
 		{
-			var optionText:Alphabet = new Alphabet(0, 0, options[i], true);
+			var optionText:Alphabet = new Alphabet(0, 0, Language.getText(options[i]), true);
 			optionText.screenCenter();
 			optionText.y += (100 * (i - (options.length / 2))) + 50;
 			grpOptions.add(optionText);
