@@ -180,7 +180,9 @@ class GameplayChangersSubstate extends MusicBeatSubstate
 
 		if (GameClient.isConnected()) {
 			GameClient.room.state.gameplaySettings.onChange(receiveChange);
+			#if TOUCH_CONTROLS
 			MusicBeatState.getState().mobileManager.mobilePad.visible = false;
+			#end
 		}
 
 		mobileManager.addMobilePad('FULL', 'A_B_C');
@@ -225,8 +227,10 @@ class GameplayChangersSubstate extends MusicBeatSubstate
 
 		if (controls.BACK) {
 			controls.isInSubstate = false;
+			#if TOUCH_CONTROLS
 			if (GameClient.isConnected())
 				MusicBeatState.getState().mobileManager.mobilePad.visible = true;
+			#end
 			close();
 			ClientPrefs.saveSettings();
 			FlxG.sound.play(Paths.sound('cancelMenu'));

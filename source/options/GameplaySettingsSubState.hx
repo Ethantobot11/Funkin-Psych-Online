@@ -7,6 +7,19 @@ class GameplaySettingsSubState extends BaseOptionsMenu
 		title = 'Gameplay';
 		rpcTitle = 'Gameplay Settings Menu'; //for Discord Rich Presence
 
+		/* Psych Extended Stuffs */
+		var option:Option = new Option('Old Camera System',
+			"If checked, game uses old camera system instead of new one.\n(If you have a any camera issue, enable or disable this)",
+			'oldCameraSystem',
+			'bool');
+		addOption(option);
+
+		var option:Option = new Option('Disable Camera Rotate',
+			"If checked, camera angle works like in Codename Engine,\nThis is useful for some CNE mods like Cyber Sensation",
+			'disableCameraRotate',
+			'bool');
+		addOption(option);
+
 		//I'd suggest using "Downscroll" as an example for making your own option since it is the simplest here
 		var option:Option = new Option('Downscroll', //Name
 			'If checked, notes go Down instead of Up, simple enough.', //Description

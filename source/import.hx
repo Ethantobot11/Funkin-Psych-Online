@@ -29,6 +29,18 @@ import flxanimate.FlxAnimate;
 import lumod.Lumod;
 #end
 
+/* Some Stuff */
+import vlc.MP4Handler;
+
+#if HSC_ALLOWED
+import funkin.backend.scripting.HScript.Script;
+import funkin.backend.scripting.HScript.ScriptPack;
+import funkin.backend.scripting.events.CancellableEvent;
+import funkin.backend.FunkinSprite;
+import funkin.backend.FunkinText;
+import haxe.io.Path;
+#end
+
 import backend.Paths;
 import backend.Controls;
 import backend.CoolUtil;
@@ -74,17 +86,21 @@ import online.backend.Deflection;
 // Mobile Controls
 
 // Spesificly Extended Mobile-Controls Library Objects For FNF
+#if TOUCH_CONTROLS
 import mobile.objects.FunkinMobilePad;
 import mobile.objects.FunkinHitbox;
 import mobile.objects.FunkinJoyStick;
+#end
 // Others
 import backend.FunkinFileSystem;
+#if TOUCH_CONTROLS
 import mobile.ScreenUtil;
 import mobile.MobileConfig;
 import mobile.MobileButton;
-import mobile.MobileControlManager;
 import mobile.backend.StorageUtil;
 import mobile.substates.MobileExtraControl;
+#end
+import mobile.MobileControlManager;
 //Android
 #if android
 #if legacy_lime

@@ -14,17 +14,20 @@ class MusicBeatSubstate extends FlxSubState
 		super();
 	}
 
-	private var curSection:Int = 0;
-	private var stepsToDo:Int = 0;
+	public var curSection:Int = 0;
+	public var stepsToDo:Int = 0;
 
-	private var lastBeat:Float = 0;
-	private var lastStep:Float = 0;
+	public var lastBeat:Float = 0;
+	public var lastStep:Float = 0;
 
-	private var curStep:Int = 0;
-	private var curBeat:Int = 0;
+	public var curStep:Int = 0;
+	public var curBeat:Int = 0;
+	public var curStepFloat:Float = 0;
+	public var curBeatFloat:Float = 0;
+	public static var stepsPerBeat:Float = 4;
 
-	private var curDecStep:Float = 0;
-	private var curDecBeat:Float = 0;
+	public var curDecStep:Float = 0;
+	public var curDecBeat:Float = 0;
 	private var controls(get, never):Controls;
 
 	inline function get_controls():Controls
@@ -33,16 +36,32 @@ class MusicBeatSubstate extends FlxSubState
 	public var mobileManager:MobileControlManager;
 	//makes code less messy & easier to write
 	public inline function mobileButtonJustPressed(buttons:Dynamic):Bool {
+		#if TOUCH_CONTROLS
 		return mobileManager?.mobilePad?.justPressed(buttons);
+		#else
+		return false;
+		#end
 	}
 	public inline function mobileButtonPressed(buttons:Dynamic):Bool {
+		#if TOUCH_CONTROLS
 		return mobileManager?.mobilePad?.pressed(buttons);
+		#else
+		return false;
+		#end
 	}
 	public inline function mobileButtonJustReleased(buttons:Dynamic):Bool {
+		#if TOUCH_CONTROLS
 		return mobileManager?.mobilePad?.justReleased(buttons);
+		#else
+		return false;
+		#end
 	}
 	public inline function mobileButtonReleased(buttons:Dynamic):Bool {
+		#if TOUCH_CONTROLS
 		return mobileManager?.mobilePad?.released(buttons);
+		#else
+		return false;
+		#end
 	}
 	override function destroy()
 	{
@@ -57,6 +76,7 @@ class MusicBeatSubstate extends FlxSubState
 		if(!persistentUpdate) MusicBeatState.timePassedOnState += elapsed;
 		var oldStep:Int = curStep;
 
+		updateCurFloats();
 		updateCurStep();
 		updateBeat();
 
@@ -108,6 +128,13 @@ class MusicBeatSubstate extends FlxSubState
 		}
 
 		if(curSection > lastSection) sectionHit();
+	}
+
+	private function updateCurFloats():Void
+	{
+		var lastChange = Conductor.getBPMFromSeconds(Conductor.songPosition);
+		curStepFloat = lastChange.stepTime + ((Conductor.songPosition - lastChange.songTime) / lastChange.stepCrochet);
+		curBeatFloat = curStepFloat / stepsPerBeat;
 	}
 
 	private function updateBeat():Void

@@ -7,6 +7,7 @@ import flixel.graphics.frames.FlxAtlasFrames;
 import backend.NoteSkinData;
 import online.GameClient;
 import backend.NoteTypesConfig;
+import shaders.ColorSwap;
 import shaders.RGBPalette;
 import shaders.RGBPalette.RGBShaderReference;
 import objects.StrumNote;
@@ -65,6 +66,7 @@ class Note extends FlxSprite
 	public var eventVal1:String = '';
 	public var eventVal2:String = '';
 
+	public var colorSwap:ColorSwap;
 	public var rgbShader:RGBShaderReference;
 	public static var globalRgbShaders:Array<RGBPalette> = [];
 	public var inEditor:Bool = false;
@@ -74,6 +76,10 @@ class Note extends FlxSprite
 	public var earlyHitMult:Float = 1;
 	public var lateHitMult:Float = 1;
 	public var lowPriority:Bool = false;
+
+	public var noteSplashHue:Float = 0;
+	public var noteSplashSat:Float = 0;
+	public var noteSplashBrt:Float = 0;
 
 	public static var rankedManiaKeysList:Array<Int> = [4, 5, 6, 7, 8, 9];
 	public static var maniaKeysList:Array<Int> = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 20, 21, 26, 50, 55, 61];
@@ -104,7 +110,7 @@ class Note extends FlxSprite
 	}
 
 	public static var colArray:Array<String> = ['purple', 'blue', 'green', 'red'];
-	public static var defaultNoteSkin(default, never):String = 'noteSkins/NOTE_assets';
+	public static var defaultNoteSkin:String = 'noteSkins/NOTE_assets';
 
 	public var noteSplashData:NoteSplashData = {
 		disabled: false,
@@ -198,7 +204,17 @@ class Note extends FlxSprite
 
 	private function set_noteType(value:String):String {
 		noteSplashData.texture = PlayState.SONG != null ? PlayState.SONG.splashSkin : 'noteSplashes';
-		defaultRGB();
+		if (ClientPrefs.data.disableRGB) {
+			if (noteData > -1 && noteData < ClientPrefs.data.arrowHSV.length)
+			{
+				colorSwap.hue = ClientPrefs.data.arrowHSV[noteData][0] / 360;
+				colorSwap.saturation = ClientPrefs.data.arrowHSV[noteData][1] / 100;
+				colorSwap.brightness = ClientPrefs.data.arrowHSV[noteData][2] / 100;
+			}
+		}
+		else {
+			defaultRGB();
+		}
 
 		if(noteData > -1 && noteType != value) {
 			switch(value) {
@@ -209,9 +225,17 @@ class Note extends FlxSprite
 					//but i've changed it to something more optimized with the implementation of RGBPalette:
 
 					// note colors
-					rgbShader.r = 0xFF101010;
-					rgbShader.g = 0xFFFF0000;
-					rgbShader.b = 0xFF990022;
+					if (ClientPrefs.data.disableRGB) {
+						reloadNote('HURT', "NOTE_assets");
+						colorSwap.hue = 0;
+						colorSwap.saturation = 0;
+						colorSwap.brightness = 0;
+					}
+					else {
+						rgbShader.r = 0xFF101010;
+						rgbShader.g = 0xFFFF0000;
+						rgbShader.b = 0xFF990022;
+					}
 
 					// splash data and colors
 					noteSplashData.r = 0xFFFF0000;
@@ -235,6 +259,11 @@ class Note extends FlxSprite
 			if (value != null && value.length > 1) NoteTypesConfig.applyNoteTypeData(this, value);
 			if (hitsound != 'hitsound' && ClientPrefs.data.hitsoundVolume > 0) Paths.sound(hitsound); //precache new sound for being idiot-proof
 			noteType = value;
+		}
+		if (ClientPrefs.data.disableRGB) {
+			noteSplashHue = colorSwap.hue;
+			noteSplashSat = colorSwap.saturation;
+			noteSplashBrt = colorSwap.brightness;
 		}
 		return value;
 	}
@@ -310,8 +339,14 @@ class Note extends FlxSprite
 
 		if(noteData > -1) {
 			texture = '';
-			rgbShader = new RGBShaderReference(this, initializeGlobalRGBShader(noteData, mustPress));
-			if(PlayState.SONG != null && PlayState.SONG.disableNoteRGB) rgbShader.enabled = false;
+			if (ClientPrefs.data.disableRGB) {
+				colorSwap = new ColorSwap();
+				shader = colorSwap.shader;
+			}
+			else {
+				rgbShader = new RGBShaderReference(this, initializeGlobalRGBShader(noteData, mustPress));
+				if(PlayState.SONG != null && PlayState.SONG.disableNoteRGB) rgbShader.enabled = false;
+			}
 
 			x += swagScaledWidth * (noteData);
 			if(!isSustainNote && noteData < colArray.length) { //Doing this 'if' check to fix the warnings on Senpai songs
@@ -404,6 +439,7 @@ class Note extends FlxSprite
 	public function reloadNote(texture:String = '', postfix:String = '') {
 		if(texture == null) texture = '';
 		if(postfix == null) postfix = '';
+		if (ClientPrefs.data.disableRGB) defaultNoteSkin = 'NOTE_assets';
 
 		Note.colArray = Note.getColArrayFromKeys();
 

@@ -15,6 +15,7 @@ import backend.Song;
 import backend.Section;
 import states.stages.objects.TankmenBG;
 import online.GameClient;
+import flixel.addons.effects.FlxSkewedSprite;
 
 typedef CharacterFile = {
 	var animations:Array<AnimArray>;
@@ -44,7 +45,7 @@ typedef AnimArray = {
 	@:optional var flip_x:Bool;
 }
 
-class Character extends FlxSprite {
+class Character extends FlxSkewedSprite {
 	public var sprite3D:AnimatedSprite3D;
 
 	public var animOffsets:Map<String, Array<Dynamic>>;

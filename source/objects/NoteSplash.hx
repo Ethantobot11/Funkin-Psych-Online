@@ -4,6 +4,7 @@ import online.GameClient;
 import shaders.RGBPalette;
 import flixel.system.FlxAssets.FlxShader;
 import flixel.graphics.frames.FlxFrame;
+import shaders.ColorSwap;
 
 typedef NoteSplashConfig = {
 	anim:String,
@@ -14,12 +15,13 @@ typedef NoteSplashConfig = {
 
 class NoteSplash extends FlxSprite
 {
+	public var colorSwap:ColorSwap = null;
 	public var rgbShader:PixelSplashShaderRef;
 	private var idleAnim:String;
 	private var _textureLoaded:String = null;
 	private var _configLoaded:String = null;
 
-	public static var defaultNoteSplash(default, never):String = 'noteSplashes/noteSplashes';
+	public static var defaultNoteSplash:String = 'noteSplashes/noteSplashes';
 	public static var configs:Map<String, NoteSplashConfig> = new Map<String, NoteSplashConfig>();
 
 	public function new(x:Float = 0, y:Float = 0) {
@@ -28,9 +30,16 @@ class NoteSplash extends FlxSprite
 		var skin:String = null;
 		if(PlayState.SONG.splashSkin != null && PlayState.SONG.splashSkin.length > 0) skin = PlayState.SONG.splashSkin;
 		else skin = defaultNoteSplash + getSplashSkinPostfix();
-		
-		rgbShader = new PixelSplashShaderRef();
-		shader = rgbShader.shader;
+
+		if (ClientPrefs.data.disableRGB) {
+			defaultNoteSplash = 'noteSplashes';
+			colorSwap = new ColorSwap();
+			shader = colorSwap.shader;
+		}
+		else {
+			rgbShader = new PixelSplashShaderRef();
+			shader = rgbShader.shader;
+		}
 		precacheConfig(skin);
 		_configLoaded = skin;
 		scrollFactor.set();
@@ -66,23 +75,42 @@ class NoteSplash extends FlxSprite
 			config = precacheConfig(_configLoaded);
 
 		var tempShader:RGBPalette = null;
-		if((note == null || note.noteSplashData.useRGBShader) && (PlayState.SONG == null || !PlayState.SONG.disableNoteRGB))
-		{
-			// If Note RGB is enabled:
-			if(note != null && !note.noteSplashData.useGlobalShader)
+		if (ClientPrefs.data.disableRGB) {
+			var hue:Float = 0;
+			var sat:Float = 0;
+			var brt:Float = 0;
+			if (direction > -1 && direction < ClientPrefs.data.arrowHSV.length)
 			{
-				
-				if(note.noteSplashData.r != -1) note.rgbShader.r = note.noteSplashData.r;
-				if(note.noteSplashData.g != -1) note.rgbShader.g = note.noteSplashData.g;
-				if(note.noteSplashData.b != -1) note.rgbShader.b = note.noteSplashData.b;
-				tempShader = note.rgbShader.parent;
+				hue = ClientPrefs.data.arrowHSV[direction][0] / 360;
+				sat = ClientPrefs.data.arrowHSV[direction][1] / 100;
+				brt = ClientPrefs.data.arrowHSV[direction][2] / 100;
+				if(note != null) {
+					hue = note.noteSplashHue;
+					sat = note.noteSplashSat;
+					brt = note.noteSplashBrt;
+				}
 			}
-			else tempShader = Note.globalRgbShaders[direction];
+			colorSwap.hue = hue;
+			colorSwap.saturation = sat;
+			colorSwap.brightness = brt;
+		} else {
+			if((note == null || note.noteSplashData.useRGBShader) && (PlayState.SONG == null || !PlayState.SONG.disableNoteRGB))
+			{
+				// If Note RGB is enabled:
+				if(note != null && !note.noteSplashData.useGlobalShader)
+				{
+					if(note.noteSplashData.r != -1) note.rgbShader.r = note.noteSplashData.r;
+					if(note.noteSplashData.g != -1) note.rgbShader.g = note.noteSplashData.g;
+					if(note.noteSplashData.b != -1) note.rgbShader.b = note.noteSplashData.b;
+					tempShader = note.rgbShader.parent;
+				}
+				else tempShader = Note.globalRgbShaders[direction];
+			}
 		}
 
 		alpha = ClientPrefs.data.splashAlpha;
 		if(note != null) alpha = note.noteSplashData.a;
-		rgbShader.copyValues(tempShader);
+		if (!ClientPrefs.data.disableRGB) rgbShader.copyValues(tempShader);
 
 		if(note != null) antialiasing = note.noteSplashData.antialiasing;
 		if(PlayState.isPixelStage || !ClientPrefs.data.antialiasing) antialiasing = false;

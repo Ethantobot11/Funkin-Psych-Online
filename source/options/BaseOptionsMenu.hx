@@ -42,7 +42,6 @@ class BaseOptionsMenu extends MusicBeatSubstate
 		bg.antialiasing = ClientPrefs.data.antialiasing;
 		add(bg);
 
-		// avoids lagspikes while scrolling through menus!
 		grpOptions = new FlxTypedGroup<Alphabet>();
 		add(grpOptions);
 
@@ -67,12 +66,42 @@ class BaseOptionsMenu extends MusicBeatSubstate
 		descText.borderSize = 2.4;
 		add(descText);
 
+		reloadOptions();
+
+		mobileManager.addMobilePad("FULL", "A_B_C");
+		mobileManager.addMobilePadCamera();
+	}
+
+	public function addOption(option:Option) {
+		if(optionsArray == null || optionsArray.length < 1) optionsArray = [];
+		optionsArray.push(option);
+	}
+
+	public function removeOption(option:Option) {
+		if (optionsArray != null && optionsArray.contains(option)) {
+			optionsArray.remove(option);
+			reloadOptions();
+		}
+	}
+
+	public function insertOption(newOption:Option, targetOption:Option) {
+		if(optionsArray == null) optionsArray = [];
+
+		var index:Int = optionsArray.indexOf(targetOption);
+		optionsArray.insert(index, newOption);
+
+		reloadOptions();
+	}
+
+	function reloadOptions() {
+		if(grpOptions != null) grpOptions.clear();
+		if(grpTexts != null) grpTexts.clear();
+		if(checkboxGroup != null) checkboxGroup.clear();
+
 		for (i in 0...optionsArray.length)
 		{
 			var optionText:Alphabet = new Alphabet(290, 260, optionsArray[i].name, false);
 			optionText.isMenuItem = true;
-			/*optionText.forceX = 300;
-			optionText.yMult = 90;*/
 			optionText.targetY = i;
 			grpOptions.add(optionText);
 
@@ -84,7 +113,6 @@ class BaseOptionsMenu extends MusicBeatSubstate
 			} else {
 				optionText.x -= 80;
 				optionText.startPosition.x -= 80;
-				//optionText.xAdd -= 80;
 				var valueText:AttachedText = new AttachedText('' + optionsArray[i].getValue(), optionText.width + 60);
 				valueText.sprTracker = optionText;
 				valueText.copyAlpha = true;
@@ -92,20 +120,18 @@ class BaseOptionsMenu extends MusicBeatSubstate
 				grpTexts.add(valueText);
 				optionsArray[i].child = valueText;
 			}
-			//optionText.snapToPosition(); //Don't ignore me when i ask for not making a fucking pull request to uncomment this line ok
 			updateTextFrom(optionsArray[i]);
 		}
 
-		changeSelection();
-		reloadCheckboxes();
+		if (curSelected >= optionsArray.length)
+			curSelected = optionsArray.length - 1;
+		if (curSelected < 0)
+			curSelected = 0;
 
-		mobileManager.addMobilePad("FULL", "A_B_C");
-		mobileManager.addMobilePadCamera();
-	}
-
-	public function addOption(option:Option) {
-		if(optionsArray == null || optionsArray.length < 1) optionsArray = [];
-		optionsArray.push(option);
+		if (optionsArray.length > 0) {
+			changeSelection(0);
+			reloadCheckboxes();
+		}
 	}
 
 	var nextAccept:Int = 5;
@@ -131,7 +157,7 @@ class BaseOptionsMenu extends MusicBeatSubstate
 			FlxG.sound.play(Paths.sound('cancelMenu'));
 		}
 
-		if(nextAccept <= 0)
+		if(nextAccept <= 0 && optionsArray.length > 0)
 		{
 			var usesCheckbox = true;
 			if(curOption.type != 'bool')
@@ -141,7 +167,7 @@ class BaseOptionsMenu extends MusicBeatSubstate
 
 			if(usesCheckbox)
 			{
-				if(controls.ACCEPT /* || FlxG.mouse.justPressed*/)
+				if(controls.ACCEPT)
 				{
 					FlxG.sound.play(Paths.sound('scrollMenu'));
 					curOption.setValue((curOption.getValue() == true) ? false : true);
@@ -177,7 +203,7 @@ class BaseOptionsMenu extends MusicBeatSubstate
 									}
 
 								case 'string':
-									var num:Int = curOption.curOption; //lol
+									var num:Int = curOption.curOption;
 									if(controls.UI_LEFT_P) --num;
 									else num++;
 
@@ -188,8 +214,7 @@ class BaseOptionsMenu extends MusicBeatSubstate
 									}
 
 									curOption.curOption = num;
-									curOption.setValue(curOption.options[num]); //lol
-									//trace(curOption.options[num]);
+									curOption.setValue(curOption.options[num]);
 							}
 							updateTextFrom(curOption);
 							curOption.change();
@@ -264,6 +289,8 @@ class BaseOptionsMenu extends MusicBeatSubstate
 			curSelected = optionsArray.length - 1;
 		if (curSelected >= optionsArray.length)
 			curSelected = 0;
+		
+		if(optionsArray.length < 1) return;
 
 		descText.text = optionsArray[curSelected].description;
 		descText.screenCenter(Y);
@@ -291,7 +318,7 @@ class BaseOptionsMenu extends MusicBeatSubstate
 		descBox.setGraphicSize(Std.int(descText.width + 20), Std.int(descText.height + 25));
 		descBox.updateHitbox();
 
-		curOption = optionsArray[curSelected]; //shorter lol
+		curOption = optionsArray[curSelected];
 		FlxG.sound.play(Paths.sound('scrollMenu'));
 	}
 

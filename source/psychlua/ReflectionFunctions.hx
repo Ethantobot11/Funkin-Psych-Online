@@ -25,6 +25,12 @@ class ReflectionFunctions
 			return LuaUtils.getVarInArray(LuaUtils.getTargetInstance(), variable, allowMaps);
 		});
 		Lua_helper.add_callback(lua, "setProperty", function(variable:String, value:Dynamic, allowMaps:Bool = true) {
+			//hardcoded, because Psych Online doesn't wanna get this shit.
+			if (variable == 'camFollowPos.x' && PlayState.instance?.camFollowPos != null)
+				PlayState.instance.camFollowPos.x = value;
+			else if (variable == 'camFollowPos.y' && PlayState.instance?.camFollowPos != null)
+				PlayState.instance.camFollowPos.y = value;
+
 			variable = online.backend.Wrapper.wrapperField(variable);
 
 			var split:Array<String> = variable.split('.');

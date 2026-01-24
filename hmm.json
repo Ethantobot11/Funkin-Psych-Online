@@ -171,6 +171,13 @@
       "url": "https://github.com/Prohack101010/mobile-controls-dev"
     },
     {
+      "name": "hscript-improved",
+      "type": "git",
+      "dir": null,
+      "ref": null,
+      "url": "https://github.com/PsychExtendedThings/hscript-improved-Psych"
+    },
+    {
       "name": "extension-androidtools",
       "type": "git",
       "dir": null,

@@ -512,7 +512,9 @@ class RoomState extends MusicBeatState /*#if interpret implements interpret.Inte
 
 		mobileManager.addMobilePad('FULL', 'B_C_Y_T_M');
 		mobileManager.addMobilePadCamera();
+		#if TOUCH_CONTROLS
 		mobileManager.mobilePad.y -= 300;
+		#end
 
 		registerMessages();
 	}
@@ -582,7 +584,9 @@ class RoomState extends MusicBeatState /*#if interpret implements interpret.Inte
 	override function update(elapsed:Float) {
 		super.update(elapsed);
 
+		#if TOUCH_CONTROLS
 		mobileManager.mobilePad.getButton('buttonLeft').visible = mobileManager.mobilePad.getButton('buttonRight').visible = mobileManager.mobilePad.getButton('buttonUp').visible = mobileManager.mobilePad.getButton('buttonDown').visible = mobileManager.mobilePad.getButton('buttonT').visible = mobileManager.mobilePad.getButton('buttonM').visible = mobileButtonPressed('Y');
+		#end
 
 		if (FlxG.keys.justPressed.F11) {
 			GameClient.reconnect();

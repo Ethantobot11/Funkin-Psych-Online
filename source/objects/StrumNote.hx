@@ -5,9 +5,11 @@ import online.GameClient;
 import shaders.RGBPalette;
 import shaders.RGBPalette.RGBShaderReference;
 import backend.NoteSkinData;
+import shaders.ColorSwap;
 
 class StrumNote extends FlxSprite
 {
+	public var colorSwap:ColorSwap = null;
 	public var rgbShader:RGBShaderReference;
 	public var resetAnim:Float = 0;
 	private var noteData:Int = 0;
@@ -36,24 +38,30 @@ class StrumNote extends FlxSprite
 	public function new(x:Float, y:Float, leData:Int, player:Int) {
 		var mustPress = player == 1;
 
-		rgbShader = new RGBShaderReference(this, Note.initializeGlobalRGBShader(leData, mustPress));
-		rgbShader.enabled = false;
-		if(PlayState.SONG != null && PlayState.SONG.disableNoteRGB) useRGBShader = false;
+		if (ClientPrefs.data.disableRGB) {
+			colorSwap = new ColorSwap();
+			shader = colorSwap.shader;
+		} else {
+			var leDataFixed:Int = leData % Note.maniaKeys; //this fixes the (i + 8) issue on Cyber Sensation
+			rgbShader = new RGBShaderReference(this, Note.initializeGlobalRGBShader(leDataFixed, mustPress));
+			rgbShader.enabled = false;
+			if(PlayState.SONG != null && PlayState.SONG.disableNoteRGB) useRGBShader = false;
 
-		var arr:Array<FlxColor> = ClientPrefs.getRGBColor(mustPress == (GameClient.getPlayerSelf()?.bfSide ?? true) ? 0 : 1)[leData];
-		if(PlayState.isPixelStage) arr = ClientPrefs.getRGBPixelColor(mustPress == (GameClient.getPlayerSelf()?.bfSide ?? true) ? 0 : 1)[leData];
+			var arr:Array<FlxColor> = ClientPrefs.getRGBColor(mustPress == (GameClient.getPlayerSelf()?.bfSide ?? true) ? 0 : 1)[leData];
+			if(PlayState.isPixelStage) arr = ClientPrefs.getRGBPixelColor(mustPress == (GameClient.getPlayerSelf()?.bfSide ?? true) ? 0 : 1)[leData];
 
-		try {
-			if(arr.length >= 3)
-			{
-				@:bypassAccessor
+			try {
+				if(arr.length >= 3)
 				{
-					rgbShader.r = arr[0];
-					rgbShader.g = arr[1];
-					rgbShader.b = arr[2];
+					@:bypassAccessor
+					{
+						rgbShader.r = arr[0];
+						rgbShader.g = arr[1];
+						rgbShader.b = arr[2];
+					}
 				}
-			}
-		} catch(e:Dynamic) {}
+			} catch(e:Dynamic) {}
+		}
 
 		noteData = leData;
 		this.player = player;
@@ -258,7 +266,26 @@ class StrumNote extends FlxSprite
 			centerOffsets();
 			centerOrigin();
 		}
-		if(useRGBShader) rgbShader.enabled = (animation.curAnim != null && animation.curAnim.name != 'static');
+		if (ClientPrefs.data.disableRGB) {
+			if(animation.curAnim == null || animation.curAnim.name == 'static') {
+				colorSwap.hue = 0;
+				colorSwap.saturation = 0;
+				colorSwap.brightness = 0;
+			} else {
+				if (noteData > -1 && noteData < ClientPrefs.data.arrowHSV.length)
+				{
+					colorSwap.hue = ClientPrefs.data.arrowHSV[noteData][0] / 360;
+					colorSwap.saturation = ClientPrefs.data.arrowHSV[noteData][1] / 100;
+					colorSwap.brightness = ClientPrefs.data.arrowHSV[noteData][2] / 100;
+				}
+
+				if(animation.curAnim != null) {
+					if(animation.curAnim.name == 'confirm' && !PlayState.isPixelStage)
+						centerOrigin();
+				}
+			}
+		}
+		else if(useRGBShader) rgbShader.enabled = (animation.curAnim != null && animation.curAnim.name != 'static');
 	}
 
 	override function set_visible(value:Bool):Bool {

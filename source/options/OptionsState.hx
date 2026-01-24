@@ -6,7 +6,7 @@ import backend.StageData;
 
 class OptionsState extends MusicBeatState
 {
-	var options:Array<String> = ['Note Colors', 'Controls', 'Adjust Delay and Combo', 'Graphics', 'Visuals', 'Gameplay', 'Mobile Options'];
+	var options:Array<String> = ['Note Colors', 'Controls', 'Adjust Delay and Combo', 'Graphics', 'Visuals', 'Gameplay'#if TOUCH_CONTROLS , 'Mobile' #end];
 	private var grpOptions:FlxTypedGroup<Alphabet>;
 	private static var curSelected:Int = 0;
 	public static var menuBG:FlxSprite;
@@ -22,20 +22,26 @@ class OptionsState extends MusicBeatState
 		}
 		switch(label) {
 			case 'Note Colors':
-				openSubState(new options.NotesSubState());
+				if (ClientPrefs.data.disableRGB) {
+					controls.isInSubstate = true;
+					openSubState(new options.NotesSubStateOld()); //use old menu for old system
+				}
+				else openSubState(new options.NotesSubState());
 			case 'Controls':
 				openSubState(new options.ControlsSubState());
-			case 'Graphics':
+			case 'Graphics and Performance':
 				openSubState(new options.GraphicsSettingsSubState());
 			case 'Visuals':
 				openSubState(new options.VisualsUISubState());
 			case 'Gameplay':
 				openSubState(new options.GameplaySettingsSubState());
-			case 'Mobile Options':
+			#if TOUCH_CONTROLS
+			case 'Mobile':
 				openSubState(new mobile.options.MobileOptionsSubState());
 			case 'Mobile Extra Control':
 				controls.isInSubstate = true;
 				openSubState(new mobile.substates.MobileExtraControl());
+			#end
 			case 'Adjust Delay and Combo':
 				FlxG.switchState(() -> new options.NoteOffsetState());
 		}
@@ -107,6 +113,7 @@ class OptionsState extends MusicBeatState
 			changeSelection(1);
 		}
 
+		#if desktop
 		if (FlxG.mouse.deltaScreenY != 0) {
 			for (i => spr in grpOptions) {
 				if (FlxG.mouse.overlaps(spr, spr.camera) && i - curSelected != 0) {
@@ -118,6 +125,7 @@ class OptionsState extends MusicBeatState
 		if (FlxG.mouse.wheel != 0) {
 			changeSelection(-FlxG.mouse.wheel);
 		}
+		#end
 
 		if (controls.BACK) {
 			FlxG.mouse.visible = hadMouseVisible;
@@ -135,7 +143,7 @@ class OptionsState extends MusicBeatState
 			else FlxG.switchState(() -> new MainMenuState());
 		}
 		else if (controls.ACCEPT #if desktop || FlxG.mouse.justPressed #end) openSelectedSubstate(options[curSelected]);
-		else if (mobileButtonJustPressed('E')) openSelectedSubstate('Mobile Extra Control');
+		#if TOUCH_CONTROLS else if (mobileButtonJustPressed('E')) openSelectedSubstate('Mobile Extra Control'); #end
 	}
 	
 	function changeSelection(change:Int = 0) {

@@ -32,7 +32,7 @@ import sys.io.Process;
 
 class Main extends Sprite
 {
-	var game = {
+	public static var game = {
 		width: 1280, // WINDOW width
 		height: 720, // WINDOW height
 		initialState: TitleState, // initial game state
@@ -45,7 +45,7 @@ class Main extends Sprite
 	public static var fpsVar:FPS;
 
 	public static var PSYCH_ONLINE_VERSION(default, null):String = null;
-	public static final CLIENT_PROTOCOL:Float = 10; //11 is the lastest
+	public static final CLIENT_PROTOCOL:Float = 11;
 	public static final NETWORK_PROTOCOL:Float = 8;
 	public static final GIT_COMMIT:String = online.backend.Macros.getGitCommitHash();
 	public static final LOW_STORAGE:Bool = online.backend.Macros.hasNoCapacity();

@@ -7,10 +7,10 @@
 	<architecture exclude="arm64" if="ONLY_ARMV7" />
 	<architecture exclude="arm64-v8a" if="ONLY_ARMV7" />
 
-	<app title="Psych Online" file="PsychOnline" main="Main" version="0.14.0" packageName="com.snirozu.psychonline" package="com.snirozu.psychonline" company="Snirozu" />
+	<app title="Psych Extended Online" file="PsychExtendedOnline" main="Main" version="0.14.0" packageName="com.arkoselabs.psychdextendedonline" package="com.arkoselabs.psychdextendedonline" company="ArkoseLabs" />
 
 	<section if="ios">
-		<app title="Psych Online" file="PsychOnline" main="Main" version="0.14.0" packageName="com.snirozu.psychonline" package="com.snirozu.psychonline" company="Snirozu" />
+		<app title="Psych Extended Online" file="PsychExtendedOnline" main="Main" version="0.14.0" packageName="com.arkoselabs.psychdextendedonline" package="com.arkoselabs.psychdextendedonline" company="ArkoseLabs" />
 	</section>
 
 	<!--Switch Export with Unique ApplicationID and Icon-->
@@ -27,6 +27,11 @@
 	<!--Minimum without FLX_NO_GAMEPAD: 11.8, without FLX_NO_NATIVE_CURSOR: 11.2-->
 	<set name="SWF_VERSION" value="11.8" />
 	
+	<!-- ______________________ PSYCH EXTENDED CUSTOMIZATION ______________________ -->
+
+	<haxedef name="FLX_CNE_FORK" />
+	<define name="HSC_ALLOWED" />
+
 	<!-- ______________________ PSYCH ENGINE CUSTOMIZATION ______________________ -->
 
 	<!-- <define name="legacy_lime" /> --> <!-- Enables legacy lime -->
@@ -66,6 +71,7 @@
 	<set name="BUILD_DIR" value="export/32bit" if="32bits" />
 
 	<classpath name="source" />
+	<classpath name="library_extended" />
 
 	<!-- __________________________ Game Assets & Etc. __________________________ -->
 
@@ -118,7 +124,6 @@
 	<define name="CRASH_HANDLER" if="desktop || mobile" />
 	<section if="TOUCH_CONTROLS">
 		<assets path="mobile/assets"                  rename="assets/mobile"/>
-		<assets path="mobile/assets"                  rename="assets/mobile"/>
 		<assets path="mobile/storageModes.txt"      rename="mobile/storageModes.txt"/>
 	</section>
 
@@ -135,6 +140,7 @@
 
 	<!--Psych stuff needed-->
 	<haxelib name="linc_luajit" if="LUA_ALLOWED" />
+	<haxelib name="hscript-improved" if="HSC_ALLOWED" />
 	<haxelib name="SScript" if="HSCRIPT_ALLOWED" />
 	<haxelib name="hxvlc" if="VIDEOS_ALLOWED" />
 	<haxelib name="hxdiscord_rpc" if="DISCORD_ALLOWED" />
@@ -235,6 +241,7 @@
 	<certificate path="key.keystore" password="psychengine" alias="psychport" alias-password="psychengine" if="android" unless="debug" />
 
 	<haxedef name="SHARE_MOBILE_FILES" if="mobile" />
+	<haxedef name="DISABLE_AUDIO_FOCUS" if="android" /> <!-- Disable the fucking audio focus -->
 	
 	<!-- Mobile Shit -->
 	<section if="legacy_lime">
@@ -265,6 +272,18 @@
 		<haxedef name="lime_use_old_deltatime" />
 		<haxedef name="lime_disable_motion_sensors" />
 	</section>
+
+	<!-- Haxe 4.3.0+: Enable pretty syntax errors and stuff. -->
+	<!-- pretty (haxeflixel default), indent, classic (haxe compiler default) -->
+	<!-- makes much easier to understand which line is has problem -->
+	<haxedef name="message.reporting" value="pretty" />
+
+	<!-- Global Script shit, I'll write the desc later -->
+	<define name="GLOBAL_SCRIPT" if="SCRIPTING_ALLOWED" />
+
+	<!-- Comment this out to prevent extending classes in hscript.
+		 Reduces compilation time at the cost of limited HScript flexibility. !-->
+	<define name="CUSTOM_CLASSES" unless="STRIPPED_COMPILE" />
 
 	<!-- _________________________________ Custom _______________________________ -->
 

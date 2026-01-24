@@ -57,6 +57,12 @@ jobs:
           haxelib install hmm --quiet
           haxelib run hmm install --quiet
 
+      - name: ReInstall Lime
+        if: startsWith(inputs.name, 'Windows')
+        run: |
+          haxelib remove lime --quiet
+          haxelib install lime 8.1.3 --quiet
+
       - name: Configure Android
         if: inputs.name == 'Android'
         run: |

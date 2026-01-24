@@ -333,6 +333,7 @@ class ExtraFunctions
 
 	public static function specialKeyCheck(key:String, ?type:String, ?alter:Bool):Dynamic
 	{
+		#if TOUCH_CONTROLS
 		var textfix:Array<String> = key.trim().split('.');
 		var extraControl:Dynamic = null;
 		if (alter)
@@ -370,8 +371,10 @@ class ExtraFunctions
 				}
 			}
 		}
+		#end
 		return false;
 	}
+	#if TOUCH_CONTROLS
 	public static function checkMobilePadPress(mobilePad:MobileButton, key:String, type:String) {
 		if (key.toUpperCase() == Reflect.field(mobilePad, 'returnedKey'))
 			if (Reflect.getProperty(mobilePad, type))
@@ -384,4 +387,5 @@ class ExtraFunctions
 				return true;
 		return false;
 	}
+	#end
 }

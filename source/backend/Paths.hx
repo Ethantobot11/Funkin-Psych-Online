@@ -212,7 +212,28 @@ class Paths
 		return file;
 	}
 
+	inline static public function returnSoundShit(path:String, ?postfix:String)
+	{
+		var songKey:String = path;
+		if(postfix != null) songKey += '-' + postfix;
+		return returnSound('songs', songKey);
+	}
+
 	inline static public function voices(song:String, postfix:String = null, songSuffix:String = null):Any {
+		var diff = Difficulty.getString().toLowerCase();
+
+		var voices = returnSoundShit('${formatToSongPath(song)}/Voices' + (songSuffix ?? ""), postfix);
+		var voicesDiff = returnSoundShit('${formatToSongPath(song)}/Voices-$diff', postfix);
+
+		var voicesCNE = returnSoundShit('${formatToSongPath(song)}/song/Voices' + (songSuffix ?? ""), postfix);
+		var voicesDiffCNE = returnSoundShit('${formatToSongPath(song)}/song/Voices-$diff', postfix);
+
+		if (voicesDiffCNE != null) return voicesDiffCNE;
+		else if (voicesCNE != null) return voicesCNE;
+		else if (voicesDiff != null) return voicesDiff;
+		else return voices;
+
+		/*
 		var voices:Sound = null;
 		try {
 			var songKey:String = '${formatToSongPath(song)}/Voices' + (songSuffix ?? "");
@@ -228,6 +249,7 @@ class Paths
 		}
 
 		return voices;
+		*/
 	}
 
 	inline static public function inst(song:String, songSuffix:String = null):Any
@@ -235,9 +257,18 @@ class Paths
 		#if html5
 		return 'songs:assets/songs/${formatToSongPath(song)}/Inst.$SOUND_EXT';
 		#else
-		var songKey:String = '${formatToSongPath(song)}/Inst' + (songSuffix ?? "");
-		var inst = returnSound('songs', songKey);
-		return inst;
+		var diff = Difficulty.getString().toLowerCase();
+
+		var inst = returnSoundShit('${formatToSongPath(song)}/Inst' + (songSuffix ?? ""), null);
+		var instDiff = returnSoundShit('${formatToSongPath(song)}/Inst-$diff', null);
+
+		var instCNE = returnSoundShit('${formatToSongPath(song)}/song/Inst' + (songSuffix ?? ""), null);
+		var instDiffCNE = returnSoundShit('${formatToSongPath(song)}/song/Inst-$diff', null);
+
+		if (instDiffCNE != null) return instDiffCNE;
+		else if (instCNE != null) return instCNE;
+		else if (instDiff != null) return instDiff;
+		else return inst;
 		#end
 	}
 
@@ -462,6 +493,66 @@ class Paths
 		}
 		localTrackedAssets.push(gottenPath);
 		return currentTrackedSounds.get(gottenPath);
+	}
+
+	inline static public function fragShaderPath(key:String)
+		return getPath('shaders/$key.frag');
+
+	inline static public function vertShaderPath(key:String)
+		return getPath('shaders/$key.vert');
+
+	inline static public function fragShader(key:String)
+		return getTextFromFile('shaders/$key.frag');
+
+	inline static public function vertShader(key:String)
+		return getTextFromFile('shaders/$key.vert');
+
+	inline static public function script(key:String, ?library:String, isOnlyScriptingPath:Bool = false, ?customEx:Array<String> = null) {
+		#if HSC_ALLOWED
+		var scriptToLoad:String = null;
+		var arrayNumber:Int = 0;
+		for(ex in Script.scriptExtensions) {
+			if (customEx != null) {
+				ex = customEx[arrayNumber];
+				arrayNumber += 1;
+			}
+			scriptToLoad = modFolders('${key}.$ex');
+			if(FileSystem.exists(scriptToLoad))
+				break;
+		}
+		return scriptToLoad;
+		#end
+	}
+
+	static public function getFolderContent(key:String, addPath:Bool = false, source:String = "BOTH"):Array<String> {
+		var content:Array<String> = [];
+		var folder = key.endsWith('/') ? key : key + '/';
+
+		#if MODS_ALLOWED
+		if (source == "MODS" || source == "BOTH") {
+			var modDirs:Array<String> = [];
+			if (Mods.currentModDirectory != null && Mods.currentModDirectory.length > 0)
+				modDirs.push(Mods.currentModDirectory);
+			modDirs = modDirs.concat(Mods.getGlobalMods());
+
+			for (mod in modDirs) {
+				var modFolder = mods('$mod/$folder');
+				if (FileSystem.exists(modFolder)) {
+					for (file in FileSystem.readDirectory(modFolder)) {
+						if (!FileSystem.isDirectory('$modFolder/$file')) {
+							var path = addPath ? '$folder$file' : file;
+							if (!content.contains(path))
+								content.push(path);
+						}
+					}
+				}
+			}
+		}
+		#end
+
+		if (content != []) return content;
+		trace('Content not found');
+		return null;
 	}
 
 	#if MODS_ALLOWED

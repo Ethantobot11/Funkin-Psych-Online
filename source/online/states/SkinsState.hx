@@ -505,7 +505,7 @@ class SkinsState extends MusicBeatState {
 			if (selectTimer != null)
 				selectTimer.active = false;
 
-			mobileManager.mobilePad.visible = false;
+			#if TOUCH_CONTROLS mobileManager.mobilePad.visible = false; #end
 
 			var daCopy = charactersName.copy();
 			daCopy[0] = "Default";
@@ -674,8 +674,10 @@ class SkinsState extends MusicBeatState {
 		persistentUpdate = true;
 
 		super.closeSubState();
+		#if TOUCH_CONTROLS
 		if (mobileManager.mobilePad != null)
 			mobileManager.removeMobilePad();
+		#end
 		mobileManager.addMobilePad('FULL', 'A_B_C_D_V_X_Y_Z');
 		mobileManager.addMobilePadCamera();
 	}

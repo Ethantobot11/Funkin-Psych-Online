@@ -14,6 +14,12 @@ import states.TitleState;
 
 // Add a variable here and it will get automatically saved
 @:structInit class SaveVariables {
+	/* Psych Extended Stuff */
+	public var oldCameraSystem:Bool = false;
+	public var disableCameraRotate:Bool = false;
+	public var disableRGB:Bool = false; //new way to handle RGB notes (currently it does not support skins)
+	public var arrowHSV:Array<Array<Int>> = [[0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0]]; //for testing only
+
 	/* Mobile */
 	public var wideScreen:Bool = false;
 	#if android public var storageType:String = "EXTERNAL_DATA"; #end

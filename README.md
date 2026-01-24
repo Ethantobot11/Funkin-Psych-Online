@@ -1,3 +1,23 @@
+> [!WARNING]
+> Shadow Engine is under active development and slightly not ready for public use.<br>
+> Expect breaking changes, missing features and unstable builds.<br>
+> Use at your own risk.
+
+# Friday Night Funkin' - PsychExtended Online (PEXO)
+![PsychionalExtendedLogo](docs/img/PsychExtendedLogo.png)
+
+The continuation of PsychExtended.
+
+Engine originally used on [Sansational Sans Mix](https://youtu.be/ROtW8QMdWb4), intended to be unlocks a Official Psych's limitations for the while keeping the mod support of PsychEngine 0.6.3 aspect of it. Also aiming to be an Codename Engine alternative to PsychEngine coders.
+
+## Softcoding (.hsc) [will be added later]
+For this you can head over to [the wiki](https://PsychExtendedThings.github.io/HScript-Improved)!
+
+## Credits:
+* ArkoseLabs - Creator of PsychExtended & PsychExtended Online & Head Porter of PsychOnline Mobile.
+
+
+
 <p align="center">
     <img width="200" src="https://github.com/Snirozu/Funkin-Online-Server/blob/main/client/public/images/transwag.png?raw=true">
 </p>

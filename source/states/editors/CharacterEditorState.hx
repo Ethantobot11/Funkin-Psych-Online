@@ -1296,6 +1296,7 @@ class CharacterEditorState extends MusicBeatState {
 					camFollow.x += addToCam;
 			}
 
+			#if TOUCH_CONTROLS
 			mobileManager.mobilePad.forEachAlive((button:MobileButton) ->
 			{
 				if (button.justPressed || button.pressed)
@@ -1303,6 +1304,7 @@ class CharacterEditorState extends MusicBeatState {
 				else
 					overlapsToButton = false;
 			});
+			#end
 
 			if (char.animationsArray.length > 0) {
 				if (mobileButtonJustPressed('V') || FlxG.keys.justPressed.W) {

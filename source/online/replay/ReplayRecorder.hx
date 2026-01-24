@@ -200,6 +200,7 @@ class ReplayRecorder extends FlxBasic {
 	}
 
 	public function recordKeyMobileC(time:Float, IDs:Array<String>, move:Int) {
+		#if TOUCH_CONTROLS
 		trace(time + ' | ' + IDs + ' | ' + move);
 		if (IDs != null || IDs.length >= 0) {
 			var fixedID:String = IDs[0].toLowerCase().replace(" ", "").split("=")[0];
@@ -250,6 +251,7 @@ class ReplayRecorder extends FlxBasic {
 				data.inputs.push([time, idName, move]);
 			}
 		}
+		#end
 	}
 
 	//TODO: add extra key support

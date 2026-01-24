@@ -6,18 +6,25 @@ import flixel.FlxState;
 
 class MusicBeatState extends FlxUIState
 {
+	public var variables:Map<String, Dynamic> = new Map<String, Dynamic>();
+	public static function getVariables()
+		return getState().variables;
+
 	public static var instance:MusicBeatState;
 
 	private var theWorld:Bool = false;
 
-	private var curSection:Int = 0;
-	private var stepsToDo:Int = 0;
+	public var curSection:Int = 0;
+	public var stepsToDo:Int = 0;
 
-	private var curStep:Int = 0;
-	private var curBeat:Int = 0;
+	public var curStep:Int = 0;
+	public var curBeat:Int = 0;
+	public var curStepFloat:Float = 0;
+	public var curBeatFloat:Float = 0;
+	public static var stepsPerBeat:Float = 4;
 
-	private var curDecStep:Float = 0;
-	private var curDecBeat:Float = 0;
+	public var curDecStep:Float = 0;
+	public var curDecBeat:Float = 0;
 	public var controls(get, never):Controls;
 	private function get_controls()
 	{
@@ -27,16 +34,32 @@ class MusicBeatState extends FlxUIState
 	public var mobileManager:MobileControlManager;
 	//makes code less messy & easier to write
 	public inline function mobileButtonJustPressed(buttons:Dynamic):Bool {
+		#if TOUCH_CONTROLS
 		return mobileManager?.mobilePad?.justPressed(buttons);
+		#else
+		return false;
+		#end
 	}
 	public inline function mobileButtonPressed(buttons:Dynamic):Bool {
+		#if TOUCH_CONTROLS
 		return mobileManager?.mobilePad?.pressed(buttons);
+		#else
+		return false;
+		#end
 	}
 	public inline function mobileButtonJustReleased(buttons:Dynamic):Bool {
+		#if TOUCH_CONTROLS
 		return mobileManager?.mobilePad?.justReleased(buttons);
+		#else
+		return false;
+		#end
 	}
 	public inline function mobileButtonReleased(buttons:Dynamic):Bool {
+		#if TOUCH_CONTROLS
 		return mobileManager?.mobilePad?.released(buttons);
+		#else
+		return false;
+		#end
 	}
 	public function new() {
 		super();
@@ -76,6 +99,7 @@ class MusicBeatState extends FlxUIState
 		var oldStep:Int = curStep;
 		timePassedOnState += elapsed;
 
+		updateCurFloats();
 		updateCurStep();
 		updateBeat();
 
@@ -133,6 +157,13 @@ class MusicBeatState extends FlxUIState
 		}
 
 		if(curSection > lastSection) sectionHit();
+	}
+
+	private function updateCurFloats():Void
+	{
+		var lastChange = Conductor.getBPMFromSeconds(Conductor.songPosition);
+		curStepFloat = lastChange.stepTime + ((Conductor.songPosition - lastChange.songTime) / lastChange.stepCrochet);
+		curBeatFloat = curStepFloat / stepsPerBeat;
 	}
 
 	private function updateBeat():Void
