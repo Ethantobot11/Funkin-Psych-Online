@@ -63,7 +63,6 @@ class Language {
 		"Scroll Type"               => "Kaydırma Türü",
 		"Scroll Speed"              => "Kaydırma Hızı",
 		"Scroll Speed By Mania"     => "Tuş Sayısına Göre Hız",
-		"Playback Rate"             => "Oynatma Hızı",
 		"HP Gain Multiplier"        => "Can Kazanma Çarpanı",
 		"HP Loss Multiplier"        => "Can Kaybetme Çarpanı",
 		"Botplay"                   => "Bot Oynanışı",
