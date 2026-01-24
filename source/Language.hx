@@ -117,7 +117,7 @@ class Language {
 			Press %{1}% to disable them now or go to Options Menu.\n
 			Press %{2}% to ignore this message.\n
 			You've been warned!"
-	]
+	];
 	public static inline function getText(ogText:String, ?args:Array<String>):String {
 		var text:String = ogText;
 
