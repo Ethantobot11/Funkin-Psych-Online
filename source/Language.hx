@@ -56,7 +56,7 @@ class Language {
 		// Diğer Ekran Yazıları (Pause Menüsü içindeki küçük metinler)
 		"PRACTICE MODE"         => "PRATİK MODU",
 		"CHARTING MODE"         => "CHARTING MODU",
-		"Retry No. "            => "Deneme Sayısı: "
+		"Retry No. "            => "Deneme Sayısı: ",
 		
 		// Gameplay Ayarları
 		"Mania"                     => "Tuş Sayısı",

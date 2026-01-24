@@ -236,10 +236,6 @@ class PlayState extends MusicBeatState
 	private static var prevCamFollow:FlxPoint;
 	private static var prevCamFollowPos:FlxObject;
 
-	// this variable was changed to camFollow for no reason, thanks
-	@:forwardField(camFollow)
-	@:deprecated public var camFollowPos(get, set):FlxObject;
-
 	public var strumLineNotes:FlxTypedGroup<StrumNote>;
 	public var opponentStrums:FlxTypedGroup<StrumNote>;
 	public var playerStrums:FlxTypedGroup<StrumNote>;
