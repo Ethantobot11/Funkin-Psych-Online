@@ -43,15 +43,17 @@ class StrumNote extends FlxSprite
 		var arr:Array<FlxColor> = ClientPrefs.getRGBColor(mustPress == (GameClient.getPlayerSelf()?.bfSide ?? true) ? 0 : 1)[leData];
 		if(PlayState.isPixelStage) arr = ClientPrefs.getRGBPixelColor(mustPress == (GameClient.getPlayerSelf()?.bfSide ?? true) ? 0 : 1)[leData];
 
-		if(arr.length >= 3)
-		{
-			@:bypassAccessor
+		try {
+			if(arr.length >= 3)
 			{
-				rgbShader.r = arr[0];
-				rgbShader.g = arr[1];
-				rgbShader.b = arr[2];
+				@:bypassAccessor
+				{
+					rgbShader.r = arr[0];
+					rgbShader.g = arr[1];
+					rgbShader.b = arr[2];
+				}
 			}
-		}
+		} catch(e:Dynamic) {}
 
 		noteData = leData;
 		this.player = player;
