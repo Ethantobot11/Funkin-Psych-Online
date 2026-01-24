@@ -50,6 +50,12 @@ class NotesSubStateOld extends MusicBeatSubstate
 	{
 		super();
 
+		// Transparent background
+		var bg:FlxSprite = new FlxSprite(0, 0).makeGraphic(FlxG.width, FlxG.height, FlxColor.WHITE);
+		bg.scrollFactor.set();
+		bg.alpha = 0.5;
+		add(bg);
+
 		var grid:FlxBackdrop = new FlxBackdrop(FlxGridOverlay.createGrid(80, 80, 160, 160, true, 0x33FFFFFF, 0x0));
 		grid.velocity.set(40, 40);
 		grid.alpha = 0;
@@ -334,5 +340,6 @@ class NotesSubStateOld extends MusicBeatSubstate
 		MusicBeatSubstate.instance = this;
 		mobileManager.removeMobilePad();
 		mobileManager.addMobilePad('FULL', 'A_B_C_E');
+		controls.isInSubstate = true;
 	}
 }

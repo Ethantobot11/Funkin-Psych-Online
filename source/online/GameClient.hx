@@ -517,6 +517,8 @@ class GameClient {
 
 	public static function getAvailableRooms(address:String, result:(Error, Array<RoomAvailable>) -> Void) {
 		Thread.run(() -> {
+			new Client(address).getAvailableRooms("room", result);
+			/* this stuff brokes the rooms rn, so use old one instead
 			var http = new Http(addressToUrl(address) + "/rooms/room");
 
 			http.onData = function(data:String) {
@@ -533,6 +535,7 @@ class GameClient {
 			}
 
 			http.request();
+			*/
 		});
 	}
 

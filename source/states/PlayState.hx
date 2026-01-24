@@ -120,16 +120,16 @@ class PlayState extends MusicBeatState
 	@:deprecated public static var STRUM_X_MIDDLESCROLL = -278;
 
 	public static var ratingStuff:Array<Dynamic> = [
-		['You Suck!', 0.2], //From 0% to 19%
-		['Shit', 0.4], //From 20% to 39%
-		['Bad', 0.5], //From 40% to 49%
-		['Bruh', 0.6], //From 50% to 59%
-		['Meh', 0.69], //From 60% to 68%
-		['Nice', 0.7], //69%
-		['Good', 0.8], //From 70% to 79%
-		['Great', 0.9], //From 80% to 89%
-		['Sick!', 1], //From 90% to 99%
-		['Perfect!!', 1] //The value on this one isn't used actually, since Perfect is always "1"
+		[Language.getText('You Suck!'), 0.2], //From 0% to 19%
+		[Language.getText('Shit'), 0.4], //From 20% to 39%
+		[Language.getText('Bad'), 0.5], //From 40% to 49%
+		[Language.getText('Bruh'), 0.6], //From 50% to 59%
+		[Language.getText('Meh'), 0.69], //From 60% to 68%
+		[Language.getText('Nice'), 0.7], //69%
+		[Language.getText('Good'), 0.8], //From 70% to 79%
+		[Language.getText('Great'), 0.9], //From 80% to 89%
+		[Language.getText('Sick!'), 1], //From 90% to 99%
+		[Language.getText('Perfect!!'), 1] //The value on this one isn't used actually, since Perfect is always "1"
 	];
 
 	//event variables
@@ -648,7 +648,7 @@ class PlayState extends MusicBeatState
 			}
 			else {
 				paused = true;
-				GameClient.send("status", "In-Game");
+				GameClient.send("status", Language.getText("In-Game"));
 				startCallback = () -> {
 					waitReady = true;
 					startCountdown();
@@ -717,21 +717,21 @@ class PlayState extends MusicBeatState
 			// String that contains the mode defined here so it isn't necessary to call changePresence for each mode
 			if (GameClient.isConnected()) {
 				if (!GameClient.room.state.isPrivate)
-					detailsText = "Playing a online game!";
+					detailsText = Language.getText("Playing a online game!");
 				else
-					detailsText = "Playing a online private game!";
+					detailsText = Language.getText("Playing a online private game!");
 			}
 			else if (isStoryMode)
-				detailsText = "Story Mode: " + WeekData.getCurrentWeek().weekName;
+				detailsText = Language.getText("Story Mode: ") + WeekData.getCurrentWeek().weekName;
 			else {
 				if (replayData != null)
-					detailsText = replayData.player + "'s Replay";
+					detailsText = replayData.player + Language.getText("'s Replay");
 				else
-					detailsText = "Freeplay";
+					detailsText = Language.getText("Freeplay");
 			}
 
 			// String for when the game is paused
-			detailsPausedText = "Paused - " + detailsText;
+			detailsPausedText = Language.getText("Paused - ") + detailsText;
 			#end
 
 			GameOverSubstate.resetVariables();
@@ -1423,7 +1423,7 @@ class PlayState extends MusicBeatState
 
 		if (GameClient.isConnected()) {
 			preloadTasks.push(() -> {
-				waitReadySpr = new Alphabet(0, 0, controls.mobileControls ? "TOUCH YOUR SCREEN TO START" : "PRESS ACCEPT TO START", true);
+				waitReadySpr = new Alphabet(0, 0, controls.mobileControls ? Language.getText("TOUCH YOUR SCREEN TO START") : Language.getText("PRESS ACCEPT TO START"), true);
 				waitReadySpr.cameras = [camOther];
 				waitReadySpr.alignment = CENTERED;
 				waitReadySpr.x = FlxG.width / 2;

@@ -18,6 +18,16 @@ jobs:
             buildArgs: "windows -D officialBuild -final"
             artifactName: windowsBuild-x86_64
             artifactPath: export\release\windows\bin\*
+          - name: Android-TR
+            os: macos-15
+            buildArgs: "android -ONLY_ARM64 -D turkiye"
+            artifactName: androidBuild-TR
+            artifactPath: "export/release/android/bin/app/build/outputs/apk/release/*.apk"
+          - name: Windows-TR
+            os: windows-2022
+            buildArgs: "windows -D officialBuild -final -D turkiye"
+            artifactName: windowsBuild-TR-x86_64
+            artifactPath: export\release\windows\bin\*
     uses: ./.github/workflows/build.yml
     with:
         name: ${{ matrix.name }}

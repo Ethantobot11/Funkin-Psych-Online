@@ -366,8 +366,6 @@ class OnlineOptionsState extends MusicBeatState {
 		add(items);
 
         changeSelection(0);
-
-        mobileManager.addMobilePad('UP_DOWN', 'A_B');
     }
 
 	var mouseMoveTimeout = 0.0;

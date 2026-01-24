@@ -139,13 +139,13 @@ class FreeplayState extends MusicBeatState
 	// var dTime:Alphabet = new Alphabet(0, 0, "0:00", false);
 	// var dShots:FlxTypedGroup<FlxEffectSprite> = new FlxTypedGroup<FlxEffectSprite>();
 	var diffSelect:Alphabet = new Alphabet(0, 0, "< ? >", true);
-	var modifiersSelect:Alphabet = new Alphabet(0, 0, !GameClient.isConnected() ? "GAMEPLAY MODIFIERS" : "MODIFIERS UNAVAILABLE HERE", true);
-	var replaysSelect:Alphabet = new Alphabet(0, 0, !GameClient.isConnected() ? "LOAD REPLAY" : "REPLAYS UNAVAILABLE", true);
-	var resetSelect:Alphabet = new Alphabet(0, 0, "RESET SCORE", true);
+	var modifiersSelect:Alphabet = new Alphabet(0, 0, !GameClient.isConnected() ? Language.getText("GAMEPLAY MODIFIERS") : Language.getText("MODIFIERS UNAVAILABLE HERE"), true);
+	var replaysSelect:Alphabet = new Alphabet(0, 0, !GameClient.isConnected() ? Language.getText("LOAD REPLAY") : Language.getText("REPLAYS UNAVAILABLE"), true);
+	var resetSelect:Alphabet = new Alphabet(0, 0, Language.getText("RESET SCORE"), true);
 
-	var topTitle:Alphabet = new Alphabet(0, 0, "LEADERBOARD", true);
-	var topCategory:Alphabet = new Alphabet(0, 0, "< ALL TIME >", true);
-	var topLoading:Alphabet = new Alphabet(0, 0, "LOADING", true);
+	var topTitle:Alphabet = new Alphabet(0, 0, Language.getText("LEADERBOARD"), true);
+	var topCategory:Alphabet = new Alphabet(0, 0, Language.getText("< ALL TIME >"), true);
+	var topLoading:Alphabet = new Alphabet(0, 0, Language.getText("LOADING"), true);
 	var topShit:Scoreboard = new Scoreboard(FlxG.width - 200, 32, 15, ["PLAYER", "SCORE", "ACCURACY"]);
 
 	var touchingAndEmotionalQuotes:Array<Dynamic> = [
@@ -179,7 +179,8 @@ class FreeplayState extends MusicBeatState
 		for (group in touchingAndEmotionalQuotes)
 			chances.push(Std.parseFloat(group[0]));
 		var quotes = touchingAndEmotionalQuotes[FlxG.random.weightedPick(chances)][1];
-		return randomMessage = StringTools.replace(quotes[FlxG.random.int(0, quotes.length - 1)], 'BOYFRIEND', ClientPrefs.getNickname().toUpperCase());
+		var quote = Language.getText(quotes[FlxG.random.int(0, quotes.length - 1)]);
+		return randomMessage = StringTools.replace(quote, 'BOYFRIEND', ClientPrefs.getNickname().toUpperCase());
 	}
 
 	// weightedPick
@@ -1725,10 +1726,10 @@ class FreeplayState extends MusicBeatState
 
 		lastDifficultyName = Difficulty.getString(curDifficulty);
 		if (Difficulty.list.length > 1) {
-			diffSelect.text = '< ' + lastDifficultyName.toUpperCase() + ' >'; 
+			diffSelect.text = '< ' + Language.getText(lastDifficultyName.toUpperCase()) + ' >'; 
 		}
 		else {
-			diffSelect.text = lastDifficultyName.toUpperCase();
+			diffSelect.text = Language.getText(lastDifficultyName.toUpperCase());
 		}
 
 		positionHighscore();
