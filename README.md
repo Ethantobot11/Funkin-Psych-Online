@@ -1,5 +1,5 @@
 > [!WARNING]
-> Shadow Engine is under active development and slightly not ready for public use.<br>
+> Psych Extended Online is under active development and slightly not ready for public use.<br>
 > Expect breaking changes, missing features and unstable builds.<br>
 > Use at your own risk.
 
