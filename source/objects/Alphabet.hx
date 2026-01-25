@@ -407,8 +407,8 @@ class AlphaCharacter extends FlxSprite
 			}
 			else {
 				#if TURKIYE_BUILD
-				if(this.character == 'İ')
-					lowercase = 'İ';
+				if(this.character == 'iupper')
+					lowercase = 'iupper';
 				else if(this.character == 'I')
 					lowercase = 'I';
 				#end

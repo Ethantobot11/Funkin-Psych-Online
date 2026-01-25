@@ -32,7 +32,7 @@ import sys.io.Process;
 
 class Main extends Sprite
 {
-	public static var game = {
+	var game = {
 		width: 1280, // WINDOW width
 		height: 720, // WINDOW height
 		initialState: TitleState, // initial game state
@@ -45,7 +45,7 @@ class Main extends Sprite
 	public static var fpsVar:FPS;
 
 	public static var PSYCH_ONLINE_VERSION(default, null):String = null;
-	public static final CLIENT_PROTOCOL:Float = 10;
+	public static final CLIENT_PROTOCOL:Float = 11;
 	public static final NETWORK_PROTOCOL:Float = 8;
 	public static final GIT_COMMIT:String = online.backend.Macros.getGitCommitHash();
 	public static final LOW_STORAGE:Bool = online.backend.Macros.hasNoCapacity();
@@ -112,10 +112,6 @@ class Main extends Sprite
 		#end
 		backend.CrashHandler.init();
 
-		#if (cpp && windows)
-		backend.Native.fixScaling();
-		#end
-
 		if (stage != null)
 		{
 			init();
@@ -138,7 +134,7 @@ class Main extends Sprite
 
 	private function setupGame():Void
 	{
-		#if (openfl <= "9.2.0")
+		#if !mobile
 		var stageWidth:Int = Lib.current.stage.stageWidth;
 		var stageHeight:Int = Lib.current.stage.stageHeight;
 
@@ -150,9 +146,6 @@ class Main extends Sprite
 			game.width = Math.ceil(stageWidth / game.zoom);
 			game.height = Math.ceil(stageHeight / game.zoom);
 		}
-		#else
-		if (game.zoom == -1.0)
-			game.zoom = 1.0;
 		#end
 
 		CoolUtil.setDarkMode(true);
@@ -181,10 +174,8 @@ class Main extends Sprite
 	
 		#if LUA_ALLOWED Lua.set_callbacks_function(cpp.Callable.fromStaticFunction(psychlua.CallbackHandler.call)); #end
 		Controls.instance = new Controls();
-		trace('wut');
 		ClientPrefs.loadDefaultKeys();
-		trace('wut');
-		addChild(new FlxGame(game.width, game.height, game.initialState, game.framerate, game.framerate, game.skipSplash, game.startFullscreen));
+		addChild(new FlxGame(game.width, game.height, game.initialState, #if (flixel < "5.0.0") game.zoom, #end game.framerate, game.framerate, game.skipSplash, game.startFullscreen));
 
 		fpsVar = new FPS(10, 3, 0xFFFFFF);
 		addChild(fpsVar);
@@ -202,28 +193,19 @@ class Main extends Sprite
 		FlxG.autoPause = false;
 		FlxG.mouse.visible = false;
 		#end
-		
-		FlxG.fixedTimestep = false;
-		FlxG.game.focusLostFramerate = #if mobile 30 #else 60 #end;
-		#if web
-		FlxG.keys.preventDefaultKeys.push(TAB);
-		#else
-		FlxG.keys.preventDefaultKeys = [TAB];
-		#end
 
 		#if android FlxG.android.preventDefaultKeys = [BACK]; #end
+		#if mobile
+		ScreenUtil.wideScreen.enabled = ClientPrefs.data.wideScreen;
+		#end
 
 		#if DISCORD_ALLOWED
 		DiscordClient.initialize();
 		#end
 
-		#if mobile
-		ScreenUtil.wideScreen.enabled = ClientPrefs.data.wideScreen;
-		#end
-
 		// shader coords fix
 		FlxG.signals.gameResized.add(function (w, h) {
-			if(fpsVar != null)
+		     if(fpsVar != null)
 				fpsVar.positionFPS(10, 3, Math.min(w / FlxG.width, h / FlxG.height));
 			 if (FlxG.cameras != null) {
 			   for (cam in FlxG.cameras.list) {
@@ -231,13 +213,14 @@ class Main extends Sprite
 				if (cam != null && cam.filters != null)
 					resetSpriteCache(cam.flashSprite);
 			   }
-			 }
+		     }
 
-			 if (FlxG.game != null)
+		     if (FlxG.game != null)
 			 resetSpriteCache(FlxG.game);
 		});
 
 		//ONLINE STUFF, BELOW CODE USE FOR BACKPORTING
+
 		PSYCH_ONLINE_VERSION = FlxG.stage.application.meta.get('version');
 
 		#if CHECK_FOR_UPDATES
@@ -343,7 +326,6 @@ class Main extends Sprite
 			online.network.Auth.saveClose();
 		});
 
-		#if !mobile
 		Lib.application.window.onDropFile.add(path -> {
 			if (FileSystem.isDirectory(path))
 				return;
@@ -359,7 +341,6 @@ class Main extends Sprite
 				});
 			}
 		});
-		#end
 
 		// clear messages before the current state gets destroyed and replaced with another
 		FlxG.signals.preStateSwitch.add(() -> {
@@ -394,9 +375,113 @@ class Main extends Sprite
 
 	static function resetSpriteCache(sprite:Sprite):Void {
 		@:privateAccess {
-			sprite.__cacheBitmap = null;
+		        sprite.__cacheBitmap = null;
 			sprite.__cacheBitmapData = null;
 		}
+	}
+
+	static function onCrash(exc:Dynamic):Void
+	{
+		trace(" . CRASHED . ");
+
+		if (exc == null)
+			exc = new Exception("Empty Uncaught Exception");
+
+		var alertMsg:String = "";
+		var daError:String = "";
+		var path:String;
+		var callStack:Array<StackItem> = CallStack.exceptionStack(true);
+		var dateNow:String = Date.now().toString();
+
+		dateNow = dateNow.replace(" ", "_");
+		dateNow = dateNow.replace(":", "'");
+
+		path = "./crash/" + "PsychEngine_" + dateNow + ".txt";
+
+		alertMsg += exc + "\n";
+		daError += CallStack.toString(callStack) + "\n";
+		if (exc is Exception)
+			daError += "\n" + cast(exc, Exception).stack.toString() + "\n";
+		alertMsg += daError;
+		alertMsg += "\n\nCommit: " + GIT_COMMIT + "\n";
+
+		Sys.println(alertMsg);
+
+		if (!FileSystem.exists("./crash/"))
+			FileSystem.createDirectory("./crash/");
+		File.saveContent(path, alertMsg);
+		Sys.println("Crash dump saved in " + Path.normalize(path));
+		
+		var daLine:Int = 0;
+		var daFile:String = '';
+
+		if (callStack.length > 0)
+			switch (callStack[0]) {
+				case FilePos(s, file, line, col):
+					daLine = line;
+					daFile = file;
+					if (s != null && daFile != null && daFile.startsWith('lumod/LuaScriptClass'))
+						switch (s) {
+							case Method(cname, meth): // haxe has meth confirm?
+								if (cname != null)
+									daFile = cname.replace('.', '/') + ".hx";
+							default:
+						}
+				default:
+			}
+
+		var cookUrl:String = null;
+		switch (Main.repoHost) {
+			case 'github':
+				cookUrl = 'https://github.com/Snirozu/Funkin-Psych-Online/blob/$GIT_COMMIT/source/$daFile#L$daLine';
+			case 'codeberg':
+				cookUrl = 'https://codeberg.org/Snirozu/Funkin-Psych-Online/src/commit/$GIT_COMMIT/source/$daFile#L$daLine';
+		}
+
+		#if (windows && cpp)
+		if (!Main.UNOFFICIAL_BUILD) {
+			switch (Main.repoHost) {
+				case 'github':
+					alertMsg += "\nDo you wish to report this error on GitHub?";
+					alertMsg += "\nPress Yes to draft a new GitHub issue";
+					alertMsg += "\nPress No to jump into the origin error point (on GitHub)";
+					WinAPI.ask("Uncaught Exception!", alertMsg, () -> { // yes
+						daError += '\nVersion: ${Main.PSYCH_ONLINE_VERSION} ([$GIT_COMMIT]($cookUrl))';
+						FlxG.openURL('https://github.com/Snirozu/Funkin-Psych-Online/issues/new?title=${StringTools.urlEncode('Exception: ${exc}')}&body=${StringTools.urlEncode(daError)}');
+					}, () -> { // no
+						FlxG.openURL(cookUrl);
+					});
+				case 'codeberg':
+					alertMsg += "\nDo you wish to report this error on Codeberg?";
+					alertMsg += "\nPress Yes to draft a new Codeberg issue";
+					alertMsg += "\nPress No to jump into the origin error point (on Codeberg)";
+					WinAPI.ask("Uncaught Exception!", alertMsg, () -> { // yes
+						daError += '\nVersion: ${Main.PSYCH_ONLINE_VERSION} ([$GIT_COMMIT]($cookUrl))';
+						FlxG.openURL('https://codeberg.org/Snirozu/Funkin-Psych-Online/issues/new?title=${StringTools.urlEncode('Exception: ${exc}')}&body=${StringTools.urlEncode(daError)}');
+					}, () -> { // no
+						FlxG.openURL(cookUrl);
+					});
+				default:
+					alertMsg += "\nDo you wish to view the logs of this crash?";
+					alertMsg += "\nPress Yes to open the logs in your default text editor";
+					WinAPI.ask("Uncaught Exception!", alertMsg, () -> { // yes
+						Sys.command('start ' + path);
+					}, () -> { // no
+
+					});
+			}
+		}
+		else {
+			Application.current.window.alert(alertMsg, "Uncaught Exception!");
+		}
+		#else
+		Application.current.window.alert(alertMsg, "Uncaught Exception!");
+		#end
+		try {
+			GameClient.leaveRoom();
+		} catch (exc) {}
+		online.network.Auth.saveClose();
+		Sys.exit(1);
 	}
 
 	public static function getTime():Float {

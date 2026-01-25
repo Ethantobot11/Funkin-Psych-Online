@@ -1,7 +1,6 @@
 package backend;
 
 import objects.Note;
-import objects.Note;
 import options.VisualsUISubState;
 import options.NotesSubState;
 import online.network.FunkinNetwork;
@@ -775,9 +774,16 @@ class ClientPrefs {
 	}
 
 	public static inline function genArrowColorsExtraMap(?isPixel:Bool = false):Map<String, Array<Array<FlxColor>>> {
-		var map = new Map();
+		var map:Map<String, Array<Array<FlxColor>>> = new Map();
+		#if TURKIYE_BUILD
 		try {
+		#end
 			trace('Wut');
+			if (Note == null || Note.maniaKeysList == null) {
+				if (Note == null) trace("Note is null!");
+				else if (Note.maniaKeysList == null) trace('Note.maniaKeysList is null!')
+			}
+			trace('wut');
 			for (keys in Note.maniaKeysList) {
 				trace('Wut');
 				if (keys == 4)
@@ -786,7 +792,9 @@ class ClientPrefs {
 				map.set('${keys}k', genArrowColors(keys, isPixel));
 				trace('Wut');
 			}
+		#if TURKIYE_BUILD
 		} catch(e:Dynamic) {}
+		#end
 		return map;
 	}
 
