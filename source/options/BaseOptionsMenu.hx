@@ -69,7 +69,7 @@ class BaseOptionsMenu extends MusicBeatSubstate
 
 		for (i in 0...optionsArray.length)
 		{
-			var optionText:Alphabet = new Alphabet(290, 260, optionsArray[i].name, false);
+			var optionText:Alphabet = new Alphabet(290, 260, Language.getText(optionsArray[i].name), false);
 			optionText.isMenuItem = true;
 			/*optionText.forceX = 300;
 			optionText.yMult = 90;*/
@@ -265,7 +265,7 @@ class BaseOptionsMenu extends MusicBeatSubstate
 		if (curSelected >= optionsArray.length)
 			curSelected = 0;
 
-		descText.text = optionsArray[curSelected].description;
+		descText.text = Language.getText(optionsArray[curSelected].description);
 		descText.screenCenter(Y);
 		descText.y += 270;
 

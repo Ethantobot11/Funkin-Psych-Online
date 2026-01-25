@@ -17,12 +17,12 @@ class Language {
 		// Online Elemanları
 		"In-Game"	 => "Oyunda",
 		"Playing a online game!"	 => "Online Maçta",
-		"Playing a online private game!"	 => "Online Özel Maçta",
+		"Playing a online private game!"	 => "Özel Online Maçta",
 		"Story Mode: "	 => "Hikaye Modu: ",
 		"'s Replay"	 => "'nin Replay'i",
 		"Paused - "	 => "Durduruldu - ",
-		"TOUCH YOUR SCREEN TO START"	 => "BAŞLAMAK IÇIN EKRANA TIKLA",
-		"PRESS ACCEPT TO START"	 => "BASLAMAK IÇIN ACCEPT'A BASIN",
+		"TOUCH YOUR SCREEN TO START"	 => "BAŞLAMAK İÇİN EKRANA TIKLAYIN 1",
+		"PRESS ACCEPT TO START"	 => "BAŞLAMAK İÇİN ACCEPT'A BASIN",
 
 		// Pause Menüsü Elemanları
 		"Resume"                => "Devam Et",
@@ -91,8 +91,8 @@ class Language {
 		"FUNK THEIR BRAINS OUT BOYFRIEND" => "SAMETI SIK BOYFRIEND",
 		
 		// Menü ve Leaderboard Başlıkları
-		"GAMEPLAY MODIFIERS"      => "OYNANIŞ MODİFİKATÖRLERİ",
-		"MODIFIERS UNAVAILABLE HERE" => "MODİFİKATÖRLER BURADA KULLANILAMAZ",
+		"GAMEPLAY MODIFIERS"      => "OYNANIŞ MODİFİKASYONLARI",
+		"MODIFIERS UNAVAILABLE HERE" => "MODİFİKASYONLAR BURADA KULLANILAMAZ",
 		"LOAD REPLAY"             => "TEKRARI YÜKLE",
 		"REPLAYS UNAVAILABLE"     => "TEKRARLAR KULLANILAMAZ",
 		"RESET SCORE"             => "SKORU SIFIRLA",
@@ -118,6 +118,15 @@ class Language {
 		"Gameplay" => "Oynanis",
 		"Mobile" => "Mobil",
 
+		//Mobil Ayarlar
+		"MobilePad Opacity" => "MobilePad Opaklığı",
+		"Selects the opacity for the mobile buttons (careful not to put it at 0 and lose track of your buttons)." => "Mobil düğmelerin opaklığını seçer (0 olarak ayarlayıp düğmelerinizi kaybetmeyin).",
+		"Extra Controls" => "Ektra Kontroller",
+		"Allow Extra Controls" => "Kaç tane ektra kontrol ekleneyeceğini seçiniz",
+		"Hitbox Mode" => "Hitbox Modu",
+		"Choose your Hitbox Style!" => "Hitbox stilini seç!",
+		"Hitbox Design" => "Hitbox Şekli/Dizaynı",
+		"Choose how your hitbox should look like." => "Hitbox'ın nasıl görünmeli.",
 	];
 	//normal texts will go there when turkish version done
 	public static var normalTexts:Map<String, String> = [

@@ -301,7 +301,7 @@ class AlphaCharacter extends FlxSprite
 		'y'  => null, 'z'  => null,
 
 		//turkish alphabet things
-		'ğ' => null, 'ş' => null, 'ı' => null,
+		'ğ' => null, 'ş' => null, 'ı' => null, #if TURKIYE_BUILD 'İ' => null, 'I' => null, #end
 
 		//additional alphabet
 		'á'  => null, 'é'  => null, 'í'  => null, 'ó'  => null, 'ú'  => null,
@@ -389,7 +389,8 @@ class AlphaCharacter extends FlxSprite
 			this.character = character;
 			curLetter = null;
 			var lowercase:String = this.character.toLowerCase();
-			if(allLetters.exists(lowercase)) curLetter = allLetters.get(lowercase);
+			if(allLetters.exists(this.character)) curLetter = allLetters.get(this.character);
+			else if(allLetters.exists(lowercase)) curLetter = allLetters.get(lowercase);
 			else curLetter = allLetters.get('?');
 
 			var suffix:String = '';

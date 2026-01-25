@@ -43,7 +43,10 @@ class VisualsUISubState extends BaseOptionsMenu
 			'bool');
 		addOption(option);
 		option.onChange = () -> {
-			MusicBeatState.getState().resetSubState(); //temporarily here
+			new FlxTimer().start(0.2, function(t:FlxTimer)
+			{
+				MusicBeatState.getState().resetSubState(); //temporarily here
+			});
 		};
 
 		if(NoteSkinData.noteSkins.length > 0 && !ClientPrefs.data.disableRGB)

@@ -728,10 +728,12 @@ class NotesSubState extends MusicBeatSubstate
 
 		modeBG.x = pickersBG.x / 2 - modeBG.width / 2; 
 
-		notesBG.scale.set(Note.maniaKeys * Note.swagScaledWidth - (Note.getNoteOffsetX() * (Note.maniaKeys - 1)), Note.swagScaledWidth);
-		notesBG.updateHitbox();
-		notesBG.x = myNotes.members[0].x;
-		notesBG.y = myNotes.members[0].y; 
+		try {
+			notesBG.scale.set(Note.maniaKeys * Note.swagScaledWidth - (Note.getNoteOffsetX() * (Note.maniaKeys - 1)), Note.swagScaledWidth);
+			notesBG.updateHitbox();
+			notesBG.x = myNotes.members[0].x;
+			notesBG.y = myNotes.members[0].y; 
+		} catch(e:Dynamic) {}
 	}
 
 	function updateNotes(?instant:Bool = false)
