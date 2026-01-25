@@ -407,10 +407,11 @@ class AlphaCharacter extends FlxSprite
 			}
 			else {
 				#if TURKIYE_BUILD
-				if(this.character == 'iupper')
-					lowercase = 'iupper';
+				//Character fixes for turkish build
+				if(this.character == 'İ')
+					lowercase = 'i';
 				else if(this.character == 'I')
-					lowercase = 'I';
+					lowercase = 'ı';
 				#end
 				suffix = ' bold';
 			}
