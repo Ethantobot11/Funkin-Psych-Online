@@ -157,7 +157,7 @@ class Language {
 
 		"PlayState.updateScoreSID.else.daText" => '%{1}%\nScore: %{2}%\nMisses: %{3}%\nRating: %{4}%' + (ClientPrefs.data.showFP ? '\nFP: %{5}%' : '') + "\nPing: %{6}%"
 	];
-	public static inline function getText(ogText:String, ?args:Array<String>):String {
+	public static inline function getText(ogText:String, ?args:Array<Dynamic>):String {
 		var text:String = ogText;
 
 		#if TURKIYE_BUILD
@@ -171,6 +171,7 @@ class Language {
 		if (args != null && args.length > 0) {
 			for (i in 0...args.length) {
 				var placeholder:String = "%{" + (i + 1) + "}%";
+				args[i] = Std.string(args[i]);
 				text = StringTools.replace(text, placeholder, args[i]);
 			}
 		}
