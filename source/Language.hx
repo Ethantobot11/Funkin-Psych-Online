@@ -127,15 +127,13 @@ class Language {
 		"Choose your Hitbox Style!" => "Hitbox stilini seç!",
 		"Hitbox Design" => "Hitbox Şekli/Dizaynı",
 		"Choose how your hitbox should look like." => "Hitbox'ın nasıl görünmeli.",
-		
+
 		//Score Text
 		"PlayState.updateTeamSide.daText" => "%{1}%
 			\nSkor: %{2}%
 			\nIskalar: %{3}%
-			\nDoğruluk: %{4}%%"
-			(ClientPrefs.data.showFP ? '\nFP: %{5}%' : '') +
-			"\nGecikme: %{6}%ms",
-		
+			\nDoğruluk: %{4}%%" + (ClientPrefs.data.showFP ? '\nFP: %{5}%' : '') + "\nGecikme: %{6}%ms",
+
 		"PlayState.updateScoreSID.if (countSide > 1).daText" => 
 			'%{1}%: %{2}% | %{3}% M | %{4}%% - %{5}%' + (ClientPrefs.data.showFP ? ' | %{6}%FP' : '') + ' | %{7}%ms',
 
@@ -148,12 +146,12 @@ class Language {
 			Press %{1}% to disable them now or go to Options Menu.\n
 			Press %{2}% to ignore this message.\n
 			You've been warned!",
-		"PlayState.updateTeamSide.daText" => '%{1}%
+
+		"PlayState.updateTeamSide.daText" => "%{1}%
 			\nScore: %{2}%
 			\nMisses: %{3}%
-			\nAccuracy: %{4}%%'
-			(ClientPrefs.data.showFP ? '\nFP: %{5}%' : '') +
-			"\nPing: %{6}%ms",
+			\nAccuracy: %{4}%%" + (ClientPrefs.data.showFP ? '\nFP: %{5}%' : '') + "\nPing: %{6}%ms",
+
 		"PlayState.updateScoreSID.if (countSide > 1).daText" => 
 			'%{1}%: %{2}% | %{3}% M | %{4}%% - %{5}%' + (ClientPrefs.data.showFP ? ' | %{6}%FP' : '') + ' | %{7}%ms',
 
