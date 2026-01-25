@@ -2434,7 +2434,11 @@ class PlayState extends MusicBeatState
 			str += ' ($percent%) - $ratingFC';
 		}
 
-		scoreTextObject.text = 'Score: ' + FlxStringUtil.formatMoney(songScore, false) + ' | Misses: ' + songMisses + ' | Rating: ' + str;
+		scoreTextObject.text = Language.getText("PlayState.updateScore.scoreTextObject", [
+			FlxStringUtil.formatMoney(songScore, false),
+			songMisses,
+			str
+		]);
 
 		if (skipRest) {
 			if (ClientPrefs.data.showFP)

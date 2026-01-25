@@ -263,6 +263,7 @@ class Script extends FlxBasic implements IFlxDestroyable {
 			"Reflect"			  => Reflect,
 			"StringTools"	   => StringTools,
 			"Json"			  => haxe.Json,
+			"Access"			  => CoolUtil.getMacroAbstractClass("haxe.xml.Access"),
 
 			/* OpenFL & Lime related stuff */
 			"Assets"			=> openfl.utils.Assets,

@@ -14,6 +14,7 @@ class Config {
 		"flixel.math",
 		"flixel.util",
 		"openfl.display.BlendMode",
+		"haxe.xml",
 	];
 
 	// Incase any of your files fail

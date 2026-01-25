@@ -137,7 +137,8 @@ class Language {
 		"PlayState.updateScoreSID.if (countSide > 1).daText" => 
 			'%{1}%: %{2}% | %{3}% M | %{4}%% - %{5}%' + (ClientPrefs.data.showFP ? ' | %{6}%FP' : '') + ' | %{7}%ms',
 
-		"PlayState.updateScoreSID.else.daText" => '%{1}%\nSkor: %{2}%\nIskalar: %{3}%\nRating: %{4}%' + (ClientPrefs.data.showFP ? '\nFP: %{5}%' : '') + "\nGecikme: %{6}%"
+		"PlayState.updateScoreSID.else.daText" => '%{1}%\nSkor: %{2}%\nIskalar: %{3}%\nRating: %{4}%' + (ClientPrefs.data.showFP ? '\nFP: %{5}%' : '') + "\nGecikme: %{6}%",
+		"PlayState.updateScore.scoreTextObject" => "Skor: %{1}% | Iskalar: %{2}% | Rating: %{3}%",
 	];
 	//normal texts will go there when turkish version done
 	public static var normalTexts:Map<String, String> = [
@@ -155,7 +156,8 @@ class Language {
 		"PlayState.updateScoreSID.if (countSide > 1).daText" => 
 			'%{1}%: %{2}% | %{3}% M | %{4}%% - %{5}%' + (ClientPrefs.data.showFP ? ' | %{6}%FP' : '') + ' | %{7}%ms',
 
-		"PlayState.updateScoreSID.else.daText" => '%{1}%\nScore: %{2}%\nMisses: %{3}%\nRating: %{4}%' + (ClientPrefs.data.showFP ? '\nFP: %{5}%' : '') + "\nPing: %{6}%"
+		"PlayState.updateScoreSID.else.daText" => '%{1}%\nScore: %{2}%\nMisses: %{3}%\nRating: %{4}%' + (ClientPrefs.data.showFP ? '\nFP: %{5}%' : '') + "\nPing: %{6}%",
+		"PlayState.updateScore.scoreTextObject" => "Score: %{1}% | Misses: %{2}% | Rating: %{3}%"
 	];
 	public static inline function getText(ogText:String, ?args:Array<Dynamic>):String {
 		var text:String = ogText;
