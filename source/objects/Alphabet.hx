@@ -301,7 +301,7 @@ class AlphaCharacter extends FlxSprite
 		'y'  => null, 'z'  => null,
 
 		//turkish alphabet things
-		'ğ' => null, 'ş' => null, 'ı' => null, #if TURKIYE_BUILD 'İ' => null, 'I' => null, #end
+		'ğ' => null, 'ş' => null, 'ı' => null,
 
 		//additional alphabet
 		'á'  => null, 'é'  => null, 'í'  => null, 'ó'  => null, 'ú'  => null,

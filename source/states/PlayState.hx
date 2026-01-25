@@ -587,8 +587,6 @@ class PlayState extends MusicBeatState
 		Paths.clearUnusedMemory();
 		Paths.clearStoredMemory();
 
-		ClientPrefs.reloadKeyColors();
-
 		//Load Mobile Shit (Makes Testing The Hitboxes Easier)
 		#if TOUCH_CONTROLS
 		MobileConfig.init('MobileControls', CoolUtil.getSavePath(), 'assets/mobile/',

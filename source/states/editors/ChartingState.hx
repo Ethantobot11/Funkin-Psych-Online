@@ -202,8 +202,6 @@ class ChartingState extends MusicBeatState
 	public var mouseQuant:Bool = false;
 	override function create()
 	{
-		ClientPrefs.reloadKeyColors();
-
 		if (PlayState.SONG != null)
 			_song = PlayState.SONG;
 		else

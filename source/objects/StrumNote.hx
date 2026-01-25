@@ -42,7 +42,8 @@ class StrumNote extends FlxSprite
 			colorSwap = new ColorSwap();
 			shader = colorSwap.shader;
 		} else {
-			rgbShader = new RGBShaderReference(this, Note.initializeGlobalRGBShader(leData, mustPress));
+			var leDataFixed:Int = leData % Note.maniaKeys; //this fixes the (i + 8) issue on Cyber Sensation
+			rgbShader = new RGBShaderReference(this, Note.initializeGlobalRGBShader(leDataFixed, mustPress));
 			rgbShader.enabled = false;
 			if(PlayState.SONG != null && PlayState.SONG.disableNoteRGB) useRGBShader = false;
 

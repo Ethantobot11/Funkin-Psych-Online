@@ -88,16 +88,16 @@ class Language {
 		"BEHIND YOU BOYFRIEND"            => "ARKANDAYIM BOYFRIEND",
 		"DRINK PISS BOYFRIEND"            => "GİT Bİ' ÇAY İÇ BOYFRIEND",
 		"COME TO BRAZIL BOYFRIEND"        => "BAĞCILARA GEL BOYFRIEND",
-		"FUNK THEIR BRAINS OUT BOYFRIEND" => "SAMETI SIK BOYFRIEND",
+		"FUNK THEIR BRAINS OUT BOYFRIEND" => "SAMETİ SİK BOYFRIEND",
 		
 		// Menü ve Leaderboard Başlıkları
-		"GAMEPLAY MODIFIERS"      => "OYNANIŞ MODİFİKASYONLARI",
-		"MODIFIERS UNAVAILABLE HERE" => "MODİFİKASYONLAR BURADA KULLANILAMAZ",
+		"GAMEPLAY MODIFIERS"      => "OYNANIŞ MODiFiKASYONLARI",
+		"MODIFIERS UNAVAILABLE HERE" => "MODiFiKASYONLAR BURADA KULLANILAMAZ",
 		"LOAD REPLAY"             => "TEKRARI YÜKLE",
 		"REPLAYS UNAVAILABLE"     => "TEKRARLAR KULLANILAMAZ",
 		"RESET SCORE"             => "SKORU SIFIRLA",
-		"LEADERBOARD"             => "LİDERLİK TABLOSU",
-		"LOADING"                 => "YÜKLENİYOR",
+		"LEADERBOARD"             => "LiDERLiK TABLOSU",
+		"LOADING"                 => "YÜKLENiYOR",
 		"FlashingState.warnText"  => "Hey, dikkat et!\n
 			Bu Mod bazı yanıp sönen ışıklar içeriyor!\n
 			Flaşları kapatmak veya Ayarlar'a gitmek için %{1}% tuşuna bas.\n

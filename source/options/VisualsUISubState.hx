@@ -17,7 +17,6 @@ class VisualsUISubState extends BaseOptionsMenu
 	var noteY:Float = 90;
 	public function new()
 	{
-		ClientPrefs.reloadKeyColors();
 		title = 'Visuals and UI';
 		rpcTitle = 'Visuals & UI Settings Menu'; //for Discord Rich Presence
 
