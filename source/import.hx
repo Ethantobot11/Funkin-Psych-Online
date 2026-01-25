@@ -3,6 +3,7 @@
 #if DISCORD_ALLOWED
 import backend.Discord;
 #end
+import haxe.xml.Access;
 
 #if sys
 import sys.*;

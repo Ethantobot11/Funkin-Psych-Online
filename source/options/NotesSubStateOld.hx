@@ -64,7 +64,7 @@ class NotesSubStateOld extends MusicBeatSubstate
 		grpNumbers = new FlxTypedGroup<Alphabet>();
 		add(grpNumbers);
 
-		hsbText = new Alphabet(posX + 260, 0, "Hue    Saturation  Brightness", false);
+		hsbText = new Alphabet(posX + 260, 0, "Hue     Saturation  Brightness", false);
 		hsbText.scaleX = 0.6;
 		hsbText.scaleY = 0.6;
 		add(hsbText);
@@ -305,7 +305,7 @@ class NotesSubStateOld extends MusicBeatSubstate
 			if (curSelected == i) {
 				item.alpha = 1;
 				item.scale.set(1, 1);
-				hsbText.y = item.y - 70;
+				hsbText.y = item.y - 60;
 				blackBG.y = item.y - 20;
 			}
 		}

@@ -6796,15 +6796,14 @@ class PlayState extends MusicBeatState
 
 		var daText = scoreTxtOthers.get(isRight ? 'RIGHTSIDE' : 'LEFTSIDE');
 
-		daText.text = 
-			sideNames.join(' & ') + 
-			'\nScore: ' + FlxStringUtil.formatMoney(averageOf(sideScores), false) + 
-			'\nMisses: ' + averageOf(sideMisses) + 
-			'\nAccuracy: ' + CoolUtil.floorDecimal(averageOf(sideAccuracy), 2) + '%' + 
-			(ClientPrefs.data.showFP ? '\nFP: ' + averageOf(sideFP) : '') +
-			"\nPing: " + sidePing.join('ms & ') + 'ms'
-		;
-
+		daText.text = Language.getText('PlayState.updateTeamSide.daText', [
+			sideNames.join(' & '),
+			FlxStringUtil.formatMoney(averageOf(sideScores), false),
+			averageOf(sideMisses),
+			CoolUtil.floorDecimal(averageOf(sideAccuracy), 2),
+			averageOf(sideFP),
+			sidePing.join('ms & ')
+		]);
 		daText.y = scoreTxtOriginY - daText.height;
 
 		if (!miss) {
@@ -6860,15 +6859,25 @@ class PlayState extends MusicBeatState
 		var daText = scoreTxtOthers.get(sid);
 
 		if (countSide > 1) {
-			daText.text = 
-				op.player.name + ': ' + FlxStringUtil.formatMoney(op.player.score, false) + ' | ' + op.player.misses + ' M | $percent% - ${op.ratingFC}${ClientPrefs.data.showFP ? ' | ' + op.player.songPoints + 'FP' : ''} | ' + op.player.ping + 'ms'
-			;
+			daText.text = Language.getText('PlayState.updateScoreSID.if (countSide > 1).daText', [
+				op.player.name,
+				FlxStringUtil.formatMoney(op.player.score, false),
+				op.player.misses,
+				percent,
+				op.ratingFC,
+				op.player.songPoints,
+				op.player.ping
+			]);
 		}
 		else {
-			daText.text = 
-				//op.sicks + " " + op.goods + " " + op.bads + " " + op.shits + " " + op.misses
-				op.player.name + '\nScore: ' + FlxStringUtil.formatMoney(op.player.score, false) + '\nMisses: ' + op.player.misses + '\nRating: ' + str + (ClientPrefs.data.showFP ? '\nFP: ' + op.player.songPoints : '') + "\nPing: " + op.player.ping
-			;
+			daText.text = Language.getText('PlayState.updateScoreSID.else.daText', [
+				op.player.name,
+				FlxStringUtil.formatMoney(op.player.score, false),
+				op.player.misses,
+				str,
+				op.player.songPoints,
+				op.player.ping
+			]);
 		}
 
 		daText.y = scoreTxtOriginY - (op.player.ox * 20) - daText.height;
