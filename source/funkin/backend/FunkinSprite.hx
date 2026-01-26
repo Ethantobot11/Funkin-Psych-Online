@@ -15,7 +15,7 @@ import funkin.backend.utils.XMLUtil.BeatAnim;
 import funkin.backend.utils.XMLUtil.IXMLEvents;
 import haxe.io.Path;
 
-import flixel.util.FlxTypedSignal;
+import flixel.util.FlxSignal;
 import flxanimate.animate.FlxElement;
 
 //the stuff I need
