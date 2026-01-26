@@ -855,6 +855,7 @@ class Character extends FunkinMergedSprite implements IBeatReceiver implements I
 			destroyAtlas();
 			#end
 		}
+	}
 
 	public function onCombo(from:Int, to:Int) {}
 	public function onHealth(from:Float, to:Float) {}
@@ -877,14 +878,14 @@ class Character extends FunkinMergedSprite implements IBeatReceiver implements I
 		__baseFlipped = flipX;
 	}
 
-	public function swapLeftRightAnimations(?isNotCNE:Bool) {
+	public function swapLeftRightAnimations() {
 		CoolUtil.switchAnimFrames(animation.getByName('singRIGHT'), animation.getByName('singLEFT'));
 		CoolUtil.switchAnimFrames(animation.getByName('singRIGHTmiss'), animation.getByName('singLEFTmiss'));
 
 		switchOffset('singLEFT', 'singRIGHT');
 		switchOffset('singLEFTmiss', 'singRIGHTmiss');
 
-		if (!isNotCNE) __swappedLeftRightAnims = true;
+		__swappedLeftRightAnims = true;
 	}
 
 	@:noCompletion var __baseFlipped:Bool = false;
