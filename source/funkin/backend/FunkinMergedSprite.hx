@@ -7,7 +7,6 @@ import flixel.math.FlxPoint;
 import flixel.math.FlxRect;
 import flixel.system.FlxAssets.FlxGraphicAsset;
 import flixel.util.typeLimit.OneOfTwo;
-import flxanimate.animate.FlxAnim.FlxSymbolAnimation;
 import funkin.backend.scripting.events.sprite.PlayAnimContext;
 import funkin.backend.system.interfaces.IBeatReceiver;
 import funkin.backend.system.interfaces.IOffsetCompatible;
@@ -344,7 +343,7 @@ class FunkinMergedSprite extends FlxSkewedSprite implements IBeatReceiver implem
 			animation.remove(name);
 	}
 
-	public function getAnim(name:String):OneOfTwo<FlxAnimation, FlxSymbolAnimation>
+	public function getAnim(name:String):Dynamic
 	{
 		if(animateAtlas != null)
 			return animateAtlas.anim.getByName(name);
