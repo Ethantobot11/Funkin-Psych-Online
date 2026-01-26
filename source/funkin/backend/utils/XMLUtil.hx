@@ -4,7 +4,6 @@ import flixel.util.FlxColor;
 import flixel.util.typeLimit.OneOfTwo;
 import funkin.backend.FunkinSprite.XMLAnimType;
 import funkin.backend.FunkinSprite;
-import funkin.game.Character_CNE;
 import funkin.backend.FunkinSprite.XMLAnimType;
 import flixel.util.FlxColor;
 import haxe.xml.Access;
@@ -14,7 +13,7 @@ import funkin.backend.system.interfaces.IOffsetCompatible;
 import haxe.xml.Access;
 
 using StringTools;
-using CoolUtil;
+using backend.CoolUtil;
 
 @:dox(hide)
 enum abstract ErrorCode(Int) {
@@ -345,9 +344,6 @@ final class XMLUtil {
 
 	public static inline function defaultForcedCheck(animName:String, sprite:FunkinSprite):Bool {
 		if (sprite is Character && (animName.startsWith("idle") || animName.startsWith("danceLeft") || animName.startsWith("danceRight"))) {
-			return false;
-		}
-		else if (sprite is Character_CNE && (animName.startsWith("idle") || animName.startsWith("danceLeft") || animName.startsWith("danceRight"))) {
 			return false;
 		}
 		else {
