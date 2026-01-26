@@ -10,6 +10,7 @@ import sys.io.File;
 #end
 import flixel.util.FlxColor;
 import flixel.math.FlxPoint;
+import funkin.backend.scripting.events.sprite.PlayAnimContext;
 
 using StringTools;
 
@@ -139,7 +140,7 @@ class XmlCharHandler extends FunkinSprite {
 
 	public static function getXMLFromCharName(character:String):Access {
 		var xml:Access = null;
-		var characterPath:String = 'characters/' + character + '.xml';
+		var characterPath:String = 'data/characters/' + character + '.xml';
 		
 		#if MODS_ALLOWED
 		var xmlPath:String = Paths.modFolders(characterPath);
