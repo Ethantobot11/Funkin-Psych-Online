@@ -6,6 +6,7 @@ import backend.Discord;
 import haxe.xml.Access;
 
 //Import all funkin stuff (cne stuff)
+import funkin.backend.*;
 import funkin.backend.system.*;
 import funkin.backend.shaders.*;
 import funkin.backend.scripting.*;
