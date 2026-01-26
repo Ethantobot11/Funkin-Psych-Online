@@ -108,6 +108,12 @@ import online.backend.schema.Player;
 @:build(online.backend.Macros.getSetForwarder())
 class PlayState extends MusicBeatState
 {
+	/**
+	 * Current camera target. -1 means no automatic camera targetting.
+	 * makes easier to change position shits
+	 */
+	public var curCameraTarget:Int = 0;
+
 	#if HSC_ALLOWED
 	/**
 	 * Script Pack of all the scripts being ran.
@@ -4344,10 +4350,59 @@ class PlayState extends MusicBeatState
 					moveCamera(value1 == '1');
 				else if (value1 == '2')
 					moveCamera(false, true);
+			//Codename Engine Support (you can't use these in the editor, just there for compatibility)
+			case 'Camera Flash':
+				//make the event work on PsychEngine
+				var splittedValue1 = value1.split(', ');
+				var splittedValue2 = value2.split(', ');
+				var flValue:Null<Float> = Std.parseFloat(splittedValue2[0]);
+				var stringToBool:Bool = splittedValue1[0] == 'true' ? true : false;
+				var getColor:Dynamic = CoolUtil.getColorFromDynamic(splittedValue1[1]); //I'm not sure, If color is wrong tell me
+
+				var camera:FlxCamera = splittedValue2[1] == "camHUD" ? camHUD : camGame;
+				if (stringToBool) // reversed
+					camera.fade(getColor, (Conductor.stepCrochet / 1000) * flValue, false, () -> {camera._fxFadeAlpha = 0;}, true);
+				else // Not Reversed
+					camera.flash(getColor, (Conductor.stepCrochet / 1000) * flValue, null, true);
+
+				/*
+				"Camera Flash" => [
+					{name: "Reversed?", type: TBool, defValue: false},
+					{name: "Color", type: TColorWheel, defValue: "#FFFFFF"},
+					{name: "Time (Steps)", type: TFloat(0.25, 9999, 0.25, 2), defValue: 4},
+					{name: "Camera", type: TDropDown(['camGame', 'camHUD']), defValue: "camHUD"}
+				]
+				*/
+			//Most important Event in the Codename Engine (Tested & It works fine)
+			case "HScript Call":
+				callHScriptImproved(value1, value2);
 		}
 		
 		stagesFunc(function(stage:BaseStage) stage.eventCalled(eventName, value1, value2, flValue1, flValue2, strumTime));
 		callOnScripts('onEvent', [eventName, value1, value2, strumTime]);
+	}
+
+	//Make HScript Improved Functions Call-able from Normal HScript & Lua
+	public function callHScriptImproved(value1:String, value2:String) {
+		var scriptPacks:Array<ScriptPack> = [scripts];
+		var args:Array<String> = value2.split(',');
+
+		for (pack in scriptPacks) {
+			pack.call(value1, args);
+			//public functions
+			if (pack.publicVariables.exists(value1)) {
+				var func = pack.publicVariables.get(value1);
+				if (func != null && Reflect.isFunction(func))
+					Reflect.callMethod(null, func, args);
+			}
+		}
+
+		//static functions
+		if (Script.staticVariables.exists(value1)) {
+			var func = Script.staticVariables.get(value1);
+			if (func != null && Reflect.isFunction(func))
+				Reflect.callMethod(null, func, args);
+		}
 	}
 
 	public var sectionCameraMovement:Bool = true;
@@ -4382,6 +4437,7 @@ class PlayState extends MusicBeatState
 			if (stage3D != null)
 				stage3D.setFollowCamera('gf');
 			callOnScripts('onMoveCamera', ['gf']);
+			curCameraTarget = 2;
 			return;
 		}
 
@@ -4396,6 +4452,7 @@ class PlayState extends MusicBeatState
 			if (stage3D != null)
 				stage3D.setFollowCamera('dad');
 			callOnScripts('onMoveCamera', ['dad']);
+			curCameraTarget = 0;
 		}
 		else
 		{
@@ -4419,6 +4476,7 @@ class PlayState extends MusicBeatState
 			if (stage3D != null)
 				stage3D.setFollowCamera('bf');
 			callOnScripts('onMoveCamera', ['boyfriend']);
+			curCameraTarget = 1;
 		}
 	}
 
@@ -4458,7 +4516,8 @@ class PlayState extends MusicBeatState
 	public var transitioning = false;
 	public function endSong()
 	{
-		#if HSC_ALLOWED scripts.call("onSongEnd"); #end
+		endingSong = true;
+		#if HSC_ALLOWED if (scripts.event("onSongEnd", new CancellableEvent()).cancelled) return false; #end
 		#if TOUCH_CONTROLS mobileManager.hitbox.visible = false; #end
 		if (redditMod) {
 			health = 0;
@@ -4489,7 +4548,6 @@ class PlayState extends MusicBeatState
 		timeBar.visible = false;
 		timeTxt.visible = false;
 		canPause = false;
-		endingSong = true;
 		camZooming = false;
 		inCutscene = false;
 		updateTime = false;

@@ -124,6 +124,43 @@ class CoolUtil
 	}
 
 	/**
+	 * Tries to get a color from a `Dynamic` variable.
+	 * @param c `Dynamic` color.
+	 * @return The result color, or `null` if invalid.
+	 */
+	public static function getColorFromDynamic(c:Dynamic):Null<FlxColor> {
+		// -1
+		if (c is Int) return c;
+
+		// -1.0
+		if (c is Float) return Std.int(c);
+
+		// "#FFFFFF"
+		if (c is String) return FlxColor.fromString(c);
+
+		// [255, 255, 255]
+		if (c is Array) {
+			var r:Int = 0;
+			var g:Int = 0;
+			var b:Int = 0;
+			var a:Int = 255;
+			var array:Array<Dynamic> = cast c;
+			for(k=>e in array) {
+				if (e is Int || e is Float) {
+					switch(k) {
+						case 0:	r = Std.int(e);
+						case 1:	g = Std.int(e);
+						case 2:	b = Std.int(e);
+						case 3:	a = Std.int(e);
+					}
+				}
+			}
+			return FlxColor.fromRGB(r, g, b, a);
+		}
+		return null;
+	}
+
+	/**
 	 * Converts an array of numbers into a string of ranges.
 	 * Example: [1,2,3,5,7,8,9,8,7,6,5] -> "1..3,5,7..9,8..5"
 	 * @param numbers Array of numbers

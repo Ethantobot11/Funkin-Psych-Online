@@ -45,8 +45,60 @@ typedef AnimArray = {
 	@:optional var flip_x:Bool;
 }
 
+class LazyReturnThing { //I'm lazy to use FlxPoint rn, so use this.
+	public var charType:String = null;
+	public function new(charType:String) {
+		this.charType = charType;
+	}
+	public var x(get, set):Float;
+	function get_x() {
+		if (PlayState.instance != null) {
+			switch (charType) {
+				case 'bf': return PlayState.instance.boyfriendCameraOffset[0];
+				case 'gf': return PlayState.instance.girlfriendCameraOffset[0];
+				case 'dad': return PlayState.instance.opponentCameraOffset[0];
+				default: return 0;
+			}
+		}
+	}
+	function set_x(Value:Float) {
+		if (PlayState.instance != null) {
+			switch (charType) {
+				case 'bf': PlayState.instance.boyfriendCameraOffset[0] = Value;
+				case 'gf': return PlayState.instance.girlfriendCameraOffset[0] = Value;
+				case 'dad': PlayState.instance.opponentCameraOffset[0] = Value;
+				default: //do nothing.
+			}
+		}
+		return Value;
+	}
+
+	public var y(get, set):Float;
+	function get_y() {
+		if (PlayState.instance != null) {
+			switch (charType) {
+				case 'bf': return PlayState.instance.boyfriendCameraOffset[1];
+				case 'gf': return PlayState.instance.girlfriendCameraOffset[1];
+				case 'dad': return PlayState.instance.opponentCameraOffset[1];
+				default: return 0;
+			}
+		}
+	}
+	function set_y(Value:Float) {
+		if (PlayState.instance != null) {
+			switch (charType) {
+				case 'bf': PlayState.instance.boyfriendCameraOffset[1] = Value;
+				case 'gf': return PlayState.instance.girlfriendCameraOffset[1] = Value;
+				case 'dad': PlayState.instance.opponentCameraOffset[1] = Value;
+				default: //do nothing.
+			}
+		}
+		return Value;
+	}
+}
+
 class Character extends FlxSkewedSprite {
-	//Swap thing gest
+	//Swap thing test
 	public function swapLeftRightAnimations() {
 		CoolUtil.switchAnimFrames(animation.getByName('singRIGHT'), animation.getByName('singLEFT'));
 		CoolUtil.switchAnimFrames(animation.getByName('singRIGHTmiss'), animation.getByName('singLEFTmiss'));
@@ -62,6 +114,9 @@ class Character extends FlxSkewedSprite {
 		animOffsets.set(anim1, old2);
 		animOffsets.set(anim2, old1);
 	}
+	
+	/* Lazy cameraOffset compability */
+	public var cameraOffset:LazyReturnThing;
 
 	public var sprite3D:AnimatedSprite3D;
 
@@ -181,6 +236,7 @@ class Character extends FlxSkewedSprite {
 
 		animOffsets = new Map<String, Array<Dynamic>>();
 		curCharacter = character;
+		cameraOffset = new LazyReturnThing(charType);
 		this.isPlayer = isPlayer;
 		this.isSkin = isSkin;
 		var library:String = null;
