@@ -325,7 +325,6 @@ class Character extends FlxSkewedSprite {
 
 		if (isPlayer) {
 			flipX = !flipX;
-			swapLeftRightAnimations();
 
 			/*// Doesn't flip for BF, since his are already in the right place???
 				if (!curCharacter.startsWith('bf'))
