@@ -57,9 +57,9 @@ class LazyReturnThing { //I'm lazy to use FlxPoint rn, so use this.
 				case 'bf': return PlayState.instance.boyfriendCameraOffset[0];
 				case 'gf': return PlayState.instance.girlfriendCameraOffset[0];
 				case 'dad': return PlayState.instance.opponentCameraOffset[0];
-				default: return 0;
 			}
 		}
+		return 0;
 	}
 	function set_x(Value:Float) {
 		if (PlayState.instance != null) {
@@ -67,7 +67,6 @@ class LazyReturnThing { //I'm lazy to use FlxPoint rn, so use this.
 				case 'bf': PlayState.instance.boyfriendCameraOffset[0] = Value;
 				case 'gf': return PlayState.instance.girlfriendCameraOffset[0] = Value;
 				case 'dad': PlayState.instance.opponentCameraOffset[0] = Value;
-				default: //do nothing.
 			}
 		}
 		return Value;
@@ -80,9 +79,9 @@ class LazyReturnThing { //I'm lazy to use FlxPoint rn, so use this.
 				case 'bf': return PlayState.instance.boyfriendCameraOffset[1];
 				case 'gf': return PlayState.instance.girlfriendCameraOffset[1];
 				case 'dad': return PlayState.instance.opponentCameraOffset[1];
-				default: return 0;
 			}
 		}
+		return 0;
 	}
 	function set_y(Value:Float) {
 		if (PlayState.instance != null) {
@@ -90,7 +89,6 @@ class LazyReturnThing { //I'm lazy to use FlxPoint rn, so use this.
 				case 'bf': PlayState.instance.boyfriendCameraOffset[1] = Value;
 				case 'gf': return PlayState.instance.girlfriendCameraOffset[1] = Value;
 				case 'dad': PlayState.instance.opponentCameraOffset[1] = Value;
-				default: //do nothing.
 			}
 		}
 		return Value;
