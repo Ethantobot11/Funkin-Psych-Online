@@ -38,6 +38,7 @@ import flixel.math.FlxMath;
 import flixel.FlxBasic;
 import flixel.graphics.frames.FlxFramesCollection;
 import openfl.geom.Matrix;
+import flixel.math.FlxAngle;
 
 using flixel.util.FlxColorTransformUtil;
 
