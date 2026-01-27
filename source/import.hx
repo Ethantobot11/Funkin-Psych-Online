@@ -11,7 +11,6 @@ import funkin.backend.system.*;
 import funkin.backend.shaders.*;
 import funkin.backend.scripting.*;
 import funkin.backend.scripting.events.*;
-import funkin.backend.scripting.events.character.*;
 import funkin.backend.scripting.events.sprite.*;
 import funkin.backend.utils.*;
 import funkin.backend.assets.*;

@@ -47,8 +47,7 @@ class HScript extends Script {
 		interp = new Interp();
 
 		try {
-			if(FileSystem.exists(rawPath)) code = File.getContent(rawPath);
-			else if(Assets.exists(rawPath)) code = Assets.getText(rawPath);
+			if(FunkinFileSystem.exists(rawPath)) code = FunkinFileSystem.getText(rawPath);
 		} catch(e) trace('Error while reading $path: ${Std.string(e)}');
 
 		parser = initParser();
@@ -91,8 +90,8 @@ class HScript extends Script {
 			var p = '$assetsPath.$hxExt';
 			if (__importedPaths.contains(p))
 				return true; // no need to reimport again
-			if (Assets.exists(p) || FileSystem.exists(p)) {
-				var code = Assets.getText(p);
+			if (FunkinFileSystem.exists(p)) {
+				var code = FunkinFileSystem.getText(p);
 				var expr:Expr = null;
 				try {
 					if (code != null && code.trim() != "") {
@@ -246,6 +245,8 @@ class Script extends FlxBasic implements IFlxDestroyable {
 			"Mods"		  => backend.Mods,
 			"AttachedSprite"		  => objects.AttachedSprite,
 			"ClientPrefs"		  => backend.ClientPrefs,
+			"FunkinFileSystem"		  => backend.FunkinFileSystem,
+			"Converters"		  => backend.Converters,
 
 			/* Sys related stuff */
 			"File"		  => File,
@@ -354,11 +355,6 @@ class Script extends FlxBasic implements IFlxDestroyable {
 			/* hxCodec 2.5.1 */
 			"MP4Handler"		  => vlc.MP4Handler,
 			//"MP4Sprite"		  => vlc.MP4Sprite,
-
-			/* Converters (There's only CNE for now, but I can add other ones too) */
-			#if CNE_CHART_ALLOWED
-			"Converters"		  => funkin.backend.chart.Converters,
-			#end
 			
 			//Online Stuffs
 			"GameClient"	=> online.GameClient,
@@ -410,12 +406,12 @@ class Script extends FlxBasic implements IFlxDestroyable {
 	 * @param path Path in assets
 	 */
 	public static function create(path:String):Script {
-		if (Assets.exists(path) || FileSystem.exists(path)) {
+		if (FunkinFileSystem.exists(path)) {
 			return switch(Path.extension(path).toLowerCase()) {
 				case "hx" | "hscript" | "hsc" | "hxs":
 					new HScript(path);
 				case "pack":
-					var arr = FileSystem.exists(path) ? File.getContent(path).split("________PACKSEP________") : Assets.getText(path).split("________PACKSEP________");
+					var arr = FunkinFileSystem.exists(path) ? FunkinFileSystem.getText(path).split("________PACKSEP________");
 					fromString(arr[1], arr[0]);
 				case "lua":
 					trace("Lua is not supported in custom menus. Use HScript instead.");

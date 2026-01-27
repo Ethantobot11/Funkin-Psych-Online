@@ -3,6 +3,7 @@ package backend;
 import objects.Note;
 import tjson.TJSON as Json;
 import lime.utils.Assets;
+import backend.Converters;
 
 #if sys
 import sys.io.File;
@@ -157,7 +158,7 @@ class Song
 		if (FunkinFileSystem.exists(moddyCneChartFile)) {
 			var chart:Dynamic = Json.parse(FunkinFileSystem.getText(moddyCneChartFile).trim());
 			var meta:Dynamic = Json.parse(FunkinFileSystem.getText(moddyCneMetaFile).trim());
-			rawJson = parseCodenameChart(chart, meta);
+			rawJson = Converters.parseCodenameChart(chart, meta);
 		} else if (FunkinFileSystem.exists(moddyFile)) {
 			rawJson = FunkinFileSystem.getText(moddyFile).trim();
 		}
@@ -175,7 +176,7 @@ class Song
 			if (rawJson == null && cneChartFile == null) {
 				throw new haxe.Exception("Missing file: " + Paths.json(formattedFolder + '/' + formattedSong));
 			} else if (rawJson == null && cneChartFile != null) {
-				cneChartFile = parseCodenameChart(Json.parse(cneChartFile), Json.parse(cneMetaFile));
+				cneChartFile = Converters.parseCodenameChart(Json.parse(cneChartFile), Json.parse(cneMetaFile));
 				rawJson = cneChartFile;
 			}
 
@@ -285,160 +286,5 @@ class Song
 			return keys ?? 4;
 
 		return Note.maniaKeys = keys ?? 4;
-	}
-
-	// --- CNE CONVERTER ---
-	public static function parseCodenameChart(json:Dynamic, ?metaJson:Dynamic = null):String
-	{
-		var stageName:String = (json.stage != null && json.stage != "") ? json.stage : "stage";
-
-		var songName:String = (json.meta != null && json.meta.name != null) ? json.meta.name : "Unknown";
-		var songBpm:Float = (json.meta != null && json.meta.bpm != null) ? json.meta.bpm : 100.0;
-		if (json.bpm != null) songBpm = json.bpm;
-
-		var needsVoices:Bool = (json.meta != null && json.meta.needsVoices != null) ? json.meta.needsVoices : true;
-
-		if (metaJson != null) {
-			if (metaJson.displayName != null) songName = metaJson.displayName;
-			if (metaJson.bpm != null) songBpm = metaJson.bpm;
-		}
-
-		var psychJson:Dynamic = {
-			song: songName,
-			notes: [],
-			events: [],
-			bpm: songBpm,
-			needsVoices: needsVoices,
-			speed: (json.scrollSpeed != null ? json.scrollSpeed : 1.0),
-			player1: "bf",
-			player2: "dad",
-			gfVersion: "gf",
-			stage: stageName,
-			format: 'psych_v1'
-		};
-
-		var curBPM:Float = songBpm;
-		var mustHit:Bool = false;
-		var queueBPMChange:Bool = false;
-		var songTime:Float = 0.0;
-		var measureTimes:Array<Float> = [0.0];
-
-		var beatsPerMeasure:Int = 4;
-		if (json.meta != null && json.meta.beatsPerMeasure != null) beatsPerMeasure = json.meta.beatsPerMeasure;
-
-		var addSections = function(tilTime:Float) {
-			if (songTime >= tilTime) return;
-			if (curBPM <= 0) curBPM = 100;
-			var crochet:Float = (60.0 / curBPM) * 1000.0;
-			while (songTime < tilTime) {
-				psychJson.notes.push({
-					sectionNotes: [],
-					sectionBeats: beatsPerMeasure,
-					mustHitSection: mustHit,
-					gfSection: false,
-					bpm: curBPM,
-					changeBPM: queueBPMChange,
-					altAnim: false
-				});
-				queueBPMChange = false;
-				songTime += beatsPerMeasure * crochet;
-				measureTimes.push(songTime);
-			}
-		};
-
-		if (json.events != null) {
-			var events:Array<Dynamic> = cast json.events;
-			events.sort(function(a, b) return Reflect.compare(a.time, b.time));
-
-			for (event in events) {
-				if (event.name == "Camera Movement" || event.name == "BPM Change") addSections(event.time);
-
-				if (event.name == "Camera Movement") {
-					if (json.strumLines != null && event.params != null && event.params.length > 0) {
-						var lineIdx:Int = Std.int(event.params[0]);
-						if (json.strumLines.length > lineIdx) {
-							var sLine = json.strumLines[lineIdx];
-							if (sLine != null) mustHit = (sLine.type == 1); 
-						}
-					}
-				} else if (event.name == "BPM Change") {
-					if (event.params != null && event.params.length > 0) {
-						curBPM = event.params[0];
-						queueBPMChange = true;
-					}
-				}
-				
-				var val1:String = (event.params != null && event.params.length > 0) ? Std.string(event.params[0]) : "";
-				var val2:String = (event.params != null && event.params.length > 1) ? Std.string(event.params[1]) : "";
-				psychJson.events.push([event.time, [[event.name, val1, val2]]]);
-			}
-		}
-
-		var lastNoteTime:Float = 0.0;
-		if (json.strumLines != null) {
-			var lines:Array<Dynamic> = cast json.strumLines;
-			for (line in lines) {
-				if (line.notes != null) {
-					var nArr:Array<Dynamic> = cast line.notes;
-					for (n in nArr) if (n.time > lastNoteTime) lastNoteTime = n.time;
-				}
-			}
-		}
-		addSections(lastNoteTime + 2000);
-
-		var numberThing:Int = 2;
-		if (json.strumLines != null) {
-			var lines:Array<Dynamic> = cast json.strumLines;
-			for (sIndex in 0...lines.length) {
-				var strum = lines[sIndex];
-				if (strum.notes == null) continue;
-				var notes:Array<Dynamic> = cast strum.notes;
-				notes.sort(function(a, b) return Reflect.compare(a.time, b.time));
-
-				if (strum.characters != null && strum.characters.length > 0) {
-					switch(strum.type) {
-						case 0: psychJson.player2 = strum.characters[0];
-						case 1: psychJson.player1 = strum.characters[0];
-						case 2: psychJson.gfVersion = strum.characters[0];
-					}
-				}
-
-				var measureIndex:Int = 0;
-				for (note in notes) {
-					while (measureIndex < measureTimes.length && measureTimes[measureIndex] <= note.time + 1) measureIndex++;
-					var secIdx = measureIndex - 1; if (secIdx < 0) secIdx = 0;
-					if (secIdx >= psychJson.notes.length) continue;
-
-					var targetSection = psychJson.notes[secIdx];
-					var intFix:Int = 0;
-					switch (strum.type) {
-						case 0: intFix = targetSection.mustHitSection ? 1 : 0;
-						case 1: intFix = !targetSection.mustHitSection ? 1 : 0;
-						default: intFix = targetSection.mustHitSection ? 1 : 0;
-					}
-
-					var finalData = (note.id % 4) + (4 * intFix);
-					var psychNote:Array<Dynamic> = [note.time, finalData, note.sLen];
-
-					if (note.type != null && note.type > 0 && json.noteTypes != null) {
-						var typeArray:Array<Dynamic> = cast json.noteTypes;
-						if (typeArray.length > note.type) psychNote.push(typeArray[note.type]);
-					} else if (strum.type == 2 && note.type == 0) {
-						psychNote.push("GF Sing");
-					} else if (strum.type > 2 && note.type == 0) {
-						psychNote.push("Player " + (numberThing + 1) + " Sing");
-					}
-
-					targetSection.sectionNotes.push(psychNote);
-				}
-				if (strum.type > 2) numberThing++;
-			}
-		}
-
-		var finalOutput = {
-			song: psychJson
-		};
-
-		return haxe.Json.stringify(finalOutput, null, "\t");
 	}
 }

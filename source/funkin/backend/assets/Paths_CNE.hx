@@ -85,7 +85,7 @@ class Paths_CNE {
 		var noExt = Path.withoutExtension(path);
 		var atlasImage:Dynamic = null;
 
-		if (!SkipMultiCheck && #if MODS_ALLOWED FileSystem.exists('$noExt/1.png') #else Assets.exists('$noExt/1.png') #end) {
+		if (!SkipMultiCheck && #if MODS_ALLOWED FunkinFileSystem.exists('$noExt/1.png') #else Assets.exists('$noExt/1.png') #end) {
 			// MULTIPLE SPRITESHEETS!!
 
 			var graphic = FlxG.bitmap.add("flixel/images/logo/default.png", false, '$noExt/mult');
@@ -97,18 +97,18 @@ class Paths_CNE {
 			var cur = 1;
 			var finalFrames = new MultiFramesCollection(graphic);
 			trace("Final Frames: " + finalFrames);
-			while(FileSystem.exists('$noExt/$cur.png')) {
+			while(FunkinFileSystem.exists('$noExt/$cur.png')) {
 				var spr = loadFrames('$noExt/$cur.png', false, null, false, true);
 				trace("spr: " + spr);
 				finalFrames.addFrames(spr);
 				cur++;
 			}
 			return finalFrames;
-		} else if (FileSystem.exists(Paths.getPath('images/$noExt.xml', null, true)))
+		} else if (FunkinFileSystem.exists(Paths.getPath('images/$noExt.xml', null, true)))
 			return Paths.getSparrowAtlas(path);
-		else if (FileSystem.exists('$noExt.txt'))
+		else if (FunkinFileSystem.exists('$noExt.txt'))
 			return Paths_CNE.getPackerAtlasAlt(noExt);
-		else if (FileSystem.exists('$noExt.json')) {
+		else if (FunkinFileSystem.exists('$noExt.json')) {
 			var aSprite = Paths_CNE.getAsepriteAtlasAlt(noExt);
 			return aSprite;
 		}

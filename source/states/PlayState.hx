@@ -120,6 +120,13 @@ class PlayState extends MusicBeatState
 	 */
 	public var scripts:ScriptPack;
 	#end
+	/**
+	 * The selected difficulty name.
+	 */
+	public var difficulty(get, never):String;
+	function get_difficulty() {
+		return Difficulty.getString();
+	}
 
 	// use only for mod compatibility
 	@:deprecated public static var STRUM_X = 42;
