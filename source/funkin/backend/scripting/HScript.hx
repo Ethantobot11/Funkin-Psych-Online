@@ -411,7 +411,7 @@ class Script extends FlxBasic implements IFlxDestroyable {
 				case "hx" | "hscript" | "hsc" | "hxs":
 					new HScript(path);
 				case "pack":
-					var arr = FunkinFileSystem.exists(path) ? FunkinFileSystem.getText(path).split("________PACKSEP________");
+					var arr = FunkinFileSystem.getText(path).split("________PACKSEP________");
 					fromString(arr[1], arr[0]);
 				case "lua":
 					trace("Lua is not supported in custom menus. Use HScript instead.");
