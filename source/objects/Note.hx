@@ -40,23 +40,7 @@ class Note extends FlxSprite
 	public var extraData:Map<String, Dynamic> = new Map<String, Dynamic>();
 
 	public var strumTime:Float = 0;
-	#if STRUM_REWORK
-	public var mustPress(get, never):Bool;
-	public var player(get, set):StrumLine;
-	private function get_player() {
-		if (PlayState.instance != null)
-			return PlayState.instance.players[playerID];
-		return null;
-	}
-
-	private function get_mustPress():Bool {
-		if (PlayState.instance != null)
-			return PlayState.instance.players[playerID] != null && !PlayState.instance.players[playerID].cpu;
-		return playerID == 1;
-	}
-	#else
 	public var mustPress(default, set):Bool = false;
-	#end
 	public var noteData:Int = 0;
 	public var canBeHit:Bool = false;
 	public var tooLate:Bool = false;
@@ -728,11 +712,6 @@ class Note extends FlxSprite
 	var lastPostfix:String = '';
 	function set_mustPress(value:Bool):Bool
 	{
-		#if STRUM_REWORK
-		if (value == true) playerID = 1;
-		else playerID = 0;
-		#end
-
 		mustPress = value;
 
 		if(inEditor)

@@ -21,7 +21,7 @@ jobs:
             artifactPath: export\release\windows\bin\*
           - name: Android-TR
             os: ubuntu-latest
-            buildArgs: "android -ONLY_ARM64 -D turkiye -D STRUM_REWORK"
+            buildArgs: "android -ONLY_ARM64 -D turkiye"
             artifactName: androidBuild-TR
             artifactPath: "export/release/android/bin/app/build/outputs/apk/release/*.apk"
           - name: Windows-TR
