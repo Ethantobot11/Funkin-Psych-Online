@@ -5461,7 +5461,6 @@ class PlayState extends MusicBeatState
 	#end
 
 	// Hold notes
-	[cite_start]// [cite: 686-691] keysCheck adapted to verify note.player.controls instead of note.mustPress
 	@:unreflective
 	private function keysCheck():Void
 	{
