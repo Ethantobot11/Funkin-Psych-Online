@@ -1817,6 +1817,7 @@ class ChartingState extends MusicBeatState
 							if (Note.maniaKeys > 9) {
 								camPos.x -= FlxG.mouse.deltaScreenX;
 							}
+							/* not needed for mobile devices
 							FlxG.sound.music.pause();
 							for (v in [vocals, opponentVocals]) {
 								if (v == null) continue;
@@ -1824,6 +1825,7 @@ class ChartingState extends MusicBeatState
 								v.time = FlxG.sound.music.time;
 							}
 							FlxG.sound.music.time -= getStrumTime(FlxG.mouse.deltaScreenY * zoomList[curZoom]);
+							*/
 							if (camPos.x > strumLine.x + CAM_OFFSET) {
 								camPos.x = strumLine.x + CAM_OFFSET;
 							}

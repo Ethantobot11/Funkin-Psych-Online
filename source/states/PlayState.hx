@@ -87,6 +87,10 @@ import sys.io.File;
 #end
 #end
 
+#if HSC_ALLOWED
+import funkin.backend.scripting.events.CountdownEvent;
+#end
+
 import objects.Note.EventNote;
 import objects.*;
 import states.stages.objects.*;
@@ -123,7 +127,10 @@ class PlayState extends MusicBeatState
 	/**
 	 * The selected difficulty name.
 	 */
-	public var difficulty:String;
+	public static var difficulty(get, never):String;
+	function get_difficulty() {
+		return Difficulty.getString();
+	}
 
 	// use only for mod compatibility
 	@:deprecated public static var STRUM_X = 42;
@@ -1420,8 +1427,8 @@ class PlayState extends MusicBeatState
 			scripts.load();
 			scripts.call("create");
 
-			introAssets.set('default', ['ready', 'set', 'go']);
-			introAssets.set('pixel', ['pixelUI/ready-pixel', 'pixelUI/set-pixel', 'pixelUI/date-pixel']);
+			introAssets.set('default', [null, 'ready', 'set', 'go']);
+			introAssets.set('pixel', [null, 'pixelUI/ready-pixel', 'pixelUI/set-pixel', 'pixelUI/date-pixel']);
 		});
 		#end
 
@@ -1589,8 +1596,6 @@ class PlayState extends MusicBeatState
 		loaderGroup.add(asyncLoop);
 
 		orderOffset = 2;
-
-		difficulty = Difficulty.getString();
 
 		super.create();
 	}
@@ -2099,21 +2104,20 @@ class PlayState extends MusicBeatState
 
 	public var introAssets:Map<String, Array<String>> = new Map<String, Array<String>>();
 	public var introSounds:Map<String, Array<String>> = new Map<String, Array<String>>();
-	public var AllowCountdownThree:Bool = false; //Allow countdown Three for Codename Engine Mods (You Need to add your Countdown Three Sprite)
-	public var countdownVolume:Float = 0.6; //for Codename Mods (Again)
 
 	function cacheCountdown()
 	{
 		var introAlts:Array<String> = introAssets.get('default');
 		if (isPixelStage) introAlts = introAssets.get('pixel');
 
+		introSounds.set([Paths.sound('intro3' + introSoundsSuffix), Paths.sound('intro2' + introSoundsSuffix),
+						Paths.sound('intro1' + introSoundsSuffix), Paths.sound('introGo' + introSoundsSuffix)]);
+
 		for (asset in introAlts)
 			Paths.image(asset);
 
-		Paths.sound('intro3' + introSoundsSuffix);
-		Paths.sound('intro2' + introSoundsSuffix);
-		Paths.sound('intro1' + introSoundsSuffix);
-		Paths.sound('introGo' + introSoundsSuffix);
+		for (sound in introSounds)
+			Paths.sound(sound);
 	}
 
 	public function generateStrums() {
@@ -2196,6 +2200,15 @@ class PlayState extends MusicBeatState
 					antialias = false;
 				}
 				var tick:Countdown = THREE;
+
+				#if HSC_ALLOWED
+				var event:CountdownEvent = scripts.event("onCountdown", EventManager.get(CountdownEvent).recycle(
+					swagCounter,
+					0.6,
+					introSounds[swagCounter],
+					introAlts[swagCounter],
+					1, antialias, null, null, null));
+				#end
 		
 				switch (swagCounter)
 				{
@@ -2213,22 +2226,36 @@ class PlayState extends MusicBeatState
 
 				// love when mods do this
 				try {
+					#if HSC_ALLOWED
 					switch (tick)
 					{
 						case THREE:
-							if (AllowCountdownThree) countdownThree = createCountdownSprite(introAlts[3], antialias);
-							FlxG.sound.play(Paths.sound('intro3' + introSoundsSuffix), countdownVolume);
+							if (event.spritePath != null) countdownThree = createCountdownSprite(event.spritePath, event.antialiasing);
 						case TWO:
-							countdownReady = createCountdownSprite(introAlts[0], antialias);
-							FlxG.sound.play(Paths.sound('intro2' + introSoundsSuffix), countdownVolume);
+							if (event.spritePath != null) countdownReady = createCountdownSprite(event.spritePath, event.antialiasing);
 						case ONE:
-							countdownSet = createCountdownSprite(introAlts[1], antialias);
-							FlxG.sound.play(Paths.sound('intro1' + introSoundsSuffix), countdownVolume);
+							if (event.spritePath != null) countdownSet = createCountdownSprite(event.spritePath, event.antialiasing);
 						case GO:
-							countdownGo = createCountdownSprite(introAlts[2], antialias);
-							FlxG.sound.play(Paths.sound('introGo' + introSoundsSuffix), countdownVolume);
+							if (event.spritePath != null) countdownGo = createCountdownSprite(event.spritePath, event.antialiasing);
 						default:
 					}
+					if (event.soundPath != null) FlxG.sound.play(event.soundPath, event.volume);
+					#else
+					//hsc is not default still, so this is here because or that.
+					switch (tick)
+					{
+						case THREE:
+							if (introAlts[swagCounter] != null) countdownThree = createCountdownSprite(introAlts[swagCounter], antialias);
+						case TWO:
+							if (introAlts[swagCounter] != null) countdownReady = createCountdownSprite(introAlts[swagCounter], antialias);
+						case ONE:
+							if (introAlts[swagCounter] != null) countdownSet = createCountdownSprite(introAlts[swagCounter], antialias);
+						case GO:
+							if (introAlts[swagCounter] != null) countdownGo = createCountdownSprite(introAlts[swagCounter], antialias);
+						default:
+					}
+					if (introSounds[swagCounter] != null) FlxG.sound.play(introSounds[swagCounter], 0.6);
+					#end
 				}
 				catch (exc) {
 					trace(exc);
@@ -4442,8 +4469,8 @@ class PlayState extends MusicBeatState
 			tweenCamIn();
 			if (stage3D != null)
 				stage3D.setFollowCamera('gf');
-			callOnScripts('onMoveCamera', ['gf']);
 			curCameraTarget = 2;
+			callOnScripts('onMoveCamera', ['gf']);
 			return;
 		}
 
@@ -4457,8 +4484,8 @@ class PlayState extends MusicBeatState
 			aLookAt = 0;
 			if (stage3D != null)
 				stage3D.setFollowCamera('dad');
-			callOnScripts('onMoveCamera', ['dad']);
 			curCameraTarget = 0;
+			callOnScripts('onMoveCamera', ['dad']);
 		}
 		else
 		{
@@ -4481,8 +4508,8 @@ class PlayState extends MusicBeatState
 
 			if (stage3D != null)
 				stage3D.setFollowCamera('bf');
-			callOnScripts('onMoveCamera', ['boyfriend']);
 			curCameraTarget = 1;
+			callOnScripts('onMoveCamera', ['boyfriend']);
 		}
 	}
 
