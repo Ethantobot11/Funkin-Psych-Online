@@ -106,12 +106,11 @@
 	<section if="TURKIYE_BUILD">
 		<assets path="assets_turkish/fonts" rename="assets/fonts" />
 		<assets path="assets_turkish/preload" rename="assets" unless="web" />
-		<assets path="assets_turkish/shared" rename="assets/shared" unless="web" />
+		<assets path="assets_turkish/shared" rename="assets/shared" library="shared" unless="web" />
 	</section>
 	<section unless="TURKIYE_BUILD">
 		<assets path="assets_english/fonts" rename="assets/fonts" />
 		<assets path="assets_english/preload" rename="assets" unless="web" />
-		<assets path="assets_english/shared" rename="assets/shared" unless="web" />
 	</section>
 
 	<assets path="assets/videos" library="videos" if="VIDEOS_ALLOWED" />
