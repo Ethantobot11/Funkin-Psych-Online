@@ -103,6 +103,17 @@
 		<library name="week_assets" preload="false" />
 	</section>
 
+	<section if="TURKIYE_BUILD">
+		<assets path="assets_turkish/fonts" rename="assets/fonts" />
+		<assets path="assets_turkish/preload" rename="assets" unless="web" />
+		<assets path="assets_turkish/shared" rename="assets/shared" unless="web" />
+	</section>
+	<section unless="TURKIYE_BUILD">
+		<assets path="assets_english/fonts" rename="assets/fonts" />
+		<assets path="assets_english/preload" rename="assets" unless="web" />
+		<assets path="assets_english/shared" rename="assets/shared" unless="web" />
+	</section>
+
 	<assets path="assets/videos" library="videos" if="VIDEOS_ALLOWED" />
 	<assets path="assets/songs" library="songs" exclude="*.ogg" if="web" />
 	<assets path="assets/songs" library="songs" exclude="*.mp3" unless="web" />
@@ -125,17 +136,6 @@
 	<section if="TOUCH_CONTROLS">
 		<assets path="mobile/assets"                  rename="assets/mobile"/>
 		<assets path="mobile/storageModes.txt"      rename="mobile/storageModes.txt"/>
-	</section>
-
-	<section if="TURKIYE_BUILD">
-		<assets path="assets_turkish/fonts" rename="assets/fonts" />
-		<assets path="assets_turkish/preload" rename="assets" unless="web" />
-		<assets path="assets_turkish/shared" rename="assets/shared" library="shared" unless="web" />
-	</section>
-	<section unless="TURKIYE_BUILD">
-		<assets path="assets_english/fonts" rename="assets/fonts" />
-		<assets path="assets_english/preload" rename="assets" unless="web" />
-		<assets path="assets_english/shared" rename="assets/shared" library="shared" unless="web" />
 	</section>
 
 	<!-- _______________________________ Libraries ______________________________ -->
