@@ -2202,7 +2202,7 @@ class PlayState extends MusicBeatState
 				var event:CountdownEvent = scripts.event("onCountdown", EventManager.get(CountdownEvent).recycle(
 					swagCounter,
 					0.6,
-					introSounds[swagCounter],
+					introSounds[swagCounter] + introSoundsSuffix,
 					introAlts[swagCounter],
 					1, antialias, null, null, null));
 				#end
@@ -2251,7 +2251,7 @@ class PlayState extends MusicBeatState
 							if (introAlts[swagCounter] != null) countdownGo = createCountdownSprite(introAlts[swagCounter], antialias);
 						default:
 					}
-					if (introSounds[swagCounter] != null) FlxG.sound.play(Paths.sound(introSounds[swagCounter]), 0.6);
+					if (introSounds[swagCounter] != null) FlxG.sound.play(Paths.sound(introSounds[swagCounter] + introSoundsSuffix), 0.6);
 					#end
 				}
 				catch (exc) {
