@@ -117,7 +117,7 @@ class Character extends FlxSkewedSprite {
 	{
 		if (animOffsets.exists(name))
 			return animOffsets.get(name);
-		return FlxPoint.weak(0, 0);
+		return [0, 0];
 	}
 	
 	public var charIsFixed:Bool;
@@ -126,7 +126,7 @@ class Character extends FlxSkewedSprite {
 		if (switchAnims) 
 			swapLeftRightAnimations();
 		
-		frameOffset.set(getAnimOffset(getAnimName()).x, getAnimOffset(getAnimName()).y);
+		frameOffset.set(getAnimOffset(getAnimName())[0], getAnimOffset(getAnimName())[1]);
 		if (flip) flipX = !flipX;
 		charIsFixed = true;
 	}
@@ -696,7 +696,7 @@ class Character extends FlxSkewedSprite {
 
 		var daOffset = animOffsets.get(AnimName);
 		if (charIsFixed) {
-			frameOffset.set(daOffset.x, daOffset.y);
+			frameOffset.set(daOffset[0], daOffset[1]);
 			offset.set(ogPositionArray[0] * (isPlayer ? -1 : 1), -ogPositionArray[1]);
 		} else if (animOffsets.exists(AnimName)) {
 			offset.set(daOffset[0], daOffset[1]);
