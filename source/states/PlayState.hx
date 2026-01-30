@@ -4403,36 +4403,13 @@ class PlayState extends MusicBeatState
 					{name: "Camera", type: TDropDown(['camGame', 'camHUD']), defValue: "camHUD"}
 				]
 				*/
-			//Most important Event in the Codename Engine (Tested & It works fine)
+			//Most important Event in the Codename Engine (Tested & It doesn't work for now)
 			case "HScript Call":
-				callHScriptImproved(value1, value2);
+				scripts.call(value1, value2.split(','));
 		}
 		
 		stagesFunc(function(stage:BaseStage) stage.eventCalled(eventName, value1, value2, flValue1, flValue2, strumTime));
 		callOnScripts('onEvent', [eventName, value1, value2, strumTime]);
-	}
-
-	//Make HScript Improved Functions Call-able from Normal HScript & Lua
-	public function callHScriptImproved(value1:String, value2:String) {
-		var scriptPacks:Array<ScriptPack> = [scripts];
-		var args:Array<String> = value2.split(',');
-
-		for (pack in scriptPacks) {
-			pack.call(value1, args);
-			//public functions
-			if (pack.publicVariables.exists(value1)) {
-				var func = pack.publicVariables.get(value1);
-				if (func != null && Reflect.isFunction(func))
-					Reflect.callMethod(null, func, args);
-			}
-		}
-
-		//static functions
-		if (Script.staticVariables.exists(value1)) {
-			var func = Script.staticVariables.get(value1);
-			if (func != null && Reflect.isFunction(func))
-				Reflect.callMethod(null, func, args);
-		}
 	}
 
 	public var sectionCameraMovement:Bool = true;

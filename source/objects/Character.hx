@@ -113,6 +113,41 @@ class Character extends FlxSkewedSprite {
 		animOffsets.set(anim2, old1);
 	}
 	
+	public inline function getAnimOffset(name:String)
+	{
+		if (animOffsets.exists(name))
+			return animOffsets.get(name);
+		return FlxPoint.weak(0, 0);
+	}
+	
+	public var charIsFixed:Bool;
+	public function fixChar(switchAnims:Bool = false, flip:Bool = false) {
+		// character is flipped
+		if (switchAnims) 
+			swapLeftRightAnimations();
+		
+		frameOffset.set(getAnimOffset(getAnimName()).x, getAnimOffset(getAnimName()).y);
+		if (flip) flipX = !flipX;
+		charIsFixed = true;
+	}
+	
+	public inline function getAnimName()
+	{
+		var name = null;
+		#if flxanimate
+		if (atlas != null)
+		{
+			name = atlasPlayingAnim;
+		}
+		else
+		{
+		#end
+			if (animation.curAnim != null)
+				name = animation.curAnim.name;
+		#if flxanimate } #end
+		return name;
+	}
+	
 	/* Lazy cameraOffset compability */
 	public var cameraOffset:LazyReturnThing;
 
@@ -652,6 +687,7 @@ class Character extends FlxSkewedSprite {
 		if(!isAnimateAtlas) animation.play(AnimName, Force, Reversed, Frame);
 		else {
 			atlas.anim.play(AnimName, Force, Reversed, Frame);
+			atlasPlayingAnim = AnimName;
 			atlas.anim.onComplete.add(() -> {
 				if (onAtlasAnimationComplete != null)
 					onAtlasAnimationComplete(AnimName);
@@ -659,7 +695,10 @@ class Character extends FlxSkewedSprite {
 		}
 
 		var daOffset = animOffsets.get(AnimName);
-		if (animOffsets.exists(AnimName)) {
+		if (charIsFixed) {
+			frameOffset.set(daOffset.x, daOffset.y);
+			offset.set(ogPositionArray[0] * (isPlayer ? -1 : 1), -ogPositionArray[1]);
+		} else if (animOffsets.exists(AnimName)) {
 			offset.set(daOffset[0], daOffset[1]);
 		}
 
@@ -759,6 +798,7 @@ class Character extends FlxSkewedSprite {
 	public var isAnimateAtlas:Bool = false;
 	#if flxanimate
 	public var atlas:FlxAnimate;
+	@:noCompletion public var atlasPlayingAnim:String;
 
 	public function copyAtlasValues()
 	{
