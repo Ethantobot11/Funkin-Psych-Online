@@ -47,8 +47,10 @@ typedef AnimArray = {
 
 class LazyReturnThing { //I'm lazy to use FlxPoint rn, so use this.
 	public var charType:String = null;
-	public function new(charType:String) {
+	public var curChar:Character;
+	public function new(character:Character, charType:String) {
 		this.charType = charType;
+		this.curChar = character;
 	}
 	public var x(get, set):Float;
 	function get_x() {
@@ -57,6 +59,7 @@ class LazyReturnThing { //I'm lazy to use FlxPoint rn, so use this.
 				case 'bf': return PlayState.instance.boyfriendCameraOffset[0];
 				case 'gf': return PlayState.instance.girlfriendCameraOffset[0];
 				case 'dad': return PlayState.instance.opponentCameraOffset[0];
+				default: curChar.localCameraOffset.x;
 			}
 		}
 		return 0;
@@ -69,6 +72,7 @@ class LazyReturnThing { //I'm lazy to use FlxPoint rn, so use this.
 				case 'dad': PlayState.instance.opponentCameraOffset[0] = Value;
 			}
 		}
+		curChar.localCameraOffset.x = Value;
 		return Value;
 	}
 
@@ -79,6 +83,7 @@ class LazyReturnThing { //I'm lazy to use FlxPoint rn, so use this.
 				case 'bf': return PlayState.instance.boyfriendCameraOffset[1];
 				case 'gf': return PlayState.instance.girlfriendCameraOffset[1];
 				case 'dad': return PlayState.instance.opponentCameraOffset[1];
+				default: curChar.localCameraOffset.y;
 			}
 		}
 		return 0;
@@ -91,7 +96,15 @@ class LazyReturnThing { //I'm lazy to use FlxPoint rn, so use this.
 				case 'dad': PlayState.instance.opponentCameraOffset[1] = Value;
 			}
 		}
+		curChar.localCameraOffset.y = Value;
 		return Value;
+	}
+	function set(?ValueX:Null<Float>, ?ValueY:Null<Float>) {
+		if (ValueX != null) x = ValueX;
+		if (ValueY != null) y = ValueY;
+	}
+	function get() {
+		return tempPoint = new FlxPoint(x, y);
 	}
 }
 
@@ -120,15 +133,12 @@ class Character extends FlxSkewedSprite {
 		return [0, 0];
 	}
 	
-	public var charIsFixed:Bool;
-	public function fixChar(switchAnims:Bool = false, flip:Bool = false) {
-		// character is flipped
-		if (switchAnims) 
-			swapLeftRightAnimations();
-		
-		frameOffset.set(getAnimOffset(getAnimName())[0], getAnimOffset(getAnimName())[1]);
-		if (flip) flipX = !flipX;
-		charIsFixed = true;
+	public function getCameraPosition() {
+		var midpoint:FlxPoint = getMidpoint();
+		var event:FlxPoint = new FlxPoint(midpoint.x + (isPlayer ? -100 : 150) + getAnimOffset(getAnimName())[0] + cameraOffset.x,
+			midpoint.y - 100 + getAnimOffset(getAnimName())[1] + cameraOffset.y);
+
+		return new FlxPoint(event.x, event.y);
 	}
 	
 	public inline function getAnimName()
@@ -136,9 +146,7 @@ class Character extends FlxSkewedSprite {
 		var name = null;
 		#if flxanimate
 		if (atlas != null)
-		{
 			name = atlasPlayingAnim;
-		}
 		else
 		{
 		#end
@@ -150,6 +158,7 @@ class Character extends FlxSkewedSprite {
 	
 	/* Lazy cameraOffset compability */
 	public var cameraOffset:LazyReturnThing;
+	public var localCameraOffset:FlxPoint;
 
 	public var sprite3D:AnimatedSprite3D;
 
@@ -269,7 +278,8 @@ class Character extends FlxSkewedSprite {
 
 		animOffsets = new Map<String, Array<Dynamic>>();
 		curCharacter = character;
-		cameraOffset = new LazyReturnThing(charType);
+		localCameraOffset = new FlxPoint(0, 0);
+		cameraOffset = new LazyReturnThing(this, charType);
 		this.isPlayer = isPlayer;
 		this.isSkin = isSkin;
 		var library:String = null;
@@ -336,6 +346,7 @@ class Character extends FlxSkewedSprite {
 				// positioning
 				ogPositionArray = positionArray = json.position;
 				cameraPosition = json.camera_position;
+				localCameraOffset.set(json.camera_position[0], json.camera_position[1]); //set Local Camera Offset too
 
 				// data
 				healthIcon = json.healthicon;
@@ -695,10 +706,7 @@ class Character extends FlxSkewedSprite {
 		}
 
 		var daOffset = animOffsets.get(AnimName);
-		if (charIsFixed) {
-			frameOffset.set(daOffset[0], daOffset[1]);
-			offset.set(ogPositionArray[0] * (isPlayer ? -1 : 1), -ogPositionArray[1]);
-		} else if (animOffsets.exists(AnimName)) {
+		if (animOffsets.exists(AnimName)) {
 			offset.set(daOffset[0], daOffset[1]);
 		}
 
