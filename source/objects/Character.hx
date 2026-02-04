@@ -158,7 +158,10 @@ class Character extends FlxSkewedSprite {
 	}
 	
 	/* Lazy cameraOffset compability */
-	public var cameraOffset:LazyReturnThing;
+	public var cameraOffset(get, default):LazyReturnThing;
+	private function get_cameraOffset() { //maybe can fix `get` problems
+		return cameraOffset.get();
+	}
 	public var localCameraOffset:FlxPoint;
 
 	public var sprite3D:AnimatedSprite3D;

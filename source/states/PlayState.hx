@@ -4455,13 +4455,14 @@ class PlayState extends MusicBeatState
 			posY -= 100;
 		}
 
-		setCameraPositionToChar(strumChar, tX + posX, tY + posY, strumChar.cameraPosition, strumChar.cameraOffset);
+		setCamPosFromChar(strumChar, tX + posX, tY + posY, strumChar.cameraPosition, strumChar.cameraOffset.get());
 		curCameraTarget = char;
 		callOnScripts('onCameraMove', [curCameraTarget]);
 	}
 
-	public function setCameraPositionToChar(char:Character, x:Float = 0, y:Float = 0, camPos:Array<Float> = [0, 0], camOffset:Array<Float> = [0, 0]) {
+	public function setCamPosFromChar(char:Character, x:Int = 0, y:Int = 0, camPos:Array<Float> = [0, 0], camOffsetOG:FlxPoint) {
 		if (char != null) {
+			var camOffset:Array<Float> = [camOffsetOG.x, camOffsetOG.y];
 			if (ClientPrefs.data.oldCameraSystem) camFollow.set(x, y);
 			else camFollow.setPosition(x, y);
 			camFollow.x += camPos[0] + camOffset[0];
