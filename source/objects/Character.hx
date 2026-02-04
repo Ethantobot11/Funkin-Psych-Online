@@ -99,11 +99,11 @@ class LazyReturnThing { //I'm lazy to use FlxPoint rn, so use this.
 		curChar.localCameraOffset.y = Value;
 		return Value;
 	}
-	function set(?ValueX:Null<Float>, ?ValueY:Null<Float>) {
+	public function set(?ValueX:Null<Float>, ?ValueY:Null<Float>) {
 		if (ValueX != null) x = ValueX;
 		if (ValueY != null) y = ValueY;
 	}
-	function get() {
+	public function get() {
 		var tempPoint = new FlxPoint(x, y);
 		return tempPoint;
 	}
