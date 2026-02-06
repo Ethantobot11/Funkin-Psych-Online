@@ -4453,7 +4453,9 @@ class PlayState extends MusicBeatState
 	var cameraTwnY:FlxTween;
 	public function newMoveCamera(char:Int = 0, ?tX:Float, ?tY:Float)
 	{
-		var strumChar = strumLines.members[char].characters[0];
+		var strumChar = strumLines?.members[char].characters[0];
+		if (strumChar == null) strumChar = dad; //fix null object issue
+
 		var posX = strumChar.getMidpoint().x;
 		var posY = strumChar.getMidpoint().y;
 		if (char == 0) {
