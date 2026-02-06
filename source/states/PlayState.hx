@@ -4434,14 +4434,15 @@ class PlayState extends MusicBeatState
 
 		if(sec == null) sec = curSection;
 		if(sec < 0) sec = 0;
-
 		if(SONG.notes[sec] == null) return;
-		if(prevMustHit != null && prevMustHit == SONG.notes[sec].mustHitSection) return;
-		prevMustHit = SONG.notes[sec].mustHitSection;
 
 		if (SONG.notes[sec].targetCamera != null) {
 			newMoveCamera(SONG.notes[sec].targetCamera); //Will be main thing in the future
+			prevMustHit = SONG.notes[sec].mustHitSection;
 		} else {
+			if(prevMustHit != null && prevMustHit == SONG.notes[sec].mustHitSection) return;
+			prevMustHit = SONG.notes[sec].mustHitSection;
+
 			moveCamera(SONG.notes[sec].mustHitSection != true, SONG.notes[sec].gfSection);
 		}
 	}
@@ -4455,7 +4456,7 @@ class PlayState extends MusicBeatState
 	{
 		var strumChar = dad;
 		if (strumLines?.members[char] != null && strumLines?.members[char]?.characters[0] != null) {
-			strumLines.members[char].characters[0];
+			strumChar = strumLines.members[char].characters[0];
 		}
 
 		var posX = strumChar.getMidpoint().x;
@@ -4478,7 +4479,8 @@ class PlayState extends MusicBeatState
 			var camOffset:Array<Float> = [camOffsetOG.x, camOffsetOG.y];
 			if (ClientPrefs.data.oldCameraSystem) camFollow.set(x, y);
 			else camFollow.setPosition(x, y);
-			camFollow.x += camPos[0] + camOffset[0];
+			if (char == boyfriend) camFollow.x -= camPos[0] + camOffset[0];
+			else camFollow.x += camPos[0] + camOffset[0];
 			camFollow.y += camPos[1] + camOffset[1];
 			if (char == boyfriend) {
 				if (Paths.formatToSongPath(SONG.song) == 'tutorial' && cameraTwn == null && FlxG.camera.zoom != 1)
