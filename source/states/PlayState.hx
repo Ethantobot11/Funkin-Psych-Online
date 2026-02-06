@@ -4454,7 +4454,7 @@ class PlayState extends MusicBeatState
 	public function newMoveCamera(char:Int = 0, ?tX:Float, ?tY:Float)
 	{
 		var strumChar = dad;
-		if (strumLines?.members[char] != null && strumLines?.members[char]?.characters[0] != null && strumLines?.members[char]?.characters[0] != []) {
+		if (strumLines?.members[char] != null && strumLines?.members[char]?.characters[0] != null) {
 			strumLines.members[char].characters[0];
 		}
 
