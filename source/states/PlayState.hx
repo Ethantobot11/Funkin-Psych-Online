@@ -4436,13 +4436,11 @@ class PlayState extends MusicBeatState
 		if(sec < 0) sec = 0;
 		if(SONG.notes[sec] == null) return;
 
+		if(prevMustHit != null && prevMustHit == SONG.notes[sec].mustHitSection) return;
+		prevMustHit = SONG.notes[sec].mustHitSection;
 		if (SONG.notes[sec].targetCamera != null) {
 			newMoveCamera(SONG.notes[sec].targetCamera); //Will be main thing in the future
-			prevMustHit = SONG.notes[sec].mustHitSection;
 		} else {
-			if(prevMustHit != null && prevMustHit == SONG.notes[sec].mustHitSection) return;
-			prevMustHit = SONG.notes[sec].mustHitSection;
-
 			moveCamera(SONG.notes[sec].mustHitSection != true, SONG.notes[sec].gfSection);
 		}
 	}
@@ -4452,36 +4450,43 @@ class PlayState extends MusicBeatState
 	var cameraTwn:FlxTween;
 	var cameraTwnX:FlxTween;
 	var cameraTwnY:FlxTween;
-	public function newMoveCamera(char:Int = 0, ?tX:Float, ?tY:Float)
+	public function newMoveCamera(strum:Int = 0, ?tX:Float, ?tY:Float)
 	{
-		var strumChar = dad;
-		if (strumLines?.members[char] != null && strumLines?.members[char]?.characters[0] != null) {
-			strumChar = strumLines.members[char].characters[0];
+		var strumChar = dad; //focus dad if nothing is found.
+		if (strumLines?.members[strum] != null) {
+			for (char in 0...strumLines.members[strum].characters.length)
+				if (strumLines.members[strum].characters[char] != null)
+					strumChar = strumLines.members[strum].characters[char];
 		}
 
 		var posX = strumChar.getMidpoint().x;
 		var posY = strumChar.getMidpoint().y;
-		if (char == 0) {
+		if (strum == 0) {
 			posX += 150;
 			posY -= 100;
-		} else if (char == 1) {
+		} else if (strum == 1) {
 			posX -= 100;
 			posY -= 100;
 		}
 
-		setCamPosFromChar(strumChar, tX + posX, tY + posY, strumChar.cameraPosition, strumChar.cameraOffset.get());
-		curCameraTarget = char;
+		setCamPosFromChar(strumChar, tX + posX, tY + posY);
+		curCameraTarget = strum;
 		callOnScripts('onCameraMove', [curCameraTarget]);
 	}
 
-	public function setCamPosFromChar(char:Character, x:Float, y:Float, camPos:Array<Float>, camOffsetOG:FlxPoint) {
+	public function setCamPosFromChar(char:Character, x:Float, y:Float) {
 		if (char != null) {
-			var camOffset:Array<Float> = [camOffsetOG.x, camOffsetOG.y];
+			//get these from character
+			var camOffsetOG:FlxPoint = char.cameraOffset.get();
+			var camPos:Array<Float> = char.cameraPosition;
+
 			if (ClientPrefs.data.oldCameraSystem) camFollow.set(x, y);
 			else camFollow.setPosition(x, y);
-			if (char == boyfriend) camFollow.x -= camPos[0] + camOffset[0];
-			else camFollow.x += camPos[0] + camOffset[0];
-			camFollow.y += camPos[1] + camOffset[1];
+
+			if (char == boyfriend) camFollow.x -= camPos[0] + camOffsetOG.x;
+			else camFollow.x += camPos[0] + camOffsetOG.x;
+
+			camFollow.y += camPos[1] + camOffsetOG.y;
 			if (char == boyfriend) {
 				if (Paths.formatToSongPath(SONG.song) == 'tutorial' && cameraTwn == null && FlxG.camera.zoom != 1)
 				{
