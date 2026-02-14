@@ -137,8 +137,6 @@ class Note extends FlxSprite
 	public var copyY:Bool = true;
 	public var copyAngle:Bool = true;
 	public var copyAlpha:Bool = true;
-	public var copyCameras:Bool = true;
-	public var copyScrollFactor:Bool = true;
 
 	public var hitHealth:Float = 0.02;
 	public var missHealth:Float = 0.1;
@@ -613,19 +611,11 @@ class Note extends FlxSprite
 		var strumAngle:Float = myStrum.angle;
 		var strumAlpha:Float = myStrum.alpha;
 		var strumDirection:Float = myStrum.direction;
-		var strumCameras:Array<FlxCamera> = myStrum.cameras;
-		var strumScrollFactor:FlxPoint = myStrum.scrollFactor;
 
 		if (isSustainNote) flipY = myStrum.downScroll; //can fix the sustain notes ig
 
 		distance = (0.45 * (Conductor.songPosition - strumTime) * songSpeed * multSpeed);
 		if (!myStrum.downScroll) distance *= -1;
-
-		if (copyCameras)
-			cameras = strumCameras;
-
-		if (copyScrollFactor)
-			scrollFactor.set(strumScrollFactor.x, strumScrollFactor.y);
 
 		var angleDir = strumDirection * Math.PI / 180;
 		if (copyAngle)
