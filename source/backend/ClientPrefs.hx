@@ -18,6 +18,7 @@ import states.TitleState;
 	public var disableCameraRotate:Bool = false;
 	public var disableRGB:Bool = false; //new way to handle RGB notes (currently it does not support skins)
 	public var arrowHSV:Array<Array<Int>> = [[0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0]]; //for testing only
+	public var lang:String = "EN";
 
 	/* Mobile */
 	public var wideScreen:Bool = false;

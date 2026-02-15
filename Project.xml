@@ -31,7 +31,6 @@
 
 	<haxedef name="FLX_CNE_FORK" />
 	<define name="HSC_ALLOWED" />
-	<define name="TURKIYE_BUILD" if="turkiye" />
 
 	<!-- ______________________ PSYCH ENGINE CUSTOMIZATION ______________________ -->
 
@@ -39,7 +38,7 @@
 	<define name="HSCRIPT_ALLOWED" />
 	<define name="LUA_ALLOWED" if="cpp" />
 	<define name="ACHIEVEMENTS_ALLOWED" />
-	<define name="DISCORD_ALLOWED" if="desktop" unless="hl" />
+	<define name="DISCORD_ALLOWED" if="desktop || android" unless="hl" />
 	<define name="VIDEOS_ALLOWED" if="desktop || mobile" />
 	<define name="PSYCH_WATERMARKS" /> <!-- DELETE THIS TO REMOVE WATERMARKS/DEV NAMES ON TITLE SCREEN -->
 	<define name="TITLE_SCREEN_EASTER_EGG" /> <!-- DELETE THE if="officialBuild" for enabling this on an unofficial build -->
@@ -79,6 +78,7 @@
 	<define name="PRELOAD_ALL" unless="web" />
 	<define name="NO_PRELOAD_ALL" unless="PRELOAD_ALL" />
 
+	<assets path="assets/fonts" />
 	<assets path="assets/preload" rename="assets" exclude="*.ogg" if="web" />
 	<assets path="assets/preload" rename="assets" exclude="*.mp3" unless="web" />
 	<section if="TITLE_SCREEN_EASTER_EGG">
@@ -100,16 +100,6 @@
 		<library name="songs" preload="false" />
 		<library name="shared" preload="false" />
 		<library name="week_assets" preload="false" />
-	</section>
-
-	<section if="TURKIYE_BUILD">
-		<assets path="assets_turkish/fonts" rename="assets/fonts" />
-		<assets path="assets_turkish/preload" rename="assets" unless="web" />
-		<assets path="assets_turkish/shared" rename="assets/shared" library="shared" unless="web" />
-	</section>
-	<section unless="TURKIYE_BUILD">
-		<assets path="assets_english/fonts" rename="assets/fonts" />
-		<assets path="assets_english/preload" rename="assets" unless="web" />
 	</section>
 
 	<assets path="assets/videos" library="videos" if="VIDEOS_ALLOWED" />
@@ -151,7 +141,9 @@
 	<haxelib name="hscript-improved" if="HSC_ALLOWED" />
 	<haxelib name="SScript" if="HSCRIPT_ALLOWED" />
 	<haxelib name="hxvlc" if="VIDEOS_ALLOWED" />
-	<haxelib name="hxdiscord_rpc" if="DISCORD_ALLOWED" />
+	<section if="desktop">
+		<haxelib name="hxdiscord_rpc" if="DISCORD_ALLOWED" />
+	</section>
 	<haxelib name="tjson" />
 	<haxelib name="colyseus" />
 	<haxelib name="HtmlParser" />
@@ -270,6 +262,10 @@
 	<define name="CUSTOM_CLASSES" unless="STRIPPED_COMPILE" />
 
 	<!-- _________________________________ Custom _______________________________ -->
+
+	<!-- Basic Support For Kizzy -->
+	<java path="source/mobile/android/" if="android" />
+	<java path="mobile/android/" if="android" />
 
 	<!--Place custom nodes like icons here (higher priority to override the HaxeFlixel icon)-->
 

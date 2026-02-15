@@ -279,6 +279,7 @@ class Paths
 	{
 		var bitmap:BitmapData = null;
 		var file:String = null;
+		if (ClientPrefs.data.lang != "EN") key += '_${ClientPrefs.data.lang}';
 
 		#if MODS_ALLOWED
 		if (isGlobalPath) file = modFolders(key + '.png');
@@ -365,6 +366,7 @@ class Paths
 
 	inline static public function font(key:String)
 	{
+		if (ClientPrefs.data.lang != "EN") key = ClientPrefs.data.lang + "/" + key;
 		#if MODS_ALLOWED
 		var file:String = modsFont(key);
 		if(FileSystem.exists(file)) {

@@ -40,15 +40,25 @@ jobs:
         if: startsWith(inputs.name, 'Linux')
         run: sudo apt install libvlc-dev libvlccore-dev
 
-      - name: Pre-Install hxcpp
+      - name: Restore cache for android builds
+        uses: actions/cache@v4
         if: startsWith(inputs.name, 'Android')
-        run: |
-          haxelib install hxcpp > /dev/null --quiet
+        with:
+          key: cache-build-${{ inputs.name }}
+          path: |
+            ~/.gradle
+            .haxelib/
+            export/release/android/haxe/
+            export/release/android/obj/
+          restore-keys: |
+            cache-build-${{ inputs.name }}
 
       - name: Install Libraries
         run: |
           haxelib install hmm --quiet
           haxelib run hmm install --quiet
+          haxelib remove funkin.vis --quiet
+          haxelib git funkin.vis https://github.com/FunkinCrew/funkVis 1966f8fbbbc509ed90d4b520f3c49c084fc92fd6 --quiet
 
       - name: Configure Android
         if: startsWith(inputs.name, 'Android')
@@ -78,3 +88,39 @@ jobs:
           name: ${{ inputs.artifactName }}
           path: ${{ inputs.artifactPath }}
           if-no-files-found: error
+
+      - name: Clear Old Cache
+        uses: actions/github-script@v7
+        if: startsWith(inputs.name, 'Android')
+        continue-on-error: true # Don't break the build if deletion fails
+        with:
+          script: |
+            const caches = await github.rest.actions.getActionsCacheList({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+            })
+            for (const cache of caches.data.actions_caches) {
+              if (cache.key == "cache-build-${{ inputs.name }}") {
+                console.log('Clearing ' + cache.key + '...')
+                await github.rest.actions.deleteActionsCacheById({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  cache_id: cache.id,
+                })
+                console.log("Cache cleared.")
+              }
+            }
+            
+      - name: Uploading new cache
+        uses: actions/cache@v4
+        if: startsWith(inputs.name, 'Android')
+        with:
+          # caching again since for some reason it doesnt work with the first post cache shit
+          key: cache-build-${{ inputs.name }}
+          path: |
+            ~/.gradle
+            .haxelib/
+            export/release/android/haxe/
+            export/release/android/obj/
+          restore-keys: |
+            cache-build-${{ inputs.name }}

@@ -20,9 +20,9 @@ class ControlsSubState extends MusicBeatSubstate
 	var options:Array<Dynamic> = [];
 	var curOptions:Array<Int>;
 	var curOptionsValid:Array<Int>;
-	static var defaultKey:String = 'Reset to Default Keys';
-	static var switchInput:String = 'Switch Input Device';
-	static var switchMania:String = 'Switch Note Mania';
+	static var defaultKey:String = Language.getText('Reset to Default Keys');
+	static var switchInput:String = Language.getText('Switch Input Device');
+	static var switchMania:String = Language.getText('Switch Note Mania');
 
 	var bg:FlxSprite;
 	var grpDisplay:FlxTypedGroup<Alphabet>;
@@ -44,7 +44,7 @@ class ControlsSubState extends MusicBeatSubstate
 
 		FlxG.mouse.visible = false;
 		#if DISCORD_ALLOWED
-		DiscordClient.changePresence("Controls Menu", null);
+		DiscordClient.changePresence(Language.getText("Controls Menu"), null);
 		#end
 
 		bg = new FlxSprite().loadGraphic(Paths.image('menuDesat'));
@@ -91,51 +91,51 @@ class ControlsSubState extends MusicBeatSubstate
 	var lastID:Int = 0;
 	function createTexts()
 	{
-		options = [[true, 'NOTES ${Note.maniaKeys}k']];
+		options = [[true, Language.getText('NOTES') + ' ${Note.maniaKeys}k']];
 
 		if (Note.maniaKeys != 4) {
 			for (key in 1...Note.maniaKeys + 1) {
 				options.push([
 					true,
-					'Note ${key}',
+					Language.getText('Note') + ' ${key}',
 					'${Note.maniaKeys}k_note_${key}',
-					'${Note.maniaKeys}k Note 1'
+					'${Note.maniaKeys}k ' + Language.getText('Note') + ' 1'
 				]);
 			}
 		}
 		else {
 			options = options.concat([
-				[true, 'Left', 'note_left', 'Note Left'],
-				[true, 'Down', 'note_down', 'Note Down'],
-				[true, 'Up', 'note_up', 'Note Up'],
-				[true, 'Right', 'note_right', 'Note Right'],
+				[true, Language.getText('Left'), 'note_left', Language.getText('Note Left')],
+				[true, Language.getText('Down'), 'note_down', Language.getText('Note Down')],
+				[true, Language.getText('Up'), 'note_up', Language.getText('Note Up')],
+				[true, Language.getText('Right'), 'note_right', Language.getText('Note Right')],
 			]);
 		}
 
 		options = options.concat([
 			[true],
-			[true, 'UI'],
-			[true, 'Left', 'ui_left', 'UI Left'],
-			[true, 'Down', 'ui_down', 'UI Down'],
-			[true, 'Up', 'ui_up', 'UI Up'],
-			[true, 'Right', 'ui_right', 'UI Right'],
+			[true, Language.getText('UI')],
+			[true, Language.getText('Left'), 'ui_left', Language.getText('UI Left')],
+			[true, Language.getText('Down'), 'ui_down', Language.getText('UI Down')],
+			[true, Language.getText('Up'), 'ui_up', Language.getText('UI Up')],
+			[true, Language.getText('Right'), 'ui_right', Language.getText('UI Right')],
 			[true],
-			[true, 'Taunt', 'taunt', 'Taunt'],
-			[true, 'Reset', 'reset', 'Reset'],
-			[true, 'Accept', 'accept', 'Accept'],
-			[true, 'Back', 'back', 'Back'],
-			[true, 'Pause', 'pause', 'Pause'],
-			[true, 'Sidebar', 'sidebar', 'Sidebar'],
-			[true, 'Favor', 'fav', 'Favor'],
+			[true, Language.getText('Taunt'), 'taunt', Language.getText('Taunt')],
+			[true, Language.getText('Reset'), 'reset', Language.getText('Reset')],
+			[true, Language.getText('Accept'), 'accept', Language.getText('Accept')],
+			[true, Language.getText('Back'), 'back', Language.getText('Back')],
+			[true, Language.getText('Pause'), 'pause', Language.getText('Pause')],
+			[true, Language.getText('Sidebar'), 'sidebar', Language.getText('Sidebar')],
+			[true, Language.getText('Favor'), 'fav', Language.getText('Favor')],
 			[false],
-			[false, 'VOLUME'],
-			[false, 'Mute', 'volume_mute', 'Volume Mute'],
-			[false, 'Up', 'volume_up', 'Volume Up'],
-			[false, 'Down', 'volume_down', 'Volume Down'],
+			[false, Language.getText('VOLUME')],
+			[false, Language.getText('Mute'), 'volume_mute', Language.getText('Volume Mute')],
+			[false, Language.getText('Up'), 'volume_up', Language.getText('Volume Up')],
+			[false, Language.getText('Down'), 'volume_down', Language.getText('Volume Down')],
 			[false],
-			[false, 'DEBUG'],
-			[false, 'Key 1', 'debug_1', 'Debug Key #1'],
-			[false, 'Key 2', 'debug_2', 'Debug Key #2']
+			[false, Language.getText('DEBUG')],
+			[false, Language.getText('Key 1'), 'debug_1', Language.getText('Debug Key #1')],
+			[false, Language.getText('Key 2'), 'debug_2', Language.getText('Debug Key #2')]
 		]);
 
 		options.push([true]);
@@ -355,11 +355,11 @@ class ControlsSubState extends MusicBeatSubstate
 					FlxTween.tween(bindingBlack, {alpha: 0.6}, 0.35, {ease: FlxEase.linear});
 					add(bindingBlack);
 
-					bindingText = new Alphabet(FlxG.width / 2, 160, "Rebinding " + options[curOptions[curSelected]][3], false);
+					bindingText = new Alphabet(FlxG.width / 2, 160, Language.getText("Rebinding") + " " + options[curOptions[curSelected]][3], false);
 					bindingText.alignment = CENTERED;
 					add(bindingText);
 					
-					bindingText2 = new Alphabet(FlxG.width / 2, 340, "Hold ESC to Cancel\nHold Backspace to Delete", true);
+					bindingText2 = new Alphabet(FlxG.width / 2, 340, Language.getText("Hold ESC to Cancel") + "\n" + Language.getText("Hold Backspace to Delete"), true);
 					bindingText2.alignment = CENTERED;
 					add(bindingText2);
 

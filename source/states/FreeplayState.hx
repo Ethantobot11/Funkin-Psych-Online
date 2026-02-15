@@ -876,7 +876,7 @@ class FreeplayState extends MusicBeatState
 		if (curSelected == -1)
 			scoreText.text = randomMessage;
 		else
-			scoreText.text = 'PERSONAL BEST: ' + lerpScore + ' (' + ratingSplit.join('.') + '%)';
+			scoreText.text = Language.getText('PERSONAL BEST') + ': ' + lerpScore + ' (' + ratingSplit.join('.') + '%)';
 		positionHighscore();
 
 		if ((chatBox != null && chatBox.focused) || searchInputWait || transToPlayState) {
@@ -1495,22 +1495,22 @@ class FreeplayState extends MusicBeatState
 		itemsCamera.targetOffset.set(0, 0);
 
 		if (curSelected == -1) {
-			infoText.text = "ACCEPT to select a random song / SPACE to select without loading / CTRL to select song group";
+			infoText.text = Language.getText("ACCEPT to select a random song / SPACE to select without loading / CTRL to select song group");
 			if (chatBox == null)
-				infoText.text += ' / TAB to select your character!';
+				infoText.text += Language.getText(' / TAB to select your character!');
 			return;
 		}
 
 		switch (selectedItem) {
 			case 0:
 				if (selected) {
-					infoText.text = "ACCEPT to enter the Song / Use your Arrow Keys to change the Difficulty";
+					infoText.text = Language.getText("ACCEPT to enter the Song / Use your Arrow Keys to change the Difficulty");
 					itemsCamera.targetOffset.y += 200;
 				}
 				else {
-					infoText.text = "ACCEPT to select the Song / SPACE to listen to the Song / RESET to " + (searchGroup == DEFAULT && searchGroupValue == 2 ? 'show' : 'hide') + " the Song";
+					infoText.text = Language.getText("ACCEPT to select the Song / SPACE to listen to the Song / RESET to ") + (searchGroup == DEFAULT && searchGroupValue == 2 ? Language.getText('show') : Language.getText('hide')) + Language.getText(" the Song");
 					if (chatBox == null)
-						infoText.text += ' / TAB to select your character!';
+						infoText.text += Language.getText(' / TAB to select your character!');
 				}
 
 				if (centerPoint == null)
