@@ -14,7 +14,7 @@
     {
       "name": "openfl",
       "type": "git",
-      "ref": "ff665f177dc764b101dff750d8cfe024ea36ea52",
+      "ref": "feature/desktop-angle",
       "url": "https://github.com/FunkinCrew/openfl"
     },
     {
