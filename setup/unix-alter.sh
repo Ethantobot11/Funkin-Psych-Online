@@ -14,7 +14,7 @@ haxelib git flixel https://github.com/ArkoseLabsOfficial/flixel-peo peo-mobile -
 haxelib install flixel-addons 3.3.2 --quiet
 haxelib install flixel-tools 1.5.1 --quiet
 haxelib install flixel-ui 2.6.4 --quiet
-haxelib git hxcpp https://github.com/FunkinCrew/hxcpp 6546fa5c3ad1bac065f144745122ab5a6d4195ff --quiet
+haxelib git hxcpp https://github.com/ShadowEngineTeam/hxcpp --quiet
 haxelib install tjson 1.4.0 --quiet
 haxelib git SScript https://github.com/Snirozu/SScript-7.7.0 main --quiet
 haxelib install hxdiscord_rpc 1.3.0 --quiet
