@@ -279,13 +279,30 @@ class Paths
 	{
 		var bitmap:BitmapData = null;
 		var file:String = null;
-		if (ClientPrefs.data.lang != "EN") key += '_${ClientPrefs.data.lang}';
+		vaf fileLang:String = null;
 
 		#if MODS_ALLOWED
-		if (isGlobalPath) file = modFolders(key + '.png');
-		else file = modsImages(key);
+		if (isGlobalPath) {
+			file = modFolders(key + '.png');
+			if (FunkinFileSystem.exists(modFolders(key + '_${ClientPrefs.data.lang}.png'))) {
+				fileLang = modFolders(key + '_${ClientPrefs.data.lang}.png');
+			}
+		}
+		else {
+			file = modsImages(key);
+			if (FunkinFileSystem.exists(modsImages(key + '_${ClientPrefs.data.lang}'))) {
+				fileLang = modsImages(key + '_${ClientPrefs.data.lang}');
+			}
+		}
 		//trace(file);
 		if (currentTrackedAssets.exists(file))
+		{
+			localTrackedAssets.push(file);
+			return currentTrackedAssets.get(file);
+		}
+		else if (FunkinFileSystem.exists(file))
+			bitmap = FunkinFileSystem.getBitmapData(file);
+		else if (currentTrackedAssets.exists(file))
 		{
 			localTrackedAssets.push(file);
 			return currentTrackedAssets.get(file);
@@ -295,8 +312,17 @@ class Paths
 		else
 		#end
 		{
-			if (isGlobalPath) file = getPath('$key.png', IMAGE, library);
-			else file = getPath('images/$key.png', IMAGE, library);
+			if (isGlobalPath) {
+				file = getPath('$key.png', IMAGE, library);
+				if (FunkinFileSystem.exists(getPath('${key}_${ClientPrefs.data.lang}.png', IMAGE, library))) {
+					fileLang = getPath('${key}_${ClientPrefs.data.lang}.png', IMAGE, library);
+				}
+			} else {
+				file = getPath('images/$key.png', IMAGE, library);
+				if (FunkinFileSystem.exists(getPath('images/${key}_${ClientPrefs.data.lang}.png', IMAGE, library))) {
+					fileLang = getPath('images/${key}_${ClientPrefs.data.lang}.png', IMAGE, library);
+				}
+			}
 			//trace(file);
 			if (currentTrackedAssets.exists(file))
 			{
@@ -415,15 +441,32 @@ class Paths
 		#if MODS_ALLOWED
 		var imageLoaded:FlxGraphic = image(key, allowGPU);
 		var xmlExists:Bool = false;
+		var xmlLangExists:Bool = false;
 
 		var xml:String = modsXml(key);
+		var xmlLang:String = modsXml(key + '_${ClientPrefs.data.lang}');
 		if(FileSystem.exists(xml)) {
 			xmlExists = true;
 		}
+		if(FileSystem.exists(xmlLang)) {
+			xmlLangExists = true;
+		}
+		if (xmlExists)
+			xml = File.getContent(xml);
+		else if (xmlLangExists)
+			xml = File.getContent(xmlLang);
+		else if (FunkinFileSystem.exists(getPath('images/${key}_${ClientPrefs.data.lang}.xml', library)))
+			xml = getPath('images/${key}_${ClientPrefs.data.lang}.xml', library);
+		else
+			xml = getPath('images/$key.xml', library);
 
-		return FlxAtlasFrames.fromSparrow((imageLoaded != null ? imageLoaded : image(key, library, allowGPU)), (xmlExists ? File.getContent(xml) : getPath('images/$key.xml', library)));
+		return FlxAtlasFrames.fromSparrow((imageLoaded != null ? imageLoaded : image(key, library, allowGPU)), xml);
 		#else
-		return FlxAtlasFrames.fromSparrow(image(key, library, allowGPU), getPath('images/$key.xml', library));
+		var xml:String = getPath('images/$key.xml', library);
+		var xmlLang:String = getPath('images/${key}_${ClientPrefs.data.lang}.xml', library);
+		if (FunkinFileSystem.exists(xmlLang)) xml = xmlLang;
+
+		return FlxAtlasFrames.fromSparrow(image(key, library, allowGPU), xml);
 		#end
 	}
 
