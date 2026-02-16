@@ -1,5 +1,7 @@
 package flixel.addons.display;
 
+import backend.ClientPrefs;
+
 #if (nme || flash)
 	#if (FLX_NO_COVERAGE_TEST && !(doc_gen))
 		#error "FlxRuntimeShader isn't available with nme or flash."

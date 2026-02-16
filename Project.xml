@@ -270,6 +270,11 @@
 	<java path="source/mobile/android/" if="android" />
 	<java path="mobile/android/" if="android" />
 
+	<section unless="ANGLE_BUILD">
+		<haxedef name="lime_use_old_deltatime" />
+		<haxedef name="lime_disable_motion_sensors" />
+	</section>
+
 	<!--Place custom nodes like icons here (higher priority to override the HaxeFlixel icon)-->
 
 	<assets path='art/iconOG.png' rename='icon.png' if="linux" />
