@@ -1,6 +1,7 @@
 package backend.codename;
 
 import lime.utils.Log;
+import flixel.FlxG;
 #if (target.threaded)
 import sys.thread.Deque;
 import sys.thread.Thread;
