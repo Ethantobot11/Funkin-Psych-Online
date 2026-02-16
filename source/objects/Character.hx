@@ -290,7 +290,7 @@ class Character extends FlxSkewedSprite {
 		}
 	}
 	
-	public function loadCharacterFile(json:Dynamic)
+	public function loadCharacterFile(json:Dynamic, ?charType:String)
 	{
 		isAnimateAtlas = false;
 
@@ -422,7 +422,7 @@ class Character extends FlxSkewedSprite {
 		// trace('Loaded file to character ' + curCharacter);
 	}
 	
-	public function changeCharacter(character:String) {
+	public function changeCharacter(character:String, ?charType:String) {
 		animationsArray = [];
 		animOffsets = [];
 		localCameraOffset = new FlxPoint(0, 0);
@@ -433,7 +433,7 @@ class Character extends FlxSkewedSprite {
 				var json:CharacterFile = getCharacterFile(curCharacter, this);
 				try
 				{
-					loadCharacterFile(json);
+					loadCharacterFile(json, charType);
 				}
 				catch(e:Dynamic)
 				{
