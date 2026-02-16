@@ -1486,6 +1486,8 @@ class FreeplayState extends MusicBeatState
 
 	var centerPoint:FlxObject;
 	function updateSelectSelection() {
+		var space = #if TOUCH_CONTROLS "X" #else "SPACE" #end;
+		var ctrl = #if TOUCH_CONTROLS "G" #else "CTRL" #end;
 		missingText.visible = false;
 		missingTextBG.visible = false;
 
@@ -1495,7 +1497,7 @@ class FreeplayState extends MusicBeatState
 		itemsCamera.targetOffset.set(0, 0);
 
 		if (curSelected == -1) {
-			infoText.text = Language.getText("ACCEPT to select a random song / SPACE to select without loading / CTRL to select song group");
+			infoText.text = Language.getText("ACCEPT to select a random song / %{1}% to select without loading / %{2}% to select song group", [space, ctrl]);
 			if (chatBox == null)
 				infoText.text += Language.getText(' / TAB to select your character!');
 			return;
@@ -1508,7 +1510,7 @@ class FreeplayState extends MusicBeatState
 					itemsCamera.targetOffset.y += 200;
 				}
 				else {
-					infoText.text = Language.getText("ACCEPT to select the Song / SPACE to listen to the Song / RESET to ") + (searchGroup == DEFAULT && searchGroupValue == 2 ? Language.getText('show') : Language.getText('hide')) + Language.getText(" the Song");
+					infoText.text = Language.getText("ACCEPT to select the Song / %{1}% to listen to the Song / RESET to ", [space]) + (searchGroup == DEFAULT && searchGroupValue == 2 ? Language.getText('show') : Language.getText('hide')) + Language.getText(" the Song");
 					if (chatBox == null)
 						infoText.text += Language.getText(' / TAB to select your character!');
 				}

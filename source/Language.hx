@@ -222,7 +222,7 @@ class Language {
 
 		// Freeplay Menu metinleri
 		"ACCEPT to enter the Song / Use your Arrow Keys to change the Difficulty" => "KABUL ET şarkıyı açmak için / Ok tuşlarını kullanarak Zorluk Değiştirin",
-		"ACCEPT to select the Song / SPACE to listen to the Song / RESET to " => "şarkıyı seçmek için KABUL ET / SPACE ile şarkıyı dinleyin / RESET ile şarkıyı",
+		"ACCEPT to select the Song / %{1}% to listen to the Song / RESET to " => "şarkıyı seçmek için KABUL ET / %{1}% ile şarkıyı dinleyin / RESET ile şarkıyı",
 		"show" => "göster",
 		"hide" => "gizle",
 		" the Song" => "",
@@ -237,7 +237,7 @@ class Language {
 		"Loading..." => "Yükleniyor...",
 		"Failed to fetch!" => "Yüklenemedi!",
 		"Failed to load!" => "Yüklenemedi!",
-		"ACCEPT to select a random song / SPACE to select without loading / CTRL to select song group" => "KABUL ET rastgele şarkı seçmek için / SPACE yüklemeden seçmek için / CTRL şarkı grubu seçmek için",
+		"ACCEPT to select a random song / %{1}% to select without loading / %{2}% to select song group" => "KABUL ET rastgele şarkı seçmek için / %{1}% yüklemeden seçmek için / %{2}% şarkı grubu seçmek için",
 		"PRESS F TO SEARCH" => "ARAMAK İÇİN F'YE BASIN",
 		"SEARCH" => "ARA",
 		

@@ -31,6 +31,7 @@
 
 	<haxedef name="FLX_CNE_FORK" />
 	<define name="HSC_ALLOWED" />
+	<define name="TRANSLATIONS_ALLOWED" />
 
 	<!-- ______________________ PSYCH ENGINE CUSTOMIZATION ______________________ -->
 

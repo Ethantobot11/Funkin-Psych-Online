@@ -279,19 +279,18 @@ class Paths
 	{
 		var bitmap:BitmapData = null;
 		var file:String = null;
-		var fileLang:String = null;
 
 		#if MODS_ALLOWED
 		if (isGlobalPath) {
 			file = modFolders(key + '.png');
 			if (FunkinFileSystem.exists(modFolders(key + '_${ClientPrefs.data.lang}.png'))) {
-				fileLang = modFolders(key + '_${ClientPrefs.data.lang}.png');
+				file = modFolders(key + '_${ClientPrefs.data.lang}.png');
 			}
 		}
 		else {
 			file = modsImages(key);
 			if (FunkinFileSystem.exists(modsImages(key + '_${ClientPrefs.data.lang}'))) {
-				fileLang = modsImages(key + '_${ClientPrefs.data.lang}');
+				file = modsImages(key + '_${ClientPrefs.data.lang}');
 			}
 		}
 		//trace(file);
@@ -315,12 +314,12 @@ class Paths
 			if (isGlobalPath) {
 				file = getPath('$key.png', IMAGE, library);
 				if (FunkinFileSystem.exists(getPath('${key}_${ClientPrefs.data.lang}.png', IMAGE, library))) {
-					fileLang = getPath('${key}_${ClientPrefs.data.lang}.png', IMAGE, library);
+					file = getPath('${key}_${ClientPrefs.data.lang}.png', IMAGE, library);
 				}
 			} else {
 				file = getPath('images/$key.png', IMAGE, library);
 				if (FunkinFileSystem.exists(getPath('images/${key}_${ClientPrefs.data.lang}.png', IMAGE, library))) {
-					fileLang = getPath('images/${key}_${ClientPrefs.data.lang}.png', IMAGE, library);
+					file = getPath('images/${key}_${ClientPrefs.data.lang}.png', IMAGE, library);
 				}
 			}
 			//trace(file);

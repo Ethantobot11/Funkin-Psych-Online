@@ -36,13 +36,6 @@ class VisualsUISubState extends BaseOptionsMenu
 		}
 
 		// options
-		var option:Option = new Option('Language:',
-			"Select your language.",
-			'lang',
-			'string',
-			["EN", "TR"]);
-		addOption(option);
-
 		var option:Option = new Option('Disable RGB',
 			"If checked, disables the rgb shader globally.",
 			'disableRGB',

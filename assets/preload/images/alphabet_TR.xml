@@ -403,10 +403,6 @@
 	<SubTexture name="ı lowercase instance 10001" x="633" y="754" width="13" height="43" frameX="0" frameY="0" frameWidth="14" frameHeight="43"/>
 	<SubTexture name="ı lowercase instance 10002" x="633" y="754" width="14" height="42" frameX="0" frameY="0" frameWidth="14" frameHeight="43"/>
 	<SubTexture name="ı lowercase instance 10003" x="633" y="754" width="14" height="42" frameX="0" frameY="0" frameWidth="14" frameHeight="43"/>
-	<SubTexture name="İ bold instance 10000" x="241" y="713" width="44" height="88"/>
-	<SubTexture name="İ bold instance 10001" x="296" y="713" width="44" height="88"/>
-	<SubTexture name="İ bold instance 10002" x="241" y="713" width="44" height="88"/>
-	<SubTexture name="İ bold instance 10003" x="296" y="713" width="44" height="88"/>
 	<SubTexture name="i bold instance 10000" x="241" y="713" width="44" height="88"/>
 	<SubTexture name="i bold instance 10001" x="296" y="713" width="44" height="88"/>
 	<SubTexture name="i bold instance 10002" x="241" y="713" width="44" height="88"/>
