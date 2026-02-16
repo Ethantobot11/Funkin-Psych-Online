@@ -279,7 +279,7 @@ class Paths
 	{
 		var bitmap:BitmapData = null;
 		var file:String = null;
-		vaf fileLang:String = null;
+		var fileLang:String = null;
 
 		#if MODS_ALLOWED
 		if (isGlobalPath) {
