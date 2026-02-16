@@ -51,6 +51,7 @@ jobs:
           path: |
             ~/.gradle
             .haxelib/
+            ~/.haxelib/
             export/release/android/haxe/
             export/release/android/obj/
           restore-keys: |
@@ -119,6 +120,7 @@ jobs:
           path: |
             ~/.gradle
             .haxelib/
+            ~/.haxelib/
             export/release/android/haxe/
             export/release/android/obj/
           restore-keys: |
