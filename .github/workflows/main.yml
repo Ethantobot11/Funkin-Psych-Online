@@ -11,18 +11,27 @@ jobs:
         include:
           - name: Android
             os: ubuntu-latest
+            setupCommand: sh ./setup/unix-alter.sh
             buildArgs: "android -ONLY_ARM64"
             artifactName: androidBuild
             artifactPath: "export/release/android/bin/app/build/outputs/apk/release/*.apk"
-          - name: Windows
+          - name: Android-ANGLE
+            os: ubuntu-latest
+            setupCommand: sh ./setup/unix.sh
+            buildArgs: "android -ONLY_ARM64 -D ANGLE_BUILD"
+            artifactName: androidBuild
+            artifactPath: "export/release/android/bin/app/build/outputs/apk/release/*.apk"
+          - name: Windows-ANGLE
             os: windows-latest
-            buildArgs: "windows -D officialBuild -final"
+            setupCommand: .\"setup/windows.bat"
+            buildArgs: "windows -D officialBuild -final -D ANGLE_BUILD"
             artifactName: windowsBuild-x86_64
             artifactPath: export\release\windows\bin\*
     uses: ./.github/workflows/build.yml
     with:
         name: ${{ matrix.name }}
         os: ${{ matrix.os }}
+        setupCommand: ${{ matrix.setupCommand }}
         buildArgs: ${{ matrix.buildArgs }}
         artifactName: ${{ matrix.artifactName }}
         artifactPath: ${{ matrix.artifactPath }}

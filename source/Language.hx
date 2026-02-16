@@ -170,7 +170,7 @@ class Language {
 		"How much transparent should the Note Splashes be.\n0% disables it." => "Nota sıçramalarının ne kadar şeffaf olacağını belirler.\n%0 devre dışı bırakır.",
 		"Note Hold Splash Opacity" => "Uzun Nota Sıçrama Opaklığı",
 		"How much transparent should the Note Hold Splash be.\n0% disables it." => "Uzun nota (sustain) sıçramalarının ne kadar şeffaf olacağını belirler.\n%0 devre dışı bırakır.",
-		"Trail Note Opacity" => "Nota İzi Opaklığı",
+		"Trail Note Opacity" => "Nota izinin Opaklığı",
 		"How much transparent should the Note Trail be." => "Nota izlerinin (kuyruklarının) ne kadar şeffaf olacağını belirler.",
 		"Hide HUD" => "Arayüzü Gizle",
 		"If checked, hides most HUD elements." => "İşaretlenirse, çoğu arayüz öğesini gizler.",
@@ -198,7 +198,7 @@ class Language {
 		"If checked, enables debug warnings etc." => "İşaretlenirse, hata ayıklama uyarılarını vb. etkinleştirir.",
 		"Show Note timing" => "Nota Zamanlamasını Göster",
 		"If checked, a timing of the hitted note will be shown on the screen (in miliseconds)" => "İşaretlenirse, vurulan notanın zamanlaması ekranda gösterilir (milisaniye cinsinden).",
-		"Disable Automatic Downloads" => "Otomatik İndirmeleri Kapat",
+		"Disable Automatic Downloads" => "Otomatik indirmeleri Kapat",
 		"Disables automatic downloads of Mods and Skins from the opponent" => "Rakipten gelen modların ve görünümlerin otomatik indirilmesini devre dışı bırakır.",
 		"Disable Song Comments" => "Şarkı Yorumlarını Kapat",
 		"Disables song comments on the replay viewer and (if visible, while playing)" => "Tekrar izleyicideki ve (görünürse oyun sırasındaki) şarkı yorumlarını devre dışı bırakır.",
@@ -217,7 +217,7 @@ class Language {
 		"If checked, the combo rating sprite will no longer show up." => "İşaretlenirse, kombo derecesi görseli artık görünmez.",
 		"Disable Combo Counter" => "Kombo Sayacını Kapat",
 		"If checked, the combo counter sprite will no longer show up." => "İşaretlenirse, kombo sayacı görseli artık görünmez.",
-		"Nameplate Fade Time" => "İsim Plakası Kaybolma Süresi",
+		"Nameplate Fade Time" => "Isim Plakası Kaybolma Süresi",
 		"After how many seconds should player nameplates be hidden?\nSet to 0 to instantly hide them.\nSet to -1 to never hide them." => "Oyuncu isim plakaları kaç saniye sonra gizlensin?\nAnında gizlemek için 0, hiç gizlememek için -1 yapın.",
 
 		// Freeplay Menu metinleri

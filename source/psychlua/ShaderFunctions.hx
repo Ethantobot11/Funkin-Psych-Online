@@ -254,7 +254,11 @@ class ShaderFunctions
 			if(value != null && value.bitmap != null)
 			{
 				// trace('Found bitmapdata. Width: ${value.bitmap.width} Height: ${value.bitmap.height}');
+				#if ANGLE_BUILD
 				shader.setBitmapData(prop, value.bitmap);
+				#else
+				shader.setSampler2D(prop, value.bitmap);
+				#end
 				return true;
 			}
 			return false;

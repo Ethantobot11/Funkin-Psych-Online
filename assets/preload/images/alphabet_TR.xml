@@ -567,10 +567,10 @@
 	<SubTexture name="ş bold instance 10001" x="127" y="718" width="50" height="84" frameX="0" frameY="-18" frameWidth="50" frameHeight="84"/>
 	<SubTexture name="ş bold instance 10002" x="127" y="718" width="50" height="84" frameX="0" frameY="-18" frameWidth="50" frameHeight="84"/>
 	<SubTexture name="ş bold instance 10003" x="127" y="718" width="50" height="84" frameX="0" frameY="-18" frameWidth="50" frameHeight="84"/>
-	<SubTexture name="ş lowercase instance 10000" x="556" y="734" width="28" height="45" frameX="0" frameY="-18" frameWidth="28" frameHeight="45"/>
-	<SubTexture name="ş lowercase instance 10001" x="556" y="734" width="28" height="45" frameX="0" frameY="-18" frameWidth="28" frameHeight="45"/>
-	<SubTexture name="ş lowercase instance 10002" x="556" y="734" width="28" height="45" frameX="0" frameY="-18" frameWidth="28" frameHeight="45"/>
-	<SubTexture name="ş lowercase instance 10003" x="556" y="734" width="28" height="45" frameX="0" frameY="-18" frameWidth="28" frameHeight="45"/>
+	<SubTexture name="ş lowercase instance 10000" x="556" y="748" width="28" height="45" frameX="0" frameY="-8" frameWidth="28" frameHeight="45"/>
+	<SubTexture name="ş lowercase instance 10001" x="556" y="748" width="28" height="45" frameX="0" frameY="-8" frameWidth="28" frameHeight="45"/>
+	<SubTexture name="ş lowercase instance 10002" x="556" y="748" width="28" height="45" frameX="0" frameY="-8" frameWidth="28" frameHeight="45"/>
+	<SubTexture name="ş lowercase instance 10003" x="556" y="748" width="28" height="45" frameX="0" frameY="-8" frameWidth="28" frameHeight="45"/>
 	<SubTexture name="ş uppercase instance 10000" x="810" y="729" width="38" height="71" frameX="0" frameY="-18" frameWidth="38" frameHeight="71"/>
 	<SubTexture name="ş uppercase instance 10001" x="810" y="729" width="38" height="71" frameX="0" frameY="-18" frameWidth="38" frameHeight="71"/>
 	<SubTexture name="ş uppercase instance 10002" x="810" y="729" width="38" height="71" frameX="0" frameY="-18" frameWidth="38" frameHeight="71"/>

@@ -98,7 +98,11 @@ import flixel.group.FlxSpriteGroup;
 import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.graphics.frames.FlxAtlasFrames;
 import flixel.math.FlxPoint;
+#if ANGLE_BUILD
 import flixel.system.FlxAssets.FlxShader;
+#else
+import shaders.flixel.system.FlxShader;
+#end
 import haxe.ds.StringMap;
 import online.backend.Deflection;
 
