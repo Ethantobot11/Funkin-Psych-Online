@@ -19,13 +19,13 @@ jobs:
             os: ubuntu-latest
             setupCommand: sh ./setup/unix.sh
             buildArgs: "android -ONLY_ARM64 -D ANGLE_BUILD"
-            artifactName: androidBuild
+            artifactName: androidBuild-(ANGLE)
             artifactPath: "export/release/android/bin/app/build/outputs/apk/release/*.apk"
           - name: Windows-ANGLE
             os: windows-latest
             setupCommand: .\"setup/windows.bat"
             buildArgs: "windows -D officialBuild -final -D ANGLE_BUILD"
-            artifactName: windowsBuild-x86_64
+            artifactName: windowsBuild-x86_64-(ANGLE)
             artifactPath: export\release\windows\bin\*
     uses: ./.github/workflows/build.yml
     with:
