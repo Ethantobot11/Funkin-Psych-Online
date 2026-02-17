@@ -66,6 +66,8 @@ jobs:
         run: |
           haxelib install hmm --quiet
           haxelib run hmm install --quiet
+          haxelib remove funkin.vis --quiet
+          haxelib git funkin.vis https://github.com/FunkinCrew/funkVis 1966f8fbbbc509ed90d4b520f3c49c084fc92fd6 --quiet
 
       - name: Configure Android
         if: startsWith(inputs.name, 'Android')

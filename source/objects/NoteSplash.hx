@@ -91,8 +91,8 @@ class NoteSplash extends FlxSprite
 				if (note != null)
 				{
 					hue = note.noteSplashHue;
-					saturation = note.noteSplashSaturation;
-					brightness = note.noteSplashBrightness;
+					saturation = note.noteSplashSat;
+					brightness = note.noteSplashBrt;
 				}
 			}
 

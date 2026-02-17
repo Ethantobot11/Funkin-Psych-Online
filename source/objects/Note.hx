@@ -210,8 +210,8 @@ class Note extends FlxSprite
 			if (noteData > -1 && noteData < ClientPrefs.data.arrowHSV.length)
 			{
 				colorSwap.hue = noteSplashHue = ClientPrefs.data.arrowHSV[noteData][0] / 360;
-				colorSwap.saturation = noteSplashSaturation = ClientPrefs.data.arrowHSV[noteData][1] / 100;
-				colorSwap.brightness = noteSplashBrightness = ClientPrefs.data.arrowHSV[noteData][2] / 100;
+				colorSwap.saturation = noteSplashSat = ClientPrefs.data.arrowHSV[noteData][1] / 100;
+				colorSwap.brightness = noteSplashBrt = ClientPrefs.data.arrowHSV[noteData][2] / 100;
 			}
 		else
 			defaultRGB();
@@ -230,8 +230,8 @@ class Note extends FlxSprite
 						reloadNote('HURTNOTE_assets');
 						// note and splash data colors
 						colorSwap.hue = noteSplashHue = 0;
-						colorSwap.saturation = noteSplashSaturation = 0;
-						colorSwap.brightness = noteSplashBrightness = 0;
+						colorSwap.saturation = noteSplashSat = 0;
+						colorSwap.brightness = noteSplashBrt = 0;
 
 						noteSplashData.texture = 'HURTnoteSplashes';
 					}
