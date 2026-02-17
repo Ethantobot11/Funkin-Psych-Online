@@ -5658,26 +5658,28 @@ class PlayState extends MusicBeatState
 			GameClient.send("noteMiss", [note.strumTime, note.noteData, note.isSustainNote]);
 
 		// play character anims
-		var char:Character = self;
+		var charArray:Array<Character> = [self];
 		if ((SONG.notes[curSection] != null && (SONG.notes[curSection].mustHitSection ? playsAsBF() : !playsAsBF()) && SONG.notes[curSection].gfSection)
 			|| (note != null && note.gfNote)) {
-				char = gf;
+				charArray = [gf];
 		}
-		if (note != null) char = strumLines.members[getStrumIndexFromData(note)].characters[0];
-		
-		if(char != null && !(GameClient.isConnected() && char == gf && GameClient.getPlayerSelf().ox != 0) /*&& char.hasMissAnimations*/)
-		{
-			var suffix:String = '';
-			if(note != null) suffix = note.animSuffix;
+		if (note != null) charArray = strumLines.members[getStrumIndexFromData(note)].characters;
 
-			var animToPlay:String = singAnimations[Std.int(Math.abs(Math.min(singAnimations.length-1, direction)))] + 'miss' + suffix;
-			char.playAnim(animToPlay, true);
-			GameClient.send("charPlay", [animToPlay, char == gf, false, getStrumIndexFromData(note)]);
-			
-			if(char != gf && combo > 5 && gf != null && gf.animOffsets.exists('sad'))
+		for (char in charArray) {
+			if(char != null && !(GameClient.isConnected() && char == gf && GameClient.getPlayerSelf().ox != 0) /*&& char.hasMissAnimations*/)
 			{
-				gf.playAnim('sad');
-				gf.specialAnim = true;
+				var suffix:String = '';
+				if(note != null) suffix = note.animSuffix;
+
+				var animToPlay:String = singAnimations[Std.int(Math.abs(Math.min(singAnimations.length-1, direction)))] + 'miss' + suffix;
+				char.playAnim(animToPlay, true);
+				GameClient.send("charPlay", [animToPlay, char == gf, false, getStrumIndexFromData(note)]);
+
+				if(char != gf && combo > 5 && gf != null && gf.animOffsets.exists('sad'))
+				{
+					gf.playAnim('sad');
+					gf.specialAnim = true;
+				}
 			}
 		}
 
@@ -5737,17 +5739,19 @@ class PlayState extends MusicBeatState
 				}
 			}
 
-			var char:Character = opChar;
+			var charArray:Array<Character> = [opChar];
 			var animToPlay:String = singAnimations[Std.int(Math.abs(Math.min(singAnimations.length-1, note.noteData)))] + altAnim;
 			if(note.gfNote) {
-				char = gf;
+				charArray = [gf];
 			}
-			if (note != null) char = strumLines.members[getStrumIndexFromData(note)].characters[0];
+			if (note != null) charArray = strumLines.members[getStrumIndexFromData(note)].characters;
 
-			if(char != null && !(GameClient.isConnected() && char == gf && sid != null && playersStats.get(sid).player.ox != 0))
-			{
-				char.playAnim(animToPlay, true);
-				char.holdTimer = 0;
+			for (char in charArray) {
+				if(char != null && !(GameClient.isConnected() && char == gf && sid != null && playersStats.get(sid).player.ox != 0))
+				{
+					char.playAnim(animToPlay, true);
+					char.holdTimer = 0;
+				}
 			}
 		}
 
@@ -5788,6 +5792,9 @@ class PlayState extends MusicBeatState
 			if (ClientPrefs.data.hitsoundVolume > 0 && !note.hitsoundDisabled)
 				FlxG.sound.play(Paths.sound(note.hitsound), ClientPrefs.data.hitsoundVolume);
 
+			var charArray:Array<Character> = [self];
+			if (note != null) charArray = strumLines.members[getStrumIndexFromData(note)].characters;
+
 			if(note.hitCausesMiss) {
 				noteMiss(note);
 				if(!note.noteSplashData.disabled && !note.isSustainNote)
@@ -5797,9 +5804,11 @@ class PlayState extends MusicBeatState
 				{
 					switch(note.noteType) {
 						case 'Hurt Note': //Hurt note
-							if (self.animation.getByName('hurt') != null) {
-								self.playAnim('hurt', true);
-								self.specialAnim = true;
+							for (charSelf in charArray) {
+								if (charSelf.animation.getByName('hurt') != null) {
+									charSelf.playAnim('hurt', true);
+									charSelf.specialAnim = true;
+								}
 							}
 					}
 				}
@@ -5850,27 +5859,29 @@ class PlayState extends MusicBeatState
 
 				var animToPlay:String = singAnimations[Std.int(Math.abs(Math.min(singAnimations.length - 1, note.noteData)))] + altAnim;
 
-				var char:Character = self;
+				
 				var animCheck:String = 'hey';
 				if(note.gfNote)
 				{
-					char = gf;
+					charArray = [gf];
 					animCheck = 'cheer';
 				}
-				if (note != null) char = strumLines.members[getStrumIndexFromData(note)].characters[0];
+				if (note != null) charArray = strumLines.members[getStrumIndexFromData(note)].characters;
 				
-				if(char != null && !(GameClient.isConnected() && char == gf && GameClient.getPlayerSelf().ox != 0))
-				{
-					char.playAnim(animToPlay, true);
-					char.holdTimer = 0;
+				for (char in charArray) {
+					if(char != null && !(GameClient.isConnected() && char == gf && GameClient.getPlayerSelf().ox != 0))
+					{
+						char.playAnim(animToPlay, true);
+						char.holdTimer = 0;
 
-					if (note.noteType == 'Hey!' && char.animOffsets.exists(animCheck)) {
-						char.playAnim(animCheck, true);
-						char.specialAnim = true;
-						char.heyTimer = 0.6;
-						GameClient.send("charPlay", [animCheck, note.gfNote, true, getStrumIndexFromData(note)]);
-					} else {
-						GameClient.send("charPlay", [animToPlay, note.gfNote, false, getStrumIndexFromData(note)]);
+						if (note.noteType == 'Hey!' && char.animOffsets.exists(animCheck)) {
+							char.playAnim(animCheck, true);
+							char.specialAnim = true;
+							char.heyTimer = 0.6;
+							GameClient.send("charPlay", [animCheck, note.gfNote, true, getStrumIndexFromData(note)]);
+						} else {
+							GameClient.send("charPlay", [animToPlay, note.gfNote, false, getStrumIndexFromData(note)]);
+						}
 					}
 				}
 			}
@@ -6890,15 +6901,21 @@ class PlayState extends MusicBeatState
 				} 
 				else if (!(message[1] ?? false)) {
 					var char = characters.get(sid);
-					if (strumLines.members[message[3]].characters[0] != null)
-						char = strumLines.members[message[3]].characters[0];
+					var strumChars = strumLines.members[message[3]].characters;
+					if (strumChars.length <= 0) {
+						strumChars.push(null);
+					}
+					for (strumChar in 0...strumChars.length) {
+						if (strumChars != null)
+							char = strumChar;
 
-					if (char == null)
-						return;
+						if (char == null)
+							return;
 
-					char.playAnim(message[0], true);
-					if (message[2] ?? false)
-						char.specialAnim = true;
+						char.playAnim(message[0], true);
+						if (message[2] ?? false)
+							char.specialAnim = true;
+					}
 				}
 			});
 		});
