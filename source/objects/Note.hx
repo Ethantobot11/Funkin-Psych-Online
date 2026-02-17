@@ -206,7 +206,7 @@ class Note extends FlxSprite
 
 	private function set_noteType(value:String):String {
 		noteSplashData.texture = PlayState.SONG != null ? PlayState.SONG.splashSkin : 'noteSplashes';
-		(ClientPrefs.data.disableRGBNotes)
+		if (ClientPrefs.data.disableRGBNotes)
 			if (noteData > -1 && noteData < ClientPrefs.data.arrowHSV.length)
 			{
 				colorSwap.hue = noteSplashHue = ClientPrefs.data.arrowHSV[noteData][0] / 360;
