@@ -15,6 +15,12 @@ jobs:
             buildArgs: "android -ONLY_ARM64"
             artifactName: androidBuild
             artifactPath: "export/release/android/bin/app/build/outputs/apk/release/*.apk"
+          - name: Windows
+            os: windows-latest
+            setupCommand: .\"setup/windows.bat"
+            buildArgs: "windows -D officialBuild -final"
+            artifactName: windowsBuild-x86_64
+            artifactPath: export\release\windows\bin\*
           - name: Android-ANGLE
             os: ubuntu-latest
             setupCommand: sh ./setup/unix.sh
