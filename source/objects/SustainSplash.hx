@@ -52,7 +52,7 @@ class SustainSplash extends FlxSprite {
 		}
 	}
 
-	private static function setTextureNameFromData(noteData:Int):Void
+	private function setTextureNameFromData(noteData:Int):Void
 	{
 		var tex:String = defaultNoteHoldSplash + getSplashSkinPostfix();
 
@@ -68,6 +68,7 @@ class SustainSplash extends FlxSprite {
 			}
 		}
 
+		frames = Paths.getSparrowAtlas(tex);
 		if (frames == null)
 			tex = defaultNoteHoldSplash;
 
