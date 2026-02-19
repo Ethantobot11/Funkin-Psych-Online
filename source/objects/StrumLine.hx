@@ -2,7 +2,7 @@ package objects;
 
 import objects.StrumNote;
 import objects.Character;
-import flixel.util.FlxTypedSignal;
+import flixel.util.FlxSignal;
 
 class StrumLine extends FlxTypedGroup<StrumNote> {
 	/**
