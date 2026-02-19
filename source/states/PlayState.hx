@@ -269,6 +269,9 @@ class PlayState extends MusicBeatState
 
 	public var strumLineNotes:StrumLine;
 	public var strumLines:FlxTypedGroup<StrumLine> = new FlxTypedGroup<StrumLine>(); //A variable for CNE mods
+	public var cpuStrums(get, null):StrumLine;
+	private inline function get_cpuStrums():StrumLine
+		return strumLines.members[0];
 	public var opponentStrums(get, null):StrumLine;
 	private inline function get_opponentStrums():StrumLine
 		return strumLines.members[0];
@@ -599,8 +602,10 @@ class PlayState extends MusicBeatState
 
 	var canSpaceTaunt:Bool = true;
 
-	public function addStrum(isCPU:Bool, targetCharacters:Array<Character>, targetNoteData:Int, ?isStrumCreation:Bool) {
-		var strumWidth = Note.maniaKeys * Note.swagScaledWidth - (Note.getNoteOffsetX() * (Note.maniaKeys - 1));
+	public function addStrum(isCPU:Bool, targetCharacters:Array<Character>, targetNoteData:Int, ?isStrumCreation:Bool, ?amount:Null<Int>) {
+		if (amount == null) amount = Note.maniaKeys;
+
+		var strumWidth = amount * Note.swagScaledWidth - (Note.getNoteOffsetX() * (amount - 1));
 		var strumLineX:Float = 0;
 
 		if (ClientPrefs.data.middleScroll) {
@@ -612,8 +617,8 @@ class PlayState extends MusicBeatState
 		}
 
 		var strumLineY:Float = ClientPrefs.data.downScroll ? (FlxG.height - 150) : 50;
-		var strumGroup:StrumLine = new StrumLine(isCPU, targetCharacters, Note.maniaKeys, targetNoteData, isStrumCreation);
-		for (i in 0...Note.maniaKeys)
+		var strumGroup:StrumLine = new StrumLine(isCPU, targetCharacters, amount, targetNoteData, isStrumCreation);
+		for (i in 0...amount)
 		{
 			var targetAlpha:Float = 1;
 
@@ -629,18 +634,18 @@ class PlayState extends MusicBeatState
 			if (!isStoryMode && !skipArrowStartTween)
 			{
 				babyArrow.alpha = 0;
-				FlxTween.tween(babyArrow, {alpha: targetAlpha}, 1, {ease: FlxEase.circOut, startDelay: 0.5 + 4 / Note.maniaKeys * 0.2 * i});
+				FlxTween.tween(babyArrow, {alpha: targetAlpha}, 1, {ease: FlxEase.circOut, startDelay: 0.5 + 4 / amount * 0.2 * i});
 			}
 			else
 				babyArrow.alpha = targetAlpha;
 
 			if (!isPlayerStrumNote(isCPU ? 0 : 1) && ClientPrefs.data.middleScroll) {
 				babyArrow.x = strumLineX / 2 - strumWidth / 4;
-				if (i > Note.maniaKeys / 2 - 1) { // half rest
+				if (i > amount / 2 - 1) { // half rest
 					babyArrow.x += (strumLineX + strumWidth / 2);
 				}
 
-				if (Note.maniaKeys % 2 != 0 && i == Std.int(Note.maniaKeys / 2)) {
+				if (amount % 2 != 0 && i == Std.int(amount / 2)) {
 					babyArrow.forceHide = true;
 				}
 			}
@@ -1292,8 +1297,12 @@ class PlayState extends MusicBeatState
 
 			generateSong(SONG.song);
 			//maybe this can fix all problems lol
-			addStrum(true, [dad], 0, true);
-			addStrum(false, [boyfriend], 4, true);
+			var event = EventManager.get(AmountEvent).recycle(4);
+			if (!scripts.event("onPreGenerateStrums", event).cancelled) {
+				addStrum(true, [dad], 0, true);
+				addStrum(false, [boyfriend], 4, true);
+				scripts.event("onPostGenerateStrums", event);
+			}
 
 			keysArray = getKeysArray(Note.maniaKeys);
 
