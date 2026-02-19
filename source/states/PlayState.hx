@@ -116,6 +116,16 @@ class PlayState extends MusicBeatState
 	@:dox(hide)
 	public var __updateNote_event:NoteUpdateEvent = null;
 
+	public var scrollSpeed(get, set):Float;
+	private function get_scrollSpeed() {
+		return songSpeed;
+	}
+	private function set_scrollSpeed(value:Float) {
+		songSpeed = SONG.speed * ClientPrefs.getGameplaySetting('scrollspeed') * value;
+		scrollSpeed = songSpeed;
+		return songSpeed;
+	}
+
 	/**
 	 * Current camera target. -1 means no automatic camera targetting.
 	 * makes easier to change position shits
@@ -3628,7 +3638,7 @@ class PlayState extends MusicBeatState
 									daNote.noteAlpha = 1;
 								}
 							}
-							daNote.followStrumNote(__updateNote_strum, fakeCrochet, songSpeed / playbackRate);
+							if (__updateNote_event.__reposNote) daNote.followStrumNote(__updateNote_strum, fakeCrochet, songSpeed / playbackRate);
 
 							if (GameClient.isConnected() && daNote.strumTime <= Conductor.songPosition) {
 								camZooming = true;
