@@ -113,6 +113,9 @@ import objects.StrumLine;
 @:build(online.backend.Macros.getSetForwarder())
 class PlayState extends MusicBeatState
 {
+	@:dox(hide)
+	public var __updateNote_event:NoteUpdateEvent = null;
+
 	/**
 	 * Current camera target. -1 means no automatic camera targetting.
 	 * makes easier to change position shits
@@ -1649,6 +1652,8 @@ class PlayState extends MusicBeatState
 				if (redditMod) {
 					online.util.FileUtils.removeFiles(haxe.io.Path.join([Paths.mods(), 'reddit']));
 				}
+
+				__updateNote_event = EventManager.get(NoteUpdateEvent);
 
 				startCallback();
 				callOnScripts('onCreatePost');
@@ -3606,13 +3611,13 @@ class PlayState extends MusicBeatState
 						notes.forEachAlive(function(daNote:Note)
 						{
 							var strumGroup:StrumLine = strumLines.members[getStrumIndexFromData(daNote)];
-							var __updateNote_event:NoteUpdateEvent;
 							var __updateNote_strum:StrumNote = strumGroup.members[daNote.noteData];
+							var __updateNote_event:NoteUpdateEvent = this.__updateNote_event;
 
 							__updateNote_event.recycle(daNote, FlxG.elapsed, __updateNote_strum);
 							strumGroup.onNoteUpdate.dispatch(__updateNote_event);
 
-							if (__updateNote_strum == null) {
+							if (__updateNote_strum == null || __updateNote_event.cancelled) {
 								return;
 							}
 
