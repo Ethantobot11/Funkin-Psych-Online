@@ -88,6 +88,8 @@ class MusicBeatState extends FlxUIState
 		}
 		FlxTransitionableState.skipNextTransOut = false;
 		timePassedOnState = 0;
+
+		createPost(); //this shit doesn't work normally, idk why.
 	}
 
 	public static var timePassedOnState:Float = 0;

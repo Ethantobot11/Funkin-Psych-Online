@@ -1831,7 +1831,7 @@ class PlayState extends MusicBeatState
 		Paths.clearUnusedMemory();
 	}
 
-	@:dox(hide) public override function createPost() {
+	public override function createPost() {
 		super.createPost();
 
 		__updateNote_event = EventManager.get(NoteUpdateEvent);
