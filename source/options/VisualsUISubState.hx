@@ -17,7 +17,9 @@ class VisualsUISubState extends BaseOptionsMenu
 	var noteY:Float = 90;
 
 	override function closeSubState() {
+		controls.isInSubstate = true;
 		super.closeSubState();
+		MusicBeatSubstate.instance = this;
 		controls.isInSubstate = true;
 		mobileManager.removeMobilePad();
 		mobileManager.addMobilePad('UP_DOWN', 'A_B');
@@ -265,14 +267,18 @@ class VisualsUISubState extends BaseOptionsMenu
 		option.decimals = 1;
 		addOption(option);
 
-		#if !mobile
 		var option:Option = new Option('FPS Counter',
 			'If unchecked, hides FPS Counter.',
 			'showFPS',
 			'bool');
 		addOption(option);
 		option.onChange = onChangeFPSCounter;
-		#end
+
+		var option:Option = new Option('Disable Online Shaders',
+			'If checked, disables shaders that being used on online menus.',
+			'disableOnlineShaders',
+			'bool');
+		addOption(option);
 	}
 
 	public function new(category:String)

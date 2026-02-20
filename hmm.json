@@ -9,7 +9,7 @@
       "name": "lime",
       "type": "git",
       "ref": "main",
-      "url": "https://github.com/ArkoseLabsOfficial/lime-termux"
+      "url": "https://github.com/ArkoseLabsOfficial/lime"
     },
     {
       "name": "openfl",
@@ -42,7 +42,7 @@
       "type": "git",
       "dir": null,
       "ref": null,
-      "url": "https://github.com/AlafandyPorting/hxcpp"
+      "url": "https://github.com/ShadowEngineTeam/hxcpp"
     },
     {
       "name": "tjson",
