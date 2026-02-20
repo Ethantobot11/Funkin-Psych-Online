@@ -15,8 +15,8 @@ haxelib install tjson 1.4.0 --quiet
 haxelib git SScript https://github.com/ShadowEngineTeam/SScript main --quiet
 haxelib install hxdiscord_rpc 1.3.0 --quiet
 haxelib git linc_luajit https://github.com/ShadowEngineTeam/linc_luajit --quiet
-haxelib install colyseus 0.15.2 --quiet
-haxelib install colyseus-websocket 1.0.12 --quiet
+haxelib install colyseus 0.17.3 --quiet
+haxelib install colyseus-websocket 1.0.15 --quiet
 haxelib install HtmlParser 3.4.0 --quiet
 haxelib install UnRAR 1.0.0 --quiet
 haxelib git away3d https://github.com/Snirozu/away3d master --quiet

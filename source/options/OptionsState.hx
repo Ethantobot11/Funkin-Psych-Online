@@ -221,7 +221,6 @@ class OptionsState extends MusicBeatState
 		if (FlxG.mouse.wheel != 0) {
 			changeSelection(-FlxG.mouse.wheel);
 		}
-		#end
 
 		if (controls.BACK || FlxG.keys.justPressed.BACKSPACE) {
 			// back.offset.set(80, 50);
