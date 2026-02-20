@@ -4699,12 +4699,12 @@ class PlayState extends MusicBeatState
 					});
 				}
 
-				aLookAt = 1;
+				cameraLookAt = 1;
 				if (stage3D != null)
 					stage3D.setFollowCamera('bf');
 			} else if (char == dad) {
 				tweenCamIn();
-				aLookAt = 0;
+				cameraLookAt = 0;
 				if (stage3D != null)
 					stage3D.setFollowCamera('dad');
 			} else if (char == gf) {
