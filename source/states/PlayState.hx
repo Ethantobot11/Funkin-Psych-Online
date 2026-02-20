@@ -606,7 +606,7 @@ class PlayState extends MusicBeatState
 
 	var canSpaceTaunt:Bool = true;
 
-	public function addStrum(isCPU:Bool, targetCharacters:Array<Character>, targetNoteData:Int, ?isStrumCreation:Bool, ?amount:Null<Int>) {
+	public function addStrum(isCPU:Bool, targetCharacters:Array<Character>, targetNoteData:Int, ?amount:Null<Int>) {
 		if (amount == null) amount = Note.maniaKeys;
 
 		var strumWidth = amount * Note.swagScaledWidth - (Note.getNoteOffsetX() * (amount - 1));
@@ -621,7 +621,7 @@ class PlayState extends MusicBeatState
 		}
 
 		var strumLineY:Float = ClientPrefs.data.downScroll ? (FlxG.height - 150) : 50;
-		var strumGroup:StrumLine = new StrumLine(isCPU, targetCharacters, amount, targetNoteData, isStrumCreation);
+		var strumGroup:StrumLine = new StrumLine(isCPU, targetCharacters, amount, targetNoteData);
 		for (i in 0...amount)
 		{
 			var targetAlpha:Float = 1;
@@ -1315,16 +1315,16 @@ class PlayState extends MusicBeatState
 			uiGroup.cameras = [camHUD];
 			noteGroup.cameras = [camHUD];
 			comboGroup.cameras = [camHUD];
-		});
 
-		noteGroup.add(strumLines);
-		//maybe this can fix all problems lol
-		var event = EventManager.get(AmountEvent).recycle(4);
-		if (!scripts.event("onPreGenerateStrums", event).cancelled) {
-			addStrum(true, [dad], 0, true);
-			addStrum(false, [boyfriend], 4, true);
-			scripts.event("onPostGenerateStrums", event);
-		}
+			noteGroup.add(strumLines);
+			//maybe this can fix all problems lol
+			var event = EventManager.get(AmountEvent).recycle(4);
+			if (!scripts.event("onPreGenerateStrums", event).cancelled) {
+				addStrum(true, [dad], 0);
+				addStrum(false, [boyfriend], 4);
+				scripts.event("onPostGenerateStrums", event);
+			}
+		});
 
 		preloadTasks.push(() -> {
 			Conductor.songPosition = -5000 / Conductor.songPosition;
