@@ -1735,6 +1735,13 @@ class PlayState extends MusicBeatState
 		}
 
 		preloadTasks.push(() -> {
+			//put these there
+			__updateNote_event = EventManager.get(NoteUpdateEvent);
+
+			scripts.call("postCreate");
+		});
+
+		preloadTasks.push(() -> {
 			if (replayData != null && !GameClient.isConnected()) {
 				add(replayPlayer = new ReplayPlayer(this, replayData));
 			}
@@ -1829,11 +1836,6 @@ class PlayState extends MusicBeatState
 
 		super.create();
 
-		//put these there
-		__updateNote_event = EventManager.get(NoteUpdateEvent);
-
-		scripts.call("postCreate");
-	
 		Paths.clearUnusedMemory();
 	}
 

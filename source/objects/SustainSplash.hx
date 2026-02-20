@@ -106,7 +106,15 @@ class SustainSplash extends FlxSprite {
 
 		clipRect = new flixel.math.FlxRect(0, !PlayState.isPixelStage ? 0 : -210, frameWidth, frameHeight);
 
-		if (daNote.shader != null && !ClientPrefs.data.disableRGBNotes) {
+		if (daNote.shader != null && ClientPrefs.data.disableRGBNotes) {
+			try {
+				shader = daNote.shader; //copy the shader. (I hope can get values too)
+			}
+			catch (e) {
+				trace(e);
+			}
+		}
+		else if (daNote.shader != null) {
 			// idk what this does, and it causes issues so i'm putting it into try-catch
 			try {
 				shader = new objects.NoteSplash.PixelSplashShaderRef().shader;
