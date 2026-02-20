@@ -1832,7 +1832,6 @@ class PlayState extends MusicBeatState
 	}
 
 	@:dox(hide) public override function createPost() {
-		startCutscene("", cutscene, null, true);
 		super.createPost();
 
 		__updateNote_event = EventManager.get(NoteUpdateEvent);
