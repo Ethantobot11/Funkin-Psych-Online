@@ -213,7 +213,7 @@ class MainMenuState extends MusicBeatState
 			online.backend.DateEvent.isHalloween = true;
 		}
 
-		mobileManager.addMobilePad("UP_DOWN", "A_B_E");
+		mobileManager.addMobilePad("NONE", "E");
 
 		var debugPoser = new online.objects.DebugPosHelper();
 		debugPoser.target = cast menuIcons;
@@ -315,7 +315,7 @@ class MainMenuState extends MusicBeatState
 				FlxG.switchState(() -> new TitleState());
 			}
 
-			if (controls.ACCEPT #if desktop || (FlxG.mouse.justPressed && FlxG.mouse.overlaps(menuItems.members[curSelected])) #end)
+			if (controls.ACCEPT || (FlxG.mouse.justPressed && FlxG.mouse.overlaps(menuItems.members[curSelected])))
 			{
 				if (optionShit[curSelected] == 'donate')
 				{

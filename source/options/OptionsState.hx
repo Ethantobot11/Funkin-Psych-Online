@@ -9,9 +9,10 @@ import backend.StageData;
 class OptionsState extends MusicBeatState
 {
 	var optionsMap:Map<String, Array<String>> = [
-		'main' => ['Controls', 'Performance', 'Visuals & UI', 'Game', 'Mobile Options'],
+		'main' => ['Controls', 'Performance', 'Visuals & UI', 'Game'],
 		'visuals' => ['Notes', 'Combo & Rating', 'User Interface', 'Accessibility'],
 		'game' => ['Gameplay', 'Preferences', 'Adjust Audio Delay'],
+		'mobile' => ['Mobile Extra Control', 'Mobile Options'];
 	];
 	private var grpOptionsMap:Map<String, FlxTypedGroup<Alphabet>> = new Map();
 	static var optionsCategory(default, set):String = 'main';
@@ -64,7 +65,7 @@ class OptionsState extends MusicBeatState
 	public static var loadedMod:String = '';
 
 	function openSelectedSubstate(label:String) {
-		if (label != "Adjust Delay and Combo"){
+		if (label != "Adjust Delay and Combo" && label != 'Game' && label != 'Visuals & UI' && label != 'Mobile'){
 			mobileManager.removeMobilePad();
 			persistentUpdate = false;
 		}
@@ -92,6 +93,8 @@ class OptionsState extends MusicBeatState
 				optionsCategory = 'visuals';
 			case 'Game':
 				optionsCategory = 'game';
+			case 'Mobile':
+				optionsCategory = 'mobile';
 			case 'Mods':
 				FlxG.switchState(() -> new ModsMenuState());
 			case 'Mobile Options':
@@ -152,6 +155,7 @@ class OptionsState extends MusicBeatState
 		if (!onPlayState)
 			optionsMap.get('main').push('Mods');
 		#end
+		optionsMap.get('main').push('Mobile');
 
 		for (category => items in optionsMap) {
 			var group = new FlxTypedGroup<Alphabet>();

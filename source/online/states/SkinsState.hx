@@ -286,7 +286,7 @@ class SkinsState extends MusicBeatState {
 				var character:String = file.substr(0, file.length - 5);
 
 				//skip blacklisted or non-character files
-				if (charSkipSearch.contains(character) || sys.FileSystem.isDirectory(filePath) || !file.endsWith('.json')) {
+				if (charSkipSearch.contains(character) || !file.endsWith('.json')) {
 					continue;
 				}
 
@@ -310,7 +310,7 @@ class SkinsState extends MusicBeatState {
 							}
 						}
 
-						if (FileSystem.exists(Path.join([characters, '${cutCharName}.json']))) {
+						if (FunkinFileSystem.exists(Path.join([characters, '${cutCharName}.json']))) {
 							hasAdded = addCharacter(cutCharName, leftSuffix, playableSuffix, origin);
 							break;
 						}
