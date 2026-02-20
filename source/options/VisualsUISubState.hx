@@ -51,6 +51,12 @@ class VisualsUISubState extends BaseOptionsMenu
 		};
 		addOption(option);
 
+		var option:Option = new Option('Disable RGB Notes',
+			"If checked, notes will use the HSV coloring method.",
+			'disableRGBNotes',
+			'bool');
+		addOption(option);
+
 		if(NoteSkinData.noteSkins.length > 0)
 		{
 			if(!NoteSkinData.noteSkinArray.contains(ClientPrefs.data.noteSkin))
@@ -80,12 +86,6 @@ class VisualsUISubState extends BaseOptionsMenu
 				noteSplashes);
 			addOption(option);
 		}
-
-		var option:Option = new Option('Disable RGB Notes',
-			"If checked, notes will use the HSV coloring method.",
-			'disableRGBNotes',
-			'bool');
-		addOption(option);
 
 		var option:Option = new Option('Note Splash Opacity',
 			'How much transparent should the Note Splashes be.\n0% disables it.',

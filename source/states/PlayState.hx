@@ -127,6 +127,12 @@ class PlayState extends MusicBeatState
 	}
 
 	/**
+	 * Current FP Multiplier.
+	 * recommended for Codename Engine Mods.
+	 */
+	public var pointMultiplier:Float = 1;
+
+	/**
 	 * Current camera target. -1 means no automatic camera targetting.
 	 * makes easier to change position shits
 	 */
@@ -664,7 +670,7 @@ class PlayState extends MusicBeatState
 					babyArrow.maxAlpha = (isCPU ? 0.7 : 1);
 			}
 
-			strumLineNotes.add(babyArrow);
+			//strumLineNotes.add(babyArrow);
 			babyArrow.postAddedToGroup();
 		}
 		strumGroup.cameras = [camHUD];
@@ -740,6 +746,8 @@ class PlayState extends MusicBeatState
 
 		canPause = !redditMod; // !(GameClient.isConnected() || redditMod);
 		canStart = !GameClient.isConnected();
+
+		(scripts = new ScriptPack("PlayState")).setParent(this);
 
 		var preloadTasks:Array<Void->Void> = [];
 
@@ -901,6 +909,19 @@ class PlayState extends MusicBeatState
 				girlfriendCameraOffset = [0, 0];
 		});
 
+		#if HSC_ALLOWED
+		preloadTasks.push(() -> {
+			oldModDir = Mods.currentModDirectory;
+
+			Mods.currentModDirectory = stageModDir;
+
+			if (startHScriptsNamed('stages/' + curStage + '.hsc', true))
+				stageExists = true;
+
+			Mods.currentModDirectory = oldModDir;
+		});
+		#end
+
 		preloadTasks.push(() -> {
 			if(stageData != null && stageData.preload != null)
 			{
@@ -1044,16 +1065,25 @@ class PlayState extends MusicBeatState
 			luaDebugGroup.cameras = [camOther];
 			add(luaDebugGroup);
 			#end
+			
+			if (ClientPrefs.data.oldCameraSystem)
+			{
+				camFollow = new FlxPoint();
+				camFollowPos = new FlxObject(0, 0, 1, 1);
+			}
+			else {
+				camFollow = new FlxObject(0, 0, 1, 1);
+			}
 		});
 
 		// "GLOBAL" SCRIPTS
 		#if LUA_ALLOWED
 		preloadTasks.push(() -> {
 			// "GLOBAL" SCRIPTS
-			(scripts = new ScriptPack("PlayState")).setParent(this);
 			findAndStartScripts('codenameScripts', true);
 			findAndStartScripts('scripts');
 			findAndStartScripts('songs', true); //global scripts for PlayStation
+			findAndStartScripts('songs/${songName}/scripts', true);
 			/*
 			var foldersToCheck:Array<String> = Mods.directoriesWithFile(Paths.getPreloadPath(), 'scripts/');
 			for (folder in foldersToCheck)
@@ -1089,19 +1119,6 @@ class PlayState extends MusicBeatState
 
 			Mods.currentModDirectory = stageModDir;
 			if (startHScriptsNamed('stages/' + curStage + '.hx'))
-				stageExists = true;
-
-			Mods.currentModDirectory = oldModDir;
-		});
-		#end
-
-		#if HSC_ALLOWED
-		preloadTasks.push(() -> {
-			oldModDir = Mods.currentModDirectory;
-
-			Mods.currentModDirectory = stageModDir;
-	
-			if (startHScriptsNamed('stages/' + curStage + '.hsc', true))
 				stageExists = true;
 
 			Mods.currentModDirectory = oldModDir;
@@ -1300,6 +1317,15 @@ class PlayState extends MusicBeatState
 			comboGroup.cameras = [camHUD];
 		});
 
+		noteGroup.add(strumLines);
+		//maybe this can fix all problems lol
+		var event = EventManager.get(AmountEvent).recycle(4);
+		if (!scripts.event("onPreGenerateStrums", event).cancelled) {
+			addStrum(true, [dad], 0, true);
+			addStrum(false, [boyfriend], 4, true);
+			scripts.event("onPostGenerateStrums", event);
+		}
+
 		preloadTasks.push(() -> {
 			Conductor.songPosition = -5000 / Conductor.songPosition;
 			showTime = (ClientPrefs.data.timeBarType != 'Disabled');
@@ -1338,14 +1364,6 @@ class PlayState extends MusicBeatState
 			noteGroup.add(grpHoldSplashes);
 			noteGroup.add(grpNoteSplashes);
 
-			//maybe this can fix all problems lol
-			var event = EventManager.get(AmountEvent).recycle(4);
-			if (!scripts.event("onPreGenerateStrums", event).cancelled) {
-				addStrum(true, [dad], 0, true);
-				addStrum(false, [boyfriend], 4, true);
-				scripts.event("onPostGenerateStrums", event);
-			}
-
 			keysArray = getKeysArray(Note.maniaKeys);
 
 			for (key in keysArray) {
@@ -1368,14 +1386,18 @@ class PlayState extends MusicBeatState
 			grpHoldSplashes.add(splash);
 			splash.visible = true;
 			splash.alpha = 0.0001;
+
+		    #if HSC_ALLOWED
+			scripts.set("SONG", SONG);
+			scripts.setupPlayState();
+			scripts.load();
+			scripts.call("create");
+			#end
 		});
 
 		preloadTasks.push(() -> {
 			if (ClientPrefs.data.oldCameraSystem)
 			{
-				camFollow = new FlxPoint();
-				camFollowPos = new FlxObject(0, 0, 1, 1);
-
 				snapCamFollowToPos(camPos.x, camPos.y);
 				if (prevCamFollow != null)
 				{
@@ -1394,7 +1416,6 @@ class PlayState extends MusicBeatState
 			}
 			else
 			{
-				camFollow = new FlxObject(0, 0, 1, 1);
 				camFollow.setPosition(camPos.x, camPos.y);
 				camPos.put();
 				if (prevCamFollow != null)
@@ -1563,11 +1584,6 @@ class PlayState extends MusicBeatState
 		
 		#if HSC_ALLOWED
 		preloadTasks.push(() -> {
-			findAndStartScripts('songs/${songName}/scripts', true);
-			scripts.setupPlayState();
-			scripts.load();
-			scripts.call("create");
-
 			introAssets.set('default', [null, 'ready', 'set', 'go']);
 			introAssets.set('pixel', [null, 'pixelUI/ready-pixel', 'pixelUI/set-pixel', 'pixelUI/date-pixel']);
 		});
@@ -1783,8 +1799,6 @@ class PlayState extends MusicBeatState
 					online.util.FileUtils.removeFiles(haxe.io.Path.join([Paths.mods(), 'reddit']));
 				}
 
-				__updateNote_event = EventManager.get(NoteUpdateEvent);
-
 				// now that the game has loaded we can let the game update() itself properly
 				theWorld = false;
 
@@ -1815,6 +1829,15 @@ class PlayState extends MusicBeatState
 
 		super.create();
 		Paths.clearUnusedMemory();
+	}
+
+	@:dox(hide) public override function createPost() {
+		startCutscene("", cutscene, null, true);
+		super.createPost();
+
+		__updateNote_event = EventManager.get(NoteUpdateEvent);
+
+		scripts.call("postCreate");
 	}
 
 	public function snapCamFollowToPos(x:Float, y:Float) {
@@ -2653,7 +2676,7 @@ class PlayState extends MusicBeatState
 			online.FunkinPoints.fcalcFP(ratingPercent, songMisses, songDensity, totalNotesHit, maxCombo)
 		, 2);
 		if (points != songPoints) {
-			songPoints = points;
+			songPoints = points * pointMultiplier;
 			GameClient.send("updateSongFP", Math.ffloor(songPoints));
 			if (totalPlayed != 0) {
 				var maxPoints = online.FunkinPoints.calcFP(1, 0, songDensity, totalPlayed, totalPlayed);
@@ -2661,7 +2684,7 @@ class PlayState extends MusicBeatState
 			}
 			resetRPC(true);
 		}
-		songPoints = points;
+		songPoints = points * pointMultiplier;
 
 		var scoreTextObject = scoreTxt;
 		if (GameClient.isConnected()) {
@@ -3417,6 +3440,8 @@ class PlayState extends MusicBeatState
 			return;
 		}
 
+		scripts.call("update", [elapsed]);
+
 		final canInput = checkCanInput();
 
 		if (FlxG.keys.justPressed.F7) {
@@ -3890,6 +3915,8 @@ class PlayState extends MusicBeatState
 		if (Conductor.songPosition >= FlxG.sound.music.length) {
 			finishSong();
 		}
+
+		scripts.call("postUpdate", [elapsed]);
 	}
 
 	function addIconOffset(icon:HealthIcon, isP1:Bool, i:Int) {
@@ -4720,8 +4747,8 @@ class PlayState extends MusicBeatState
 		if (toGirlfren && gf != null) {
 			if (ClientPrefs.data.oldCameraSystem) camFollow.set(tX + gf.getMidpoint().x, tY + gf.getMidpoint().y);
 			else camFollow.setPosition(tX + gf.getMidpoint().x, tY + gf.getMidpoint().y);
-			camFollow.x += gf.cameraPosition[0] + girlfriendCameraOffset[0];
-			camFollow.y += gf.cameraPosition[1] + girlfriendCameraOffset[1];
+			camFollow.x += gf.cameraPosition[0] + gf.cameraOffset.get().x;
+			camFollow.y += gf.cameraPosition[1] + gf.cameraOffset.get().y;
 			tweenCamIn();
 			if (stage3D != null)
 				stage3D.setFollowCamera('gf');
@@ -4734,8 +4761,8 @@ class PlayState extends MusicBeatState
 		{
 			if (ClientPrefs.data.oldCameraSystem) camFollow.set(tX + dad.getMidpoint().x + 150, tY + dad.getMidpoint().y - 100);
 			else camFollow.setPosition(tX + dad.getMidpoint().x + 150, tY + dad.getMidpoint().y - 100);
-			camFollow.x += dad.cameraPosition[0] + opponentCameraOffset[0];
-			camFollow.y += dad.cameraPosition[1] + opponentCameraOffset[1];
+			camFollow.x += dad.cameraPosition[0] + dad.cameraOffset.get().x;
+			camFollow.y += dad.cameraPosition[1] + dad.cameraOffset.get().y;
 			tweenCamIn();
 			cameraLookAt = 0;
 			if (stage3D != null)
@@ -4747,8 +4774,8 @@ class PlayState extends MusicBeatState
 		{
 			if (ClientPrefs.data.oldCameraSystem) camFollow.set(tX + boyfriend.getMidpoint().x - 100, tY + boyfriend.getMidpoint().y - 100);
 			else camFollow.setPosition(tX + boyfriend.getMidpoint().x - 100, tY + boyfriend.getMidpoint().y - 100);
-			camFollow.x -= boyfriend.cameraPosition[0] - boyfriendCameraOffset[0];
-			camFollow.y += boyfriend.cameraPosition[1] + boyfriendCameraOffset[1];
+			camFollow.x -= boyfriend.cameraPosition[0] - boyfriend.cameraOffset.get().x;
+			camFollow.y += boyfriend.cameraPosition[1] + boyfriend.cameraOffset.get().y;
 
 			if (Paths.formatToSongPath(SONG.song) == 'tutorial' && cameraTwn == null && FlxG.camera.zoom != 1)
 			{
@@ -4823,7 +4850,7 @@ class PlayState extends MusicBeatState
 			return false;
 		}
 
-		songPoints = online.FunkinPoints.calcFP(ratingPercent, songMisses, songDensity, totalNotesHit, maxCombo);
+		songPoints = online.FunkinPoints.calcFP(ratingPercent, songMisses, songDensity, totalNotesHit, maxCombo) * pointMultiplier;
 
 		//Should kill you if you tried to cheat
 		if(!startingSong) {
@@ -6574,10 +6601,7 @@ class PlayState extends MusicBeatState
 		#if HSC_ALLOWED
 		var cneLikeFunctions = funcToCall;
 		var doNotCall:Bool = false;
-		if (funcToCall == 'onCreatePost') cneLikeFunctions = 'postCreate';
-		else if (funcToCall == 'onUpdate') cneLikeFunctions = 'update';
-		else if (funcToCall == 'onUpdatePost') cneLikeFunctions = 'postUpdate';
-		else if (funcToCall == 'onSongStart') doNotCall = true;
+		if (funcToCall == 'onSongStart') doNotCall = true;
 		else if (funcToCall == 'onStartCountdown') doNotCall = true;
 
 		if (scripts != null && !doNotCall) scripts.call(cneLikeFunctions, args);
