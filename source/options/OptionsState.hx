@@ -180,7 +180,7 @@ class OptionsState extends MusicBeatState
 
 		super.create();
 
-		mobileManager.addMobilePad("UP_DOWN", "A_B_E");
+		mobileManager.addMobilePad("UP_DOWN", "A_B");
 		online.GameClient.send("status", "In the Game Options");
 	}
 
@@ -190,7 +190,7 @@ class OptionsState extends MusicBeatState
 		ClientPrefs.saveSettings();
 		controls.isInSubstate = false;
 		mobileManager.removeMobilePad();
-		mobileManager.addMobilePad('UP_DOWN', 'A_B_E');
+		mobileManager.addMobilePad('UP_DOWN', 'A_B');
 		persistentUpdate = true;
 	}
 
@@ -241,7 +241,6 @@ class OptionsState extends MusicBeatState
 			}
 		}
 		else if (controls.ACCEPT #if desktop || FlxG.mouse.justPressed #end) openSelectedSubstate(options[curSelected]);
-		else if (mobileButtonJustPressed('E')) openSelectedSubstate('Mobile Extra Control');
 	}
 	
 	function changeSelection(change:Int = 0) {

@@ -216,19 +216,6 @@ class VisualsUISubState extends BaseOptionsMenu
 		option.decimals = 1;
 		addOption(option);
 
-		var option:Option = new Option('FPS Counter',
-			'If unchecked, hides FPS Counter.',
-			'showFPS',
-			'bool');
-		addOption(option);
-		option.onChange = onChangeFPSCounter;
-
-		var option:Option = new Option('Disable Online Shaders',
-			'If checked, disables shaders that being used on online menus.',
-			'disableOnlineShaders',
-			'bool');
-		addOption(option);
-
 		var option:Option = new Option('Nameplate Fade Time',
 			'After how many seconds should player nameplates be hidden?\nSet to 0 to instantly hide them.\nSet to -1 to never hide them.',
 			'nameplateFadeTime',
