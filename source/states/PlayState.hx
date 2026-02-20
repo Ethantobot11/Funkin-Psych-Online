@@ -1828,15 +1828,13 @@ class PlayState extends MusicBeatState
 		orderOffset = 2;
 
 		super.create();
-		Paths.clearUnusedMemory();
-	}
 
-	public override function createPost() {
-		super.createPost();
-
+		//put these there
 		__updateNote_event = EventManager.get(NoteUpdateEvent);
 
 		scripts.call("postCreate");
+	
+		Paths.clearUnusedMemory();
 	}
 
 	public function snapCamFollowToPos(x:Float, y:Float) {
