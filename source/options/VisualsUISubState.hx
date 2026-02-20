@@ -16,6 +16,13 @@ class VisualsUISubState extends BaseOptionsMenu
 	var notesTween:Array<FlxTween> = [];
 	var noteY:Float = 90;
 
+	override function closeSubState() {
+		super.closeSubState();
+		controls.isInSubstate = true;
+		mobileManager.removeMobilePad();
+		mobileManager.addMobilePad('UP_DOWN', 'A_B');
+	}
+
 	function openNotes() {
 		// for note skins
 		notes = new FlxTypedGroup<StrumNote>();
@@ -35,6 +42,7 @@ class VisualsUISubState extends BaseOptionsMenu
 			null,
 			'button');
 		option.onChange = () -> {
+			mobileManager.removeMobilePad();
 			openSubState(new options.NotesSubState());
 		};
 		addOption(option);
