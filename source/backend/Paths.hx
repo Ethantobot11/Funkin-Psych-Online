@@ -511,6 +511,25 @@ class Paths
 		return frames;
 	}
 
+	inline static public function script(key:String, ?library:String) {
+		#if SCRIPTING_ALLOWED
+		var scriptToLoad:String = null;
+		for(ex in [".hsc"]) {
+			#if MODS_ALLOWED
+			scriptToLoad = Paths.modFolders('${key}.$ex');
+			if(!FunkinFileSystem.exists(scriptToLoad))
+				scriptToLoad = 'assets/$key';
+			#else
+			scriptToLoad = 'assets/$key';
+			#end
+
+			if(FunkinFileSystem.exists(scriptToLoad))
+				break;
+		}
+		return scriptToLoad;
+		#end
+	}
+
 	static var invalidChars = ~/[~&\\;:<>#]/;
 	static var hideChars = ~/[.,'"%?!]/;
 

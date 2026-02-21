@@ -28,6 +28,7 @@
 
 	<haxedef name="FLX_CNE_FORK" />
 	<define name="HSC_ALLOWED" />
+	<define name="SCRIPTING_ALLOWED" />
 	<define name="TRANSLATIONS_ALLOWED" />
 
 	<!-- ______________________ PSYCH ENGINE CUSTOMIZATION ______________________ -->
@@ -258,7 +259,7 @@
 	<haxedef name="message.reporting" value="pretty" />
 
 	<!-- Global Script shit, I'll write the desc later -->
-	<define name="GLOBAL_SCRIPT" if="SCRIPTING_ALLOWED" />
+	<!-- <define name="GLOBAL_SCRIPT" if="SCRIPTING_ALLOWED" /> -->
 
 	<!-- Comment this out to prevent extending classes in hscript.
 		 Reduces compilation time at the cost of limited HScript flexibility. !-->

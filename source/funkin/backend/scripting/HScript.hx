@@ -37,7 +37,7 @@ class HScript extends Script {
 	public static function initParser() {
 		var parser = new Parser();
 		parser.allowJSON = parser.allowMetadata = parser.allowTypes = true;
-		parser.preprocesorValues = Script.getDefaultPreprocessors();
+		parser.preprocessorValues = Script.getDefaultPreprocessors();
 		return parser;
 	}
 
@@ -48,44 +48,51 @@ class HScript extends Script {
 
 		try {
 			if(FunkinFileSystem.exists(rawPath)) code = FunkinFileSystem.getText(rawPath);
-		} catch(e) trace('Error while reading $path: ${Std.string(e)}');
+		} catch(e) CoolUtil.showPopUp('Error while reading $path: ${Std.string(e)}', "HScript Improved");
 
 		parser = initParser();
 		//folderlessPath = Path.directory(path);
 		__importedPaths = [path];
 
 		interp.errorHandler = _errorHandler;
+		interp.warnHandler = _warnHandler;
 		interp.importFailedCallback = importFailedCallback;
 		interp.staticVariables = Script.staticVariables;
 		interp.allowStaticVariables = interp.allowPublicVariables = true;
 
-		set("trace", Reflect.makeVarArgs(function(el) {
-			@:privateAccess
-			var inf = cast {fileName: path, lineNumber: interp.curExpr.line};
-			var v = el.shift();
-			if (el.length > 0)
-				inf.customParams = el;
-			
+		interp.variables.set("trace", Reflect.makeVarArgs((args) -> {
+			var v:String = Std.string(args.shift());
+			for (a in args) v += ", " + Std.string(a);
 			haxe.Log.trace(Std.string(v), inf);
 		}));
 
+		#if GLOBAL_SCRIPT
+		funkin.backend.scripting.GlobalScript.call("onScriptCreated", [this, "hscript"]);
+		#end
 		loadFromString(code);
 	}
 
 	public override function loadFromString(code:String) {
 		try {
-			if (code != null && code.trim() != "") {
-				expr = parser.parseString(code, rawPath);
-			}
+			if (code != null && code.trim() != "")
+				expr = parser.parseString(code, fileName);
 		} catch(e:Error) {
 			_errorHandler(e);
+		} catch(e) {
+			_errorHandler(new Error(ECustom(e.toString()), 0, 0, fileName, 0));
 		}
 
 		return this;
 	}
 
-	private function importFailedCallback(cl:Array<String>):Bool {
-		var assetsPath = 'assets/source/${cl.join("/")}';
+	private function importFailedCallback(cl:Array<String>, ?asName:String):Bool {
+		if(_importFailedCallback(cl, "source/") || _importFailedCallback(cl, "")) {
+			return true;
+		}
+		return false;
+	}
+	private function _importFailedCallback(cl:Array<String>, prefix:String):Bool {
+		var assetsPath = 'assets/$prefix${cl.join("/")}';
 		for(hxExt in ["hx", "hscript", "hsc", "hxs"]) {
 			var p = '$assetsPath.$hxExt';
 			if (__importedPaths.contains(p))
@@ -116,15 +123,36 @@ class HScript extends Script {
 
 	private function _errorHandler(error:Error) {
 		var fileName = error.origin;
+		var oldfn = '$fileName:${error.line}: ';
 		if(remappedNames.exists(fileName))
 			fileName = remappedNames.get(fileName);
 		var fn = '$fileName:${error.line}: ';
 		var err = error.toString();
-		if (err.startsWith(fn)) err = err.substr(fn.length);
+		while(err.startsWith(oldfn) || err.startsWith(fn)) {
+			if (err.startsWith(oldfn)) err = err.substr(oldfn.length);
+			if (err.startsWith(fn)) err = err.substr(fn.length);
+		}
 
 		trace("ERROR Caused in " + err);
+		CoolUtil.showPopUp("ERROR Caused in " + fn, "HSCRIPT IMPROVED ERROR");
 		CoolUtil.showPopUp("ERROR Caused in " + err, "HSCRIPT IMPROVED ERROR");
-		//Main.addDebugText('HSCRIPT IMPROVED ERROR: ERROR Caused in ' + err, FlxColor.RED);
+	}
+
+	private function _warnHandler(error:Error) {
+		var fileName = error.origin;
+		var oldfn = '$fileName:${error.line}: ';
+		if(remappedNames.exists(fileName))
+			fileName = remappedNames.get(fileName);
+		var fn = '$fileName:${error.line}: ';
+		var err = error.toString();
+		while(err.startsWith(oldfn) || err.startsWith(fn)) {
+			if (err.startsWith(oldfn)) err = err.substr(oldfn.length);
+			if (err.startsWith(fn)) err = err.substr(fn.length);
+		}
+
+		trace("WARN Caused in " + err);
+		CoolUtil.showPopUp("ERROR Caused in " + fn, "HSCRIPT IMPROVED WARN");
+		CoolUtil.showPopUp("ERROR Caused in " + err, "HSCRIPT IMPROVED WARN");
 	}
 
 	public override function setParent(parent:Dynamic) {
@@ -138,6 +166,10 @@ class HScript extends Script {
 			interp.execute(expr);
 			call("new", []);
 		}
+
+		#if GLOBAL_SCRIPT
+		funkin.backend.scripting.GlobalScript.call("onScriptSetup", [this, "hscript"]);
+		#end
 	}
 
 	public override function reload() {
@@ -180,8 +212,8 @@ class HScript extends Script {
 		return interp.variables.get(val);
 	}
 
-	public override function set(variable:String, value:Dynamic){
-		interp.variables.set(variable, value);
+	public override function set(val:String, value:Dynamic) {
+		interp.variables.set(val, value);
 	}
 
 	/* Some PlayState things */
@@ -220,11 +252,6 @@ class HScript extends Script {
 			#end
 			psychlua.FunkinLua.customFunctions.set(name, func);
 		});
-	}
-
-	public override function trace(v:Dynamic) {
-		var posInfo = interp.posInfos();
-		trace('${fileName}:${posInfo.lineNumber}: ' + (Std.isOfType(v, String) ? v : Std.string(v)));
 	}
 
 	public override function setPublicMap(map:Map<String, Dynamic>) {
@@ -338,8 +365,8 @@ class Script extends FlxBasic implements IFlxDestroyable {
 
 			/* Custom Menus */
 			#if SCRIPTING_ALLOWED
-			"ModState"		  => funkin.backend.scripting.ModState,
-			"ModSubState"		  => funkin.backend.scripting.ModSubState,
+			//"ModState"		  => funkin.backend.scripting.ModState,
+			//"ModSubState"		  => funkin.backend.scripting.ModSubState,
 			#end
 
 			/* hxVLC */
@@ -371,8 +398,7 @@ class Script extends FlxBasic implements IFlxDestroyable {
 	 */
 	public static var scriptExtensions:Array<String> = [
 		"hx", "hscript", "hsc", "hxs",
-		"pack", // combined file
-		"lua" /** ACTUALLY NOT SUPPORTED, ONLY FOR THE MESSAGE **/
+		"pack" // combined file
 	];
 
 	/**
@@ -393,10 +419,14 @@ class Script extends FlxBasic implements IFlxDestroyable {
 	/**
 	 * Path to the script.
 	 */
-	public var path:String;
+	public var path:String = null;
 
 	private var rawPath:String = null;
 
+	/**
+	 * Remapped filenames.
+	 * Used for trace messages, to show what mod the script is from.
+	 */
 	private var didLoad:Bool = false;
 
 	public var remappedNames:Map<String, String> = [];
@@ -413,9 +443,6 @@ class Script extends FlxBasic implements IFlxDestroyable {
 				case "pack":
 					var arr = FunkinFileSystem.getText(path).split("________PACKSEP________");
 					fromString(arr[1], arr[0]);
-				case "lua":
-					trace("Lua is not supported in custom menus. Use HScript instead.");
-					new DummyScript(path);
 				default:
 					new DummyScript(path);
 			}
@@ -450,8 +477,8 @@ class Script extends FlxBasic implements IFlxDestroyable {
 		rawPath = path;
 		//path = path;
 
-		this.fileName = Path.withoutDirectory(path);
-		this.extension = Path.extension(path);
+		fileName = Path.withoutDirectory(path);
+		extension = Path.extension(path);
 		this.path = path;
 		onCreate(path);
 		for(k=>e in getDefaultVariables(this)) {
@@ -503,7 +530,7 @@ class Script extends FlxBasic implements IFlxDestroyable {
 	 * Loads the script
 	 */
 	public function load() {
-		//if(didLoad) return; //this shit brokes the update functions (maybe I can fix this later)
+		if(didLoad) return;
 
 		var oldScript = curScript;
 		curScript = this;
@@ -555,7 +582,7 @@ class Script extends FlxBasic implements IFlxDestroyable {
 	}
 
 	/**
-	 * Loads the code from a string, doesnt really work after the script has been loaded
+	 * Loads the code from a string, doesn't really work after the script has been loaded
 	 * @param code The code.
 	 */
 	public function loadFromString(code:String) {
@@ -613,8 +640,15 @@ class Script extends FlxBasic implements IFlxDestroyable {
 	private function onCall(func:String, parameters:Array<Dynamic>):Dynamic {
 		return null;
 	}
+	/**
+	 * Called when the script is created.
+	 * @param path Path to the script
+	 */
 	public function onCreate(path:String) {}
 
+	/**
+	 * Called when the script is loaded.
+	 */
 	public function onLoad() {}
 }
 
