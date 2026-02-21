@@ -357,9 +357,12 @@ class MusicBeatState extends FlxUIState
 	//do not ask why, ask why not?
 	public override function add(basic:FlxBasic):FlxBasic {
 		super.add(basic);
+		#if macro
 		setToHScript(nameOf(basic), basic);
+		#end
 	}
 
+	#if macro
 	static macro function nameOf(e:Expr):Expr {
 		Context.typeExpr(e);
 		return switch (e.expr) {
@@ -369,6 +372,7 @@ class MusicBeatState extends FlxUIState
 				Context.error("nameOf requires an indentifier as argument", Context.currentPos());
 		}
 	}
+	#end
 
 	public function event<T:CancellableEvent>(name:String, event:T):T {
 		#if SCRIPTING_ALLOWED
