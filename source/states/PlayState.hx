@@ -2672,13 +2672,13 @@ class PlayState extends MusicBeatState
 	public function updateScore(miss:Bool = false, ?skipRest:Bool = false)
 	{
 		var points = FlxMath.roundDecimal(
-			online.FunkinPoints.fcalcFP(ratingPercent, songMisses, songDensity, totalNotesHit, maxCombo)
+			online.FunkinPoints.fcalcFP(ratingPercent, songMisses, songDensity, totalNotesHit, maxCombo) * pointMultiplier
 		, 2);
 		if (points != songPoints) {
 			songPoints = points * pointMultiplier;
 			GameClient.send("updateSongFP", Math.ffloor(songPoints));
 			if (totalPlayed != 0) {
-				var maxPoints = online.FunkinPoints.calcFP(1, 0, songDensity, totalPlayed, totalPlayed);
+				var maxPoints = online.FunkinPoints.calcFP(1, 0, songDensity, totalPlayed, totalPlayed) * pointMultiplier;
 				pointsPercent = Math.min(1, Math.max(0, points / maxPoints));
 			}
 			resetRPC(true);
@@ -3143,7 +3143,7 @@ class PlayState extends MusicBeatState
 		songDensity = playingNoteCount == 0 ? 0 : playingNoteCount / (inst.length / playbackRate / 1000) / 2;
 		trace("note density score (w/ fp): " + (1 + songDensity) + ' for total of ${playingNoteCount} notes');
 
-		var maxFP = online.FunkinPoints.calcFP(1, 0, songDensity, playingNoteCount, playingNoteCount);
+		var maxFP = online.FunkinPoints.calcFP(1, 0, songDensity, playingNoteCount, playingNoteCount) * pointMultiplier;
 		trace("max points: ~" + maxFP + 'FP');
 		if (ClientPrefs.data.newFPPreview) {
 			var maxFP = online.FunkinPoints.devFP(1, 0, songDensity, playingNoteCount, playingNoteCount);

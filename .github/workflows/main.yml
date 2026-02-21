@@ -37,7 +37,7 @@ jobs:
             os: macos-15
             buildArgs: "ios -final -nosign -D officialBuild"
             artifactName: iOSBuild
-            artifactPath: "export/*/ios/*/*/*.ipa"
+            artifactPath: "export/release/ios/build/Release-iphoneos/*.app"
     uses: ./.github/workflows/build.yml
     with:
         name: ${{ matrix.name }}
