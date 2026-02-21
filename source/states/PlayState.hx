@@ -722,7 +722,7 @@ class PlayState extends MusicBeatState
 		#end
 
 		// var gameCam:FlxCamera = FlxG.camera;
-		camGame = new backend.PsychCamera();
+		camGame = new FlxCamera();
 		camHUD = new FlxCamera();
 		camOther = new FlxCamera();
 		camLoading = new FlxCamera();

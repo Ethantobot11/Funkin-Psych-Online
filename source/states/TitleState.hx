@@ -172,16 +172,22 @@ class TitleState extends MusicBeatState
 			FlxG.switchState(() -> new FlashingState());
 		} else {
 			if (initialized)
-				startIntro();
+				startCutscenesIn();
 			else
 			{
 				new FlxTimer().start(1, function(tmr:FlxTimer)
 				{
-					startIntro();
+					startCutscenesIn();
 				});
 			}
 		}
 		#end
+	}
+
+	function startCutscenesIn()
+	{
+		if (event("onCutscenesIn", new CancellableEvent()).cancelled) return;
+		startIntro();
 	}
 
 	var logoBl:FlxSprite;
@@ -192,6 +198,7 @@ class TitleState extends MusicBeatState
 
 	function startIntro()
 	{
+		if (event("onStartIntro", new CancellableEvent()).cancelled) return;
 		if (!initialized)
 		{
 			if(FlxG.sound.music == null) {
@@ -324,6 +331,8 @@ class TitleState extends MusicBeatState
 		ngSpr.antialiasing = ClientPrefs.data.antialiasing;
 
 		FlxTween.tween(credTextShit, {y: credTextShit.y + 20}, 2.9, {ease: FlxEase.quadInOut, type: PINGPONG});
+
+		if (event("onStartIntroPost", new CancellableEvent()).cancelled) return;
 
 		if (initialized)
 			skipIntro();
@@ -611,6 +620,7 @@ class TitleState extends MusicBeatState
 		}
 
 		if(!closedState) {
+			if (event("onPreIntroStarted", new CancellableEvent()).cancelled) return;
 			sickBeats++;
 			switch (sickBeats)
 			{
@@ -676,6 +686,7 @@ class TitleState extends MusicBeatState
 					addMoreText('Funkin'); // credTextShit.text += '\nFunkin';
 
 				case 17:
+					if (event("onPreIntroFinished", new CancellableEvent()).cancelled) return;
 					skipIntro();
 			}
 		}
@@ -685,6 +696,7 @@ class TitleState extends MusicBeatState
 	var increaseVolume:Bool = false;
 	function skipIntro():Void
 	{
+		if (event("onSkipIntro", new CancellableEvent()).cancelled) return;
 		if (!skippedIntro)
 		{
 			if (playJingle) //Ignore deez

@@ -3,12 +3,6 @@ package backend;
 import flixel.addons.ui.FlxUIState;
 import flixel.addons.transition.FlxTransitionableState;
 import flixel.FlxState;
-import flixel.FlxBasic;
-
-#if macro
-import haxe.macro.Context;
-import haxe.macro.Expr;
-#end
 
 #if SCRIPTING_ALLOWED
 import funkin.backend.scripting.HScript;
@@ -347,33 +341,6 @@ class MusicBeatState extends FlxUIState
 		#end
 		return defaultVal;
 	}
-
-	public function setToHScript(name:String, ?variable:Dynamic) {
-		// calls the function on the assigned script
-		if(stateScripts != null)
-			return stateScripts.set(name, variable);
-	}
-
-	//do not ask why, ask why not?
-	public override function add(basic:FlxBasic):FlxBasic {
-		super.add(basic);
-		#if macro
-		setToHScript(nameOf(basic), basic);
-		#end
-		return basic;
-	}
-
-	#if macro
-	static macro function nameOf(e:Expr):Expr {
-		Context.typeExpr(e);
-		return switch (e.expr) {
-			case EConst(CIdent(s)):
-				macro $v{s};
-			default:
-				Context.error("nameOf requires an indentifier as argument", Context.currentPos());
-		}
-	}
-	#end
 
 	public function event<T:CancellableEvent>(name:String, event:T):T {
 		#if SCRIPTING_ALLOWED

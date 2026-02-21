@@ -365,8 +365,8 @@ class Script extends FlxBasic implements IFlxDestroyable {
 
 			/* Custom Menus */
 			#if SCRIPTING_ALLOWED
-			//"ModState"		  => funkin.backend.scripting.ModState,
-			//"ModSubState"		  => funkin.backend.scripting.ModSubState,
+			"ModState"		  => funkin.backend.scripting.ModState,
+			"ModSubState"		  => funkin.backend.scripting.ModSubState,
 			#end
 
 			/* hxVLC */
