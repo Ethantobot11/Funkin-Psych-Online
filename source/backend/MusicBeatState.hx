@@ -229,6 +229,8 @@ class MusicBeatState extends FlxUIState
 			stage.curDecStep = curDecStep;
 			stage.stepHit();
 		});
+		#if GLOBAL_SCRIPT GlobalScript.stepHit(curStep); #end
+		call("stepHit", [curStep]);
 
 		if (curStep % 4 == 0)
 			beatHit();
@@ -243,6 +245,8 @@ class MusicBeatState extends FlxUIState
 			stage.curDecBeat = curDecBeat;
 			stage.beatHit();
 		});
+		#if GLOBAL_SCRIPT GlobalScript.beatHit(curBeat); #end
+		call("beatHit", [curBeat]);
 	}
 
 	public function sectionHit():Void
@@ -252,6 +256,7 @@ class MusicBeatState extends FlxUIState
 			stage.curSection = curSection;
 			stage.sectionHit();
 		});
+		call("measureHit", [curSection]);
 	}
 
 	function stagesFunc(func:BaseStage->Void)

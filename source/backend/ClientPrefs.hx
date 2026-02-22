@@ -694,6 +694,7 @@ class ClientPrefs {
 	}
 
 	public static function getHSVColor(player:Int = 0):Array<Array<Int>> {
+		/* the server-side thing doesn't work bc I'm not owner of the server.
 		if (!GameClient.isConnected() || NotesSubState.isOpened || player == -1)
 			return ClientPrefs.data.arrowHSV;
 
@@ -704,6 +705,8 @@ class ClientPrefs {
 			return ClientPrefs.data.arrowHSV;
 
 		return CoolUtil.to2DArrayfrom1D(CoolUtil.asta(PlayState.instance.opponentPlayer.hsvArrowColors), 3);
+		*/
+		return ClientPrefs.data.arrowHSV;
 	}
 
 	public static function getRGBColor(player:Int = 0):Array<Array<FlxColor>> {

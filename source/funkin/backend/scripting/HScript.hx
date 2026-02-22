@@ -133,9 +133,8 @@ class HScript extends Script {
 			if (err.startsWith(fn)) err = err.substr(fn.length);
 		}
 
-		trace("ERROR Caused in " + err);
-		CoolUtil.showPopUp("ERROR Caused in " + fn, "HSCRIPT IMPROVED ERROR");
-		CoolUtil.showPopUp("ERROR Caused in " + err, "HSCRIPT IMPROVED ERROR");
+		trace("ERROR Caused in " + fn + err);
+		CoolUtil.showPopUp("ERROR Caused in " + fn + err, "HSCRIPT IMPROVED ERROR");
 	}
 
 	private function _warnHandler(error:Error) {
@@ -151,8 +150,7 @@ class HScript extends Script {
 		}
 
 		trace("WARN Caused in " + err);
-		CoolUtil.showPopUp("ERROR Caused in " + fn, "HSCRIPT IMPROVED WARN");
-		CoolUtil.showPopUp("ERROR Caused in " + err, "HSCRIPT IMPROVED WARN");
+		CoolUtil.showPopUp("ERROR Caused in " + fn + err, "HSCRIPT IMPROVED WARN");
 	}
 
 	public override function setParent(parent:Dynamic) {
