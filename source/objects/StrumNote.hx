@@ -278,6 +278,7 @@ class StrumNote extends FlxSprite
 			}
 			else
 			{
+				var mustPress = player == 1;
 				var hsvColor = ClientPrefs.getHSVColor(mustPress == (GameClient.getPlayerSelf()?.bfSide ?? true) ? 0 : 1);
 				if (noteData > -1 && noteData < hsvColor.length)
 				{

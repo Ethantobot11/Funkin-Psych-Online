@@ -4,7 +4,6 @@ import online.GameClient;
 import shaders.RGBPalette;
 import flixel.system.FlxAssets.FlxShader;
 import flixel.graphics.frames.FlxFrame;
-import shaders.ColorSwap;
 
 typedef NoteSplashConfig = {
 	anim:String,
@@ -15,7 +14,6 @@ typedef NoteSplashConfig = {
 
 class NoteSplash extends FlxSprite
 {
-	public var colorSwap:ColorSwap = null;
 	public var rgbShader:PixelSplashShaderRef;
 	private var idleAnim:String;
 	private var _textureLoaded:String = null;
@@ -31,12 +29,7 @@ class NoteSplash extends FlxSprite
 		if(PlayState.SONG.splashSkin != null && PlayState.SONG.splashSkin.length > 0) skin = PlayState.SONG.splashSkin;
 		else skin = defaultNoteSplash + getSplashSkinPostfix();
 
-		if (ClientPrefs.data.disableRGBNotes)
-		{
-			colorSwap = new ColorSwap();
-			shader = colorSwap.shader;
-		}
-		else
+		if (!ClientPrefs.data.disableRGBNotes)
 		{
 			rgbShader = new PixelSplashShaderRef();
 			shader = rgbShader.shader;
@@ -76,30 +69,13 @@ class NoteSplash extends FlxSprite
 			config = precacheConfig(_configLoaded);
 
 		var tempShader:RGBPalette = null;
-		if (ClientPrefs.data.disableRGBNotes)
-		{
-			var hue:Float = 0;
-			var saturation:Float = 0;
-			var brightness:Float = 0;
-
-			var hsvColor = ClientPrefs.getHSVColor(mustPress == (GameClient.getPlayerSelf()?.bfSide ?? true) ? 0 : 1);
-			if (direction > -1 && direction < hsvColor.length)
-			{
-				hue = hsvColor[direction][0] / 360;
-				saturation = hsvColor[direction][1] / 100;
-				brightness = hsvColor[direction][2] / 100;
-
-				if (note != null)
-				{
-					hue = note.noteSplashHue;
-					saturation = note.noteSplashSat;
-					brightness = note.noteSplashBrt;
-				}
+		if (ClientPrefs.data.disableRGBNotes) {
+			try {
+				if (note.shader != null) shader = note.shader;
 			}
-
-			colorSwap.hue = hue;
-			colorSwap.saturation = saturation;
-			colorSwap.brightness = brightness;
+			catch (e) {
+				trace(e);
+			}
 		}
 		else
 		{
