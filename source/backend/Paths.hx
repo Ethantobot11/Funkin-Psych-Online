@@ -511,12 +511,19 @@ class Paths
 		return frames;
 	}
 
-	inline static public function script(key:String, ?library:String) {
+	inline static public function script(key:String, ?library:String, ?onlyGlobals:Bool) {
 		#if SCRIPTING_ALLOWED
 		var scriptToLoad:String = null;
-		for(ex in ["hsc"]) {
+		for(ex in ["hsc", "porno", "class", "script", "pex"]) {
 			#if MODS_ALLOWED
-			scriptToLoad = Paths.modFolders('${key}.$ex');
+			if (onlyGlobals) {
+				for(mod in Mods.getGlobalMods()) {
+					if (FunkinFileSystem.exists(mods('$key.$ex')))
+						scriptToLoad = mods('$key.$ex');
+				}
+			} else {
+				scriptToLoad = Paths.modFolders('$key.$ex');
+			}
 			if(!FunkinFileSystem.exists(scriptToLoad))
 				scriptToLoad = 'assets/$key';
 			#else

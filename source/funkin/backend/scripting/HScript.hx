@@ -887,7 +887,7 @@ class GlobalScript {
 		destroy();
 		scripts = new ScriptPack("GlobalScript");
 
-		var path = Paths.script('data/global', null, true); //I used `true` because I don't want add this feature to the mods rn
+		var path = Paths.script('data/global', null, true); //global mod special ;)
 		trace(path);
 		var script = Script.create(path);
 		if (script is DummyScript) {
