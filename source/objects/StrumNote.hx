@@ -278,11 +278,12 @@ class StrumNote extends FlxSprite
 			}
 			else
 			{
-				if (noteData > -1 && noteData < ClientPrefs.data.arrowHSV.length)
+				var hsvColor = ClientPrefs.getHSVColor(mustPress == (GameClient.getPlayerSelf()?.bfSide ?? true) ? 0 : 1);
+				if (noteData > -1 && noteData < hsvColor.length)
 				{
-					colorSwap.hue = ClientPrefs.data.arrowHSV[noteData][0] / 360;
-					colorSwap.saturation = ClientPrefs.data.arrowHSV[noteData][1] / 100;
-					colorSwap.brightness = ClientPrefs.data.arrowHSV[noteData][2] / 100;
+					colorSwap.hue = hsvColor[noteData][0] / 360;
+					colorSwap.saturation = hsvColor[noteData][1] / 100;
+					colorSwap.brightness = hsvColor[noteData][2] / 100;
 				}
 
 				if (animation.curAnim != null)

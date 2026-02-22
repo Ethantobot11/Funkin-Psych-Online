@@ -693,6 +693,19 @@ class ClientPrefs {
 		return PlayState.replayData?.safe_frames ?? data.safeFrames;
 	}
 
+	public static function getHSVColor(player:Int = 0):Array<Array<Int>> {
+		if (!GameClient.isConnected() || NotesSubState.isOpened || player == -1)
+			return ClientPrefs.data.arrowHSV;
+
+		if (player == 0)
+			return CoolUtil.to2DArrayfrom1D(CoolUtil.asta(GameClient.getPlayerSelf().hsvArrowColors), 3);
+
+		if (PlayState.instance?.opponentPlayer == null)
+			return ClientPrefs.data.arrowHSV;
+
+		return CoolUtil.to2DArrayfrom1D(CoolUtil.asta(PlayState.instance.opponentPlayer.hsvArrowColors), 3);
+	}
+
 	public static function getRGBColor(player:Int = 0):Array<Array<FlxColor>> {
 		if (!GameClient.isConnected() || NotesSubState.isOpened || player == -1)
 			return (Note.maniaKeys != 4 ? data.arrowRGBMap.get(Note.maniaKeys + 'k') : data.arrowRGB);

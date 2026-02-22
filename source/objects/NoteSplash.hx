@@ -82,11 +82,12 @@ class NoteSplash extends FlxSprite
 			var saturation:Float = 0;
 			var brightness:Float = 0;
 
-			if (direction > -1 && direction < ClientPrefs.data.arrowHSV.length)
+			var hsvColor = ClientPrefs.getHSVColor(mustPress == (GameClient.getPlayerSelf()?.bfSide ?? true) ? 0 : 1);
+			if (direction > -1 && direction < hsvColor.length)
 			{
-				hue = ClientPrefs.data.arrowHSV[direction][0] / 360;
-				saturation = ClientPrefs.data.arrowHSV[direction][1] / 100;
-				brightness = ClientPrefs.data.arrowHSV[direction][2] / 100;
+				hue = hsvColor[direction][0] / 360;
+				saturation = hsvColor[direction][1] / 100;
+				brightness = hsvColor[direction][2] / 100;
 
 				if (note != null)
 				{

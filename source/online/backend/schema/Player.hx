@@ -80,4 +80,7 @@ class Player extends Person {
 	@:type("map", ColorArray)
 	public var arrowColorsPixel: MapSchema<ColorArray> = new MapSchema<ColorArray>();
 
+	@:type("array", "number")
+	public var hsvArrowColors: ArraySchema<Dynamic> = new ArraySchema<Dynamic>();
+
 }
