@@ -1806,7 +1806,6 @@ class PlayState extends MusicBeatState
 				stagesFunc(function(stage:BaseStage) stage.createPost());
 				callOnScripts('onCreatePost');
 				__updateNote_event = EventManager.get(NoteUpdateEvent);
-				scripts.call("postCreate");
 				registerMessages();
 
 				add(nameplates);
@@ -6595,7 +6594,8 @@ class PlayState extends MusicBeatState
 		#if HSC_ALLOWED
 		var cneLikeFunctions = funcToCall;
 		var doNotCall:Bool = false;
-		if (funcToCall == 'onSongStart') doNotCall = true;
+		if (funcToCall == 'onCreatePost') cneLikeFunctions = 'postCreate';
+		else if (funcToCall == 'onSongStart') doNotCall = true;
 		else if (funcToCall == 'onStartCountdown') doNotCall = true;
 
 		if (scripts != null && !doNotCall) scripts.call(cneLikeFunctions, args);
