@@ -1,7 +1,5 @@
 package funkin.backend.scripting.events;
 
-import funkin.game.Strum;
-
 final class StrumCreationEvent extends CancellableEvent {
 	@:dox(hide) public var __doAnimation = true;
 
@@ -9,7 +7,7 @@ final class StrumCreationEvent extends CancellableEvent {
 	/**
 	 * The strum that is being created
 	 */
-	public var strum:Strum;
+	public var strum:StrumNote;
 
 	/**s
 	 * Player ID

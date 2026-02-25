@@ -645,7 +645,7 @@ class PlayState extends MusicBeatState
 			babyArrow.downScroll = ClientPrefs.data.downScroll;
 	
 			var event = EventManager.get(StrumCreationEvent).recycle(babyArrow, strumLines.members.indexOf(strumGroup), i);
-			event.__doAnimation = !MusicBeatState.skipTransIn;
+			event.__doAnimation = true;
 			event = scripts.event("onStrumCreation", event);
 
 			if (!isStoryMode && !skipArrowStartTween && event.__doAnimation)
