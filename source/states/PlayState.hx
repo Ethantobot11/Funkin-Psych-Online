@@ -5966,10 +5966,10 @@ class PlayState extends MusicBeatState
 
 		var opChar = sid != null ? characters.get(sid) : getOpponent();
 
+		var daRating:Rating = Conductor.judgeNote(ratingsData, noteDiff / (Conductor.judgePlaybackRate ?? playbackRate));
 		if (opponentPopScore && !GameClient.isConnected()) {
 			var noteDiffNoAbs:Float = note.strumTime - (Conductor.judgeSongPosition ?? Conductor.songPosition) + ClientPrefs.getRatingOffset();
 			var noteDiff:Float = Math.abs(noteDiffNoAbs);
-			var daRating:Rating = Conductor.judgeNote(ratingsData, noteDiff / (Conductor.judgePlaybackRate ?? playbackRate));
 			popUpScoreOP(daRating.image);
 		}
 
@@ -6170,6 +6170,7 @@ class PlayState extends MusicBeatState
 		var event:NoteHitEvent;
 		var strumLine = strumLines.members[getStrumIndexFromData(note)];
 
+		var daRating:Rating = Conductor.judgeNote(ratingsData, noteDiff / (Conductor.judgePlaybackRate ?? playbackRate));
 		event = scripts.event(compatCNE, EventManager.get(NoteHitEvent).recycle(false, !note.isSustainNote, !note.isSustainNote, note, strumLine.characters, true, note.noteType, note.noteData, songScore, note.isSustainNote ? null : ratingPercent, 0.023, daRating.name));
 		strumLine.onHit.dispatch(event);
 		scripts.event("onNoteHit", event);
