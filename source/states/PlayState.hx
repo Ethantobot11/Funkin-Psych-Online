@@ -299,7 +299,7 @@ class PlayState extends MusicBeatState
 	public var hudCameraZoomIntensity:Float = 0.015 * 2.0;
 	public var cameraZoomRate:Int = DEFAULT_ZOOM_RATE;
 	public var camZoomingStrength:Int = 1;
-	public var camZoomingInterval(get, never):Int
+	public var camZoomingInterval(get, never):Int;
 	private function get_camZoomingInterval() {
 		return cameraZoomRate;
 	}
