@@ -112,6 +112,7 @@ import objects.StrumLine;
 
 @:build(online.backend.Macros.getSetForwarder())
 class PlayState extends MusicBeatState
+{
 	/**
 	 * Speed at which the game camera zoom lerps to.
 	 */
