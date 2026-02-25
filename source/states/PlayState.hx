@@ -3621,15 +3621,9 @@ class PlayState extends MusicBeatState
 			}
 			//FIXME some way to force update the variables???
 		}
-		if (camZooming && !ClientPrefs.data.camZooms && ClientPrefs.data.alterZoom)
-		{
-			FlxG.camera.zoom = lerp(FlxG.camera.zoom, defaultCamZoom, camGameZoomLerp);
-			camHUD.zoom = lerp(camHUD.zoom, defaultHUDCamZoom, camHUDZoomLerp);
-		} else {
-			if (!ClientPrefs.data.camZooms) {
-				FlxG.camera.zoom = defaultCamZoom;
-				camHUD.zoom = defaultHUDCamZoom;
-			}
+		if (!ClientPrefs.data.camZooms) {
+			FlxG.camera.zoom = defaultCamZoom;
+			camHUD.zoom = defaultHUDCamZoom;
 		}
 
 		super.update(elapsed);
@@ -3722,9 +3716,14 @@ class PlayState extends MusicBeatState
 				timeTxt.text = FlxStringUtil.formatTime(secondsTotal / playbackRate, false);
 		}
 
-		if (camZooming)
+		if (camZooming && ClientPrefs.data.alterZoom)
 		{
-			if (!ClientPrefs.data.alterZoom) FlxG.camera.zoom = FlxMath.lerp(defaultCamZoom, FlxG.camera.zoom, FlxMath.bound(1 - (elapsed * 3.125 * camZoomingDecay * playbackRate), 0, 1));
+			FlxG.camera.zoom = lerp(FlxG.camera.zoom, defaultCamZoom, camGameZoomLerp);
+			camHUD.zoom = lerp(camHUD.zoom, defaultHUDCamZoom, camHUDZoomLerp);
+		}
+		else if (camZooming)
+		{
+			FlxG.camera.zoom = FlxMath.lerp(defaultCamZoom, FlxG.camera.zoom, FlxMath.bound(1 - (elapsed * 3.125 * camZoomingDecay * playbackRate), 0, 1));
 			camHUD.zoom = FlxMath.lerp(defaultHUDCamZoom, camHUD.zoom, FlxMath.bound(1 - (elapsed * 3.125 * camZoomingDecay * playbackRate), 0, 1));
 		}
 
