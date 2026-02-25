@@ -1,8 +1,9 @@
 package funkin.backend.scripting.events;
 
+import objects.StrumNote;
+
 final class StrumCreationEvent extends CancellableEvent {
 	@:dox(hide) public var __doAnimation = true;
-
 
 	/**
 	 * The strum that is being created
