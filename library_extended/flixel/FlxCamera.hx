@@ -2174,7 +2174,7 @@ class FlxCamera extends FlxBasic
 	function set_angle(Angle:Float):Float
 	{
 		angle = Angle;
-		if (ClientPrefs.data.disableCameraRotate || disableRotatePerCamera)
+		if (ClientPrefs.data.alterAngle || disableRotatePerCamera)
 		{
 			flashSprite.rotation = rotateSprite ? Angle : 0;
 

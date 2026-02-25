@@ -298,6 +298,11 @@ class PlayState extends MusicBeatState
 	public var cameraBopIntensity:Float = DEFAULT_BOP_INTENSITY;
 	public var hudCameraZoomIntensity:Float = 0.015 * 2.0;
 	public var cameraZoomRate:Int = DEFAULT_ZOOM_RATE;
+	public var camZoomingStrength:Int = 1;
+	public var camZoomingInterval(get, never):Int
+	private function get_camZoomingInterval() {
+		return cameraZoomRate;
+	}
 
 	private var curSong:String = "";
 
@@ -622,6 +627,9 @@ class PlayState extends MusicBeatState
 
 		var strumLineY:Float = ClientPrefs.data.downScroll ? (FlxG.height - 150) : 50;
 		var strumGroup:StrumLine = new StrumLine(isCPU, targetCharacters, amount, targetNoteData);
+		strumGroup.cameras = [camHUD];
+		strumLines.add(strumGroup);
+
 		for (i in 0...amount)
 		{
 			var targetAlpha:Float = 1;
@@ -635,7 +643,12 @@ class PlayState extends MusicBeatState
 			var babyArrow:StrumNote = new StrumNote(strumLineX, strumLineY, i, isCPU ? 0 : 1);
 			babyArrow.forceShow = ClientPrefs.data.opponentStrums && ClientPrefs.data.disableStrumMovement;
 			babyArrow.downScroll = ClientPrefs.data.downScroll;
-			if (!isStoryMode && !skipArrowStartTween)
+	
+			var event = EventManager.get(StrumCreationEvent).recycle(babyArrow, strumLines.members.indexOf(strumGroup), i);
+			event.__doAnimation = !MusicBeatState.skipTransIn;
+			event = scripts.event("onStrumCreation", event);
+
+			if (!isStoryMode && !skipArrowStartTween && event.__doAnimation)
 			{
 				babyArrow.alpha = 0;
 				FlxTween.tween(babyArrow, {alpha: targetAlpha}, 1, {ease: FlxEase.circOut, startDelay: 0.5 + 4 / amount * 0.2 * i});
@@ -653,6 +666,8 @@ class PlayState extends MusicBeatState
 					babyArrow.forceHide = true;
 				}
 			}
+
+			scripts.event("onPostStrumCreation", event);
 
 			strumGroup.add(babyArrow);
 			if (replayPlayer == null && ClientPrefs.data.noteUnderlayOpacity > 0 && strumGroup == getPlayerStrums(true) && ClientPrefs.data.noteUnderlayType == 'By Note') {
@@ -673,8 +688,6 @@ class PlayState extends MusicBeatState
 			//strumLineNotes.add(babyArrow);
 			babyArrow.postAddedToGroup();
 		}
-		strumGroup.cameras = [camHUD];
-		strumLines.add(strumGroup);
 	}
 
 	override public function create()
@@ -6329,7 +6342,9 @@ class PlayState extends MusicBeatState
 
 		if (camZooming && FlxG.camera.zoom < 1.35 && ClientPrefs.data.camZooms && cameraZoomRate != 0 && curBeat % cameraZoomRate == 0)
 		{
-			FlxG.camera.zoom += (0.015 * camZoomingMult) * cameraBopIntensity * defaultCamZoom;
+			if (ClientPrefs.data.alterZoom) FlxG.camera.zoom += 0.015 * camZoomingStrength;
+			else FlxG.camera.zoom += (0.015 * camZoomingMult) * cameraBopIntensity * defaultCamZoom;
+
 			camHUD.zoom += (hudCameraZoomIntensity * camZoomingMult) * defaultHUDCamZoom;
 		}
 

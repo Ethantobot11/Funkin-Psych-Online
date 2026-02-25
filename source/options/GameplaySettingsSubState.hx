@@ -12,9 +12,15 @@ class GameplaySettingsSubState extends BaseOptionsMenu
 			'bool');
 		addOption(option);
 
-		var option:Option = new Option('Disable Camera Rotate',
+		var option:Option = new Option('Alternative Angle',
 			"If checked, camera angle works like in Codename Engine,\nThis is useful for some CNE mods like Cyber Sensation",
-			'disableCameraRotate',
+			'alterAngle',
+			'bool');
+		addOption(option);
+
+		var option:Option = new Option('Alternative Zoom',
+			"If checked, camera zoom works like in Codename Engine,\nThis is useful for some CNE mods like Cyber Sensation",
+			'alterZoom',
 			'bool');
 		addOption(option);
 

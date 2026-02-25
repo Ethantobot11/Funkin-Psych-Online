@@ -159,7 +159,9 @@ class OptionsState extends MusicBeatState
 		if (!onPlayState)
 			optionsMap.get('main').push('Mods');
 		#end
+		#if TOUCH_CONTROLS
 		optionsMap.get('main').push('Mobile');
+		#end
 
 		for (category => items in optionsMap) {
 			var group = new FlxTypedGroup<Alphabet>();
