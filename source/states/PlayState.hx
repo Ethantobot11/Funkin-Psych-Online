@@ -1339,6 +1339,12 @@ class PlayState extends MusicBeatState
 			comboGroup.cameras = [camHUD];
 
 			noteGroup.add(strumLines);
+			#if HSC_ALLOWED
+			scripts.set("SONG", SONG);
+			scripts.setupPlayState();
+			scripts.load();
+			scripts.call("create");
+			#end
 			//maybe this can fix all problems lol
 			var event = EventManager.get(AmountEvent).recycle(4);
 			if (!scripts.event("onPreGenerateStrums", event).cancelled) {
@@ -1408,13 +1414,6 @@ class PlayState extends MusicBeatState
 			grpHoldSplashes.add(splash);
 			splash.visible = true;
 			splash.alpha = 0.0001;
-
-		    #if HSC_ALLOWED
-			scripts.set("SONG", SONG);
-			scripts.setupPlayState();
-			scripts.load();
-			scripts.call("create");
-			#end
 		});
 
 		preloadTasks.push(() -> {
