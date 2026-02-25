@@ -6019,6 +6019,15 @@ class PlayState extends MusicBeatState
 		note.hitByOpponent = true;
 
 		var compat:String = note.mustPress ? 'goodNoteHit' : 'opponentNoteHit';
+		var compatCNE:String = note.mustPress ? 'onPlayerHit' : 'onDadHit';
+		var event:NoteHitEvent;
+		var strumLine = strumLines.members[getStrumIndexFromData(note)];
+
+		event = scripts.event(compatCNE, EventManager.get(NoteHitEvent).recycle(false, !note.isSustainNote, !note.isSustainNote, note, strumLine.characters, true, note.noteType, note.noteData, songScore, note.isSustainNote ? null : ratingPercent, 0.023, daRating.name));
+		strumLine.onHit.dispatch(event);
+		scripts.event("onNoteHit", event);
+		if (event.enableCamZooming && Paths.formatToSongPath(SONG.song) != 'tutorial') camZooming = true;
+
 		if (compat == 'goodNoteHit')
 			stagesFunc(function(stage:BaseStage) stage.goodNoteHit(note));
 		else
@@ -6164,7 +6173,7 @@ class PlayState extends MusicBeatState
 		event = scripts.event(compatCNE, EventManager.get(NoteHitEvent).recycle(false, !note.isSustainNote, !note.isSustainNote, note, strumLine.characters, true, note.noteType, note.noteData, songScore, note.isSustainNote ? null : ratingPercent, 0.023, daRating.name));
 		strumLine.onHit.dispatch(event);
 		scripts.event("onNoteHit", event);
-		if (event.enableCamZooming) camZooming = true;
+		if (event.enableCamZooming && Paths.formatToSongPath(SONG.song) != 'tutorial') camZooming = true;
 
 		if (compat == 'goodNoteHit')
 			stagesFunc(function(stage:BaseStage) stage.goodNoteHit(note));
