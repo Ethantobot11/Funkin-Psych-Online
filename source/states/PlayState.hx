@@ -308,10 +308,8 @@ class PlayState extends MusicBeatState
 	public var hudCameraZoomIntensity:Float = 0.015 * 2.0;
 	public var cameraZoomRate:Int = DEFAULT_ZOOM_RATE;
 	public var camZoomingStrength:Int = 1;
-	public var camZoomingInterval(get, never):Int;
-	private function get_camZoomingInterval() {
-		return cameraZoomRate;
-	}
+	public var camZoomingInterval:Int = 4;
+	public var maxCamZoom:Float = 1.35;
 
 	private var curSong:String = "";
 
@@ -5976,7 +5974,7 @@ class PlayState extends MusicBeatState
 		}
 
 		if (Paths.formatToSongPath(SONG.song) != 'tutorial')
-			camZooming = true;
+			camZooming = !ClientPrefs.data.alterZoom;
 
 		if (note.noteType == 'Hey!' && opChar.animOffsets.exists('hey')) {
 			opChar.playAnim('hey', true);
@@ -6041,7 +6039,7 @@ class PlayState extends MusicBeatState
 	function goodNoteHit(note:Note):Void
 	{
 		if (Paths.formatToSongPath(SONG.song) != 'tutorial')
-			camZooming = true;
+			camZooming = !ClientPrefs.data.alterZoom;
 
 		if(note.wasGoodHit || (cpuControlled && (note.ignoreNote || note.hitCausesMiss))) return;
 
@@ -6159,6 +6157,15 @@ class PlayState extends MusicBeatState
 		var leType:String = note.noteType;
 
 		var compat:String = note.mustPress ? 'goodNoteHit' : 'opponentNoteHit';
+		var compatCNE:String = note.mustPress ? 'onPlayerHit' : 'onDadHit';
+		var event:NoteHitEvent;
+		var strumLine = strumLines.members[getStrumIndexFromData(note)];
+
+		event = scripts.event(compatCNE, EventManager.get(NoteHitEvent).recycle(false, !note.isSustainNote, !note.isSustainNote, note, strumLine.characters, true, note.noteType, note.noteData, songScore, note.isSustainNote ? null : ratingPercent, 0.023, daRating.name));
+		strumLine.onHit.dispatch(event);
+		scripts.event("onNoteHit", event);
+		if (event.enableCamZooming) camZooming = true;
+
 		if (compat == 'goodNoteHit')
 			stagesFunc(function(stage:BaseStage) stage.goodNoteHit(note));
 		else
@@ -6356,11 +6363,15 @@ class PlayState extends MusicBeatState
 
 		characterBopper(curBeat);
 
-		if (camZooming && FlxG.camera.zoom < 1.35 && ClientPrefs.data.camZooms && cameraZoomRate != 0 && curBeat % cameraZoomRate == 0)
+		if (camZoomingInterval < 1) camZoomingInterval = 1;
+		if (ClientPrefs.data.alterZoom && camZooming && FlxG.camera.zoom < maxCamZoom && curBeat % camZoomingInterval == 0)
 		{
-			if (ClientPrefs.data.alterZoom) FlxG.camera.zoom += 0.015 * camZoomingStrength;
-			else FlxG.camera.zoom += (0.015 * camZoomingMult) * cameraBopIntensity * defaultCamZoom;
-
+			FlxG.camera.zoom += 0.015 * camZoomingStrength;
+			camHUD.zoom += 0.03 * camZoomingStrength;
+		}
+		else if (camZooming && FlxG.camera.zoom < 1.35 && ClientPrefs.data.camZooms && cameraZoomRate != 0 && curBeat % cameraZoomRate == 0)
+		{
+			FlxG.camera.zoom += (0.015 * camZoomingMult) * cameraBopIntensity * defaultCamZoom;
 			camHUD.zoom += (hudCameraZoomIntensity * camZoomingMult) * defaultHUDCamZoom;
 		}
 

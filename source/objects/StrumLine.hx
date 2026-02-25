@@ -25,6 +25,12 @@ class StrumLine extends FlxTypedGroup<StrumNote> {
 	public var noteCount:Int;
 
 	/**
+	 * Signal that triggers whenever a note is hit. Similar to onPlayerHit and onDadHit, except strumline specific.
+	 * To add a listener, do
+	 * `strumLine.onHit.add(function(e:NoteHitEvent) {});`
+	 */
+	public var onHit:FlxTypedSignal<NoteHitEvent->Void> = new FlxTypedSignal<NoteHitEvent->Void>();
+	/**
 	 * Signal that triggers whenever a note is being updated. Similar to onNoteUpdate, except strumline specific.
 	 * To add a listener, do
 	 * `strumLine.onNoteUpdate.add(function(e:NoteUpdateEvent) {});`
