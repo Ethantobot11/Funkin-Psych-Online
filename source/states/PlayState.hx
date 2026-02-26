@@ -5973,9 +5973,6 @@ class PlayState extends MusicBeatState
 			popUpScoreOP(daRating.image);
 		}
 
-		if (Paths.formatToSongPath(SONG.song) != 'tutorial')
-			camZooming = !ClientPrefs.data.alterZoom;
-
 		if (note.noteType == 'Hey!' && opChar.animOffsets.exists('hey')) {
 			opChar.playAnim('hey', true);
 			opChar.specialAnim = true;
@@ -6047,9 +6044,6 @@ class PlayState extends MusicBeatState
 
 	function goodNoteHit(note:Note):Void
 	{
-		if (Paths.formatToSongPath(SONG.song) != 'tutorial')
-			camZooming = !ClientPrefs.data.alterZoom;
-
 		if(note.wasGoodHit || (cpuControlled && (note.ignoreNote || note.hitCausesMiss))) return;
 
 		note.wasGoodHit = true;
