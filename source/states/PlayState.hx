@@ -259,9 +259,9 @@ class PlayState extends MusicBeatState
 	public var opponentVocals:FlxSound;
 	public var inst:FlxSound;
 
-	public var dad(get, set):Character;
-	public var gf(get, set):Null<Character>;
-	public var boyfriend(get, set):Character;
+	@:isVar public var dad(get, set):Character;
+	@:isVar public var gf(get, set):Null<Character>;
+	@:isVar public var boyfriend(get, set):Character;
 	private function get_boyfriend():Character {
 		if (strumLines != null && strumLines.members[1] != null)
 			return strumLines.members[1].characters[0];
