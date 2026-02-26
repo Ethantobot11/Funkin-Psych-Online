@@ -265,7 +265,7 @@ class PlayState extends MusicBeatState
 	private function get_boyfriend():Character {
 		if (strumLines != null && strumLines.members[1] != null)
 			return strumLines.members[1].characters[0];
-		return bf;
+		return boyfriend;
 	}
 	private function set_boyfriend(bf:Character):Character {
 		if (strumLines != null && strumLines.members[1] != null)
