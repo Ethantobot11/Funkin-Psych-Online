@@ -35,6 +35,7 @@ class RoomSettingsSubstate extends MusicBeatSubstate {
 	var royalModeDadSide:Option;
 
 	override function create() {
+		controls.isInSubstate = true;
 		super.create();
 
 		var bgCam:FlxCamera = new FlxCamera();
@@ -225,8 +226,7 @@ class RoomSettingsSubstate extends MusicBeatSubstate {
 
 		mobileManager.addMobilePad('NONE', 'B');
 		mobileManager.addMobilePadCamera();
-		mobileManager.mobilePad.getButton("buttonB").y -= 120; //I'm lazy
-		controls.isInSubstate = true;
+		//mobileManager.mobilePad.getButton("buttonB").y -= 120; //I'm lazy
 	}
 
 	function updateItems() {

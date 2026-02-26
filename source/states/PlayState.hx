@@ -259,9 +259,39 @@ class PlayState extends MusicBeatState
 	public var opponentVocals:FlxSound;
 	public var inst:FlxSound;
 
-	public var dad:Character = null;
-	public var gf:Null<Character> = null;
-	public var boyfriend:Character = null;
+	public var dad(get, set):Character;
+	public var gf(get, set):Null<Character>;
+	public var boyfriend(get, set):Character;
+	private function get_boyfriend():Character {
+		if (strumLines != null && strumLines.members[1] != null)
+			return strumLines.members[1].characters[0];
+		return null;
+	}
+	private function set_boyfriend(bf:Character):Character {
+		if (strumLines != null && strumLines.members[1] != null)
+			strumLines.members[1].characters = [bf];
+		return bf;
+	}
+	private function get_dad():Character {
+		if (strumLines != null && strumLines.members[0] != null)
+			return strumLines.members[0].characters[0];
+		return null;
+	}
+	private function set_dad(dad:Character):Character {
+		if (strumLines != null && strumLines.members[0] != null)
+			strumLines.members[0].characters = [dad];
+		return dad;
+	}
+	private function get_gf():Null<Character> {
+		if (strumLines != null && strumLines.members[2] != null)
+			return strumLines.members[2].characters[0];
+		return null;
+	}
+	private function set_gf(gf:Character):Null<Character> {
+		if (strumLines != null && strumLines.members[2] != null)
+			strumLines.members[2].characters = [gf];
+		return gf;
+	}
 	public var dummy:Character = null;
 	//its you
 	public var self(get, never):Character;
@@ -1210,6 +1240,35 @@ class PlayState extends MusicBeatState
 		}
 
 		preloadTasks.push(() -> {
+			comboGroup = new FlxSpriteGroup();
+			add(comboGroup);
+			noteGroup = new FlxTypedGroup<FlxBasic>();
+			add(noteGroup);
+			uiGroup = new FlxSpriteGroup();
+			add(uiGroup);
+
+			uiGroup.cameras = [camHUD];
+			noteGroup.cameras = [camHUD];
+			comboGroup.cameras = [camHUD];
+
+			noteGroup.add(strumLines);
+			#if HSC_ALLOWED
+			scripts.set("SONG", SONG);
+			scripts.setupPlayState();
+			scripts.load();
+			#end
+
+			//maybe this can fix all problems lol
+			var event = EventManager.get(AmountEvent).recycle(4);
+			if (!scripts.event("onPreGenerateStrums", event).cancelled) {
+				addStrum(true, [], 0); //empty because characters handling after the strum creation.
+				addStrum(false, [], 4);
+				scripts.event("onPostGenerateStrums", event);
+			}
+		});
+
+		/* Load the StrumLine First, then load characters for everyone's good */
+		preloadTasks.push(() -> {
 			//init characters
 			if (GameClient.isConnected()) {
 				for (sid => player in GameClient.room.state.players) {
@@ -1281,7 +1340,8 @@ class PlayState extends MusicBeatState
 					gfName = 'gf' + skinsSuffix;
 				}
 
-				gf = new Character(0, 0, gfName, false, false, 'gf');
+				var localGF = new Character(0, 0, gfName, false, false, 'gf');
+				gf = localGF;
 				gf.loadSpeaker();
 				if (gf?.speaker != null) {
 					gfGroup.add(gf.speaker);
@@ -1321,34 +1381,6 @@ class PlayState extends MusicBeatState
 				dad.setPosition(GF_X, GF_Y);
 				if (gf != null)
 					gf.visible = false;
-			}
-		});
-
-		preloadTasks.push(() -> {
-			comboGroup = new FlxSpriteGroup();
-			add(comboGroup);
-			noteGroup = new FlxTypedGroup<FlxBasic>();
-			add(noteGroup);
-			uiGroup = new FlxSpriteGroup();
-			add(uiGroup);
-
-			uiGroup.cameras = [camHUD];
-			noteGroup.cameras = [camHUD];
-			comboGroup.cameras = [camHUD];
-
-			noteGroup.add(strumLines);
-			#if HSC_ALLOWED
-			scripts.set("SONG", SONG);
-			scripts.setupPlayState();
-			scripts.load();
-			#end
-
-			//maybe this can fix all problems lol
-			var event = EventManager.get(AmountEvent).recycle(4);
-			if (!scripts.event("onPreGenerateStrums", event).cancelled) {
-				addStrum(true, [dad], 0);
-				addStrum(false, [boyfriend], 4);
-				scripts.event("onPostGenerateStrums", event);
 			}
 		});
 

@@ -14,7 +14,7 @@ import backend.Section;
 
 typedef MetaData =
 {
-	@:optional var displayName:String;
+	var displayName:String;
 }
 
 typedef SwagSong =
@@ -50,7 +50,7 @@ typedef SwagSong =
 	@:optional var format:String;
 
 	//codename engine
-	@:optional var meta:MetaData;
+	var meta:MetaData; //this is not optional :| silly me what thinks.
 }
 
 class Song
