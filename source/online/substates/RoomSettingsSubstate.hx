@@ -35,9 +35,7 @@ class RoomSettingsSubstate extends MusicBeatSubstate {
 	var royalModeDadSide:Option;
 
 	override function create() {
-		controls.isInSubstate = true;
 		mobileManager.addMobilePad('NONE', 'B');
-		mobileManager.addMobilePadCamera();
 		super.create();
 
 		var bgCam:FlxCamera = new FlxCamera();
@@ -226,6 +224,14 @@ class RoomSettingsSubstate extends MusicBeatSubstate {
 
 		GameClient.send("status", "In the Room Settings");
 
+		
+		mobileManager.addMobilePadCamera();
+
+		//add timer for everyone's good.
+		new FlxTimer().start(0.5, function(tmr:FlxTimer)
+		{
+			controls.isInSubstate = true;
+		});
 		//mobileManager.mobilePad.getButton("buttonB").y -= 120; //I'm lazy
 	}
 
@@ -283,12 +289,13 @@ class RoomSettingsSubstate extends MusicBeatSubstate {
 
 	var mouseSelectTime = 0.0;
 
-    override function update(elapsed) {
-        if (controls.BACK) {
+	override function update(elapsed) {
+		if (controls.BACK) {
 			controls.isInSubstate = false;
-            close();
+			close();
+			controls.isInSubstate = false;
 			FlxG.mouse.visible = prevMouseVisibility;
-        }
+		}
 
 		if (!GameClient.isConnected()) {
 			return;

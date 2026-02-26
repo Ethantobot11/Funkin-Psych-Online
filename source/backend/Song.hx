@@ -234,12 +234,12 @@ class Song
 		if (parsed.song != null) {
 			if (Std.isOfType(parsed.song, String)) {
 				parsed.format ??= 'psych_v1';
-				parsed.meta.displayName ??= parsed.song;
+				parsed.meta.displayName ??= "nothing";
 				return parsed;
 			}
 			
 			parsed.song.format ??= 'psych_legacy';
-			parsed.song.meta.displayName ??= parsed.song.song;
+			parsed.song.meta.displayName ??= "nothing";
 			return parsed.song;
 		}
 		
