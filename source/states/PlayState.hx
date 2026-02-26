@@ -3715,10 +3715,9 @@ class PlayState extends MusicBeatState
 		}
 
 		//realtime update for camera follow, this can fix lot's of things
-		if (SONG?.notes[curSection] != null && ClientPrefs.data.alterCamera)
+		if (SONG?.notes[curSection] != null && ClientPrefs.data.alterCamera && generatedMusic && !endingSong && !isCameraOnForcedPos)
 		{
-			if (generatedMusic && !endingSong && !isCameraOnForcedPos)
-				moveCameraSection();
+			moveCameraSection();
 		}
 
 		if (camZooming && ClientPrefs.data.alterZoom)
@@ -3814,9 +3813,11 @@ class PlayState extends MusicBeatState
 							}
 							if (__updateNote_event.__reposNote) daNote.followStrumNote(__updateNote_strum, fakeCrochet, songSpeed / playbackRate);
 
+							/* I hope removing this won't effect anything
 							if (GameClient.isConnected() && daNote.strumTime <= Conductor.songPosition) {
 								camZooming = true;
 							}
+							*/
 
 							if (isPlayerNote(daNote))
 							{
