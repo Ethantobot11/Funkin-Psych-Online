@@ -196,9 +196,9 @@ class MusicBeatSubstate extends FlxSubState
 	public var scriptName:String = null;
 
 	public function new(scriptsAllowed:Bool = true, ?scriptName:String) {
+		super();
 		instance = this;
 		mobileManager = new MobileControlManager(this);
-		super();
 		this.scriptName = scriptName;
 	}
 

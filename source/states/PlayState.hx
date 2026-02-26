@@ -1341,13 +1341,12 @@ class PlayState extends MusicBeatState
 				}
 
 				var localGF = new Character(0, 0, gfName, false, false, 'gf');
-				gf = localGF;
-				gf.loadSpeaker();
-				if (gf?.speaker != null) {
-					gfGroup.add(gf.speaker);
+				localGF.loadSpeaker();
+				if (localGF?.speaker != null) {
+					gfGroup.add(localGF.speaker);
 
-					if (gf.speaker is Character)
-						startCharacterPos(cast gf.speaker);
+					if (localGF.speaker is Character)
+						startCharacterPos(cast localGF.speaker);
 				}
 				startCharacterPos(gf);
 
@@ -1355,7 +1354,8 @@ class PlayState extends MusicBeatState
 				// gfGroup.scrollFactor.set(0.95, 0.95);
 				gfGroup.add(gf);
 
-				startCharacterScripts(gf.curCharacter);
+				startCharacterScripts(localGF.curCharacter);
+				gf = localGF;
 			}
 
 			if (gf != null && GameClient.isConnected() && GameClient.room.state.hideGF) {

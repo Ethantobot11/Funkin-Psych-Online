@@ -586,6 +586,8 @@ class RoomState extends MusicBeatState /*#if interpret implements interpret.Inte
 	var updateTimer = 1.0;
 
 	override function update(elapsed:Float) {
+		super.update(elapsed);
+
 		#if TOUCH_CONTROLS
 		mobileManager.mobilePad.getButton('buttonLeft').visible = mobileManager.mobilePad.getButton('buttonRight').visible = mobileManager.mobilePad.getButton('buttonUp').visible = mobileManager.mobilePad.getButton('buttonDown').visible = mobileManager.mobilePad.getButton('buttonT').visible = mobileManager.mobilePad.getButton('buttonM').visible = mobileButtonPressed('Y');
 		#end
@@ -861,8 +863,6 @@ class RoomState extends MusicBeatState /*#if interpret implements interpret.Inte
 
 		if (FlxG.sound.music != null)
 			Conductor.songPosition = FlxG.sound.music.time;
-
-		super.update(elapsed);
     }
 	
 	function verifyDownloadMod(manual:Bool, ?ignoreAlert:Bool = false) {

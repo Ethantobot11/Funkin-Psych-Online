@@ -8,7 +8,7 @@ haxelib setup ~/haxelib
 echo Installing dependencies...
 echo This might take a few moments depending on your internet speed.
 haxelib install hscript 2.6.0 --quiet --global
-haxelib git lime https://github.com/ShadowEngineTeam/lime --quiet --global
+haxelib git lime https://github.com/ShadowEngineTeam/lime 668e13e72df6c3668ea20a6611840ed71846f2b6 --quiet --global
 haxelib git openfl https://github.com/FunkinCrew/openfl feature/desktop-angle --quiet --global
 haxelib git flixel https://github.com/ArkoseLabsOfficial/flixel-peo peo-mobile --quiet --global
 haxelib install flixel-addons 3.3.2 --quiet --global

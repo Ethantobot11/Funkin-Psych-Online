@@ -366,7 +366,7 @@ class MusicBeatState extends FlxUIState
 
 	public override function createPost() {
 		super.createPost();
-		persistentUpdate = true;
+		//persistentUpdate = true;
 		call("postCreate");
 	}
 

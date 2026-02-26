@@ -4,7 +4,7 @@ cd ..
 echo Installing dependencies...
 echo This might take a few moments depending on your internet speed.
 haxelib install hscript 2.6.0 --quiet
-haxelib git lime https://github.com/ShadowEngineTeam/lime --quiet
+haxelib git lime https://github.com/ShadowEngineTeam/lime 668e13e72df6c3668ea20a6611840ed71846f2b6 --quiet
 haxelib git openfl https://github.com/FunkinCrew/openfl feature/desktop-angle --quiet
 haxelib git flixel https://github.com/ArkoseLabsOfficial/flixel-peo peo-mobile --quiet
 haxelib install flixel-addons 3.3.2 --quiet
