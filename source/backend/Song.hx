@@ -50,7 +50,7 @@ typedef SwagSong =
 	@:optional var format:String;
 
 	//codename engine
-	var meta:MetaData; //this is not optional :| silly me what thinks.
+	@:optional var meta:MetaData; //this is not optional :| silly me what thinks.
 }
 
 class Song
@@ -234,12 +234,12 @@ class Song
 		if (parsed.song != null) {
 			if (Std.isOfType(parsed.song, String)) {
 				parsed.format ??= 'psych_v1';
-				parsed.meta.displayName = parsed.song;
+				parsed.meta.displayName ??= parsed.song;
 				return parsed;
 			}
 			
 			parsed.song.format ??= 'psych_legacy';
-			parsed.song.meta.displayName = parsed.song.song;
+			parsed.song.meta.displayName ??= parsed.song.song;
 			return parsed.song;
 		}
 		
