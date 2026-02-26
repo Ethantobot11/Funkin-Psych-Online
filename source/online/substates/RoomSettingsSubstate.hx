@@ -36,6 +36,8 @@ class RoomSettingsSubstate extends MusicBeatSubstate {
 
 	override function create() {
 		controls.isInSubstate = true;
+		mobileManager.addMobilePad('NONE', 'B');
+		mobileManager.addMobilePadCamera();
 		super.create();
 
 		var bgCam:FlxCamera = new FlxCamera();
@@ -224,8 +226,6 @@ class RoomSettingsSubstate extends MusicBeatSubstate {
 
 		GameClient.send("status", "In the Room Settings");
 
-		mobileManager.addMobilePad('NONE', 'B');
-		mobileManager.addMobilePadCamera();
 		//mobileManager.mobilePad.getButton("buttonB").y -= 120; //I'm lazy
 	}
 

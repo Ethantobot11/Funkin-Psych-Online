@@ -14,7 +14,7 @@ import backend.Section;
 
 typedef MetaData =
 {
-	var displayName:String;
+	@:optional var displayName:String;
 }
 
 typedef SwagSong =
