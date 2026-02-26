@@ -16,7 +16,6 @@ import states.TitleState;
 	/* Psych Extended Stuff */
 	public var oldCameraSystem:Bool = false;
 	public var alterCamera:Bool = false;
-	public var alterZoom:Bool = false;
 	public var disableRGBNotes:Bool = false; //new way to handle RGB notes (currently it does not support skins)
 	public var arrowHSV:Array<Array<Int>> = [[0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0]]; //for testing only
 	public var lang:String = "EN";

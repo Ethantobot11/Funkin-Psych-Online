@@ -225,6 +225,7 @@ class RoomSettingsSubstate extends MusicBeatSubstate {
 
 		mobileManager.addMobilePad('NONE', 'B');
 		mobileManager.addMobilePadCamera();
+		mobileManager.mobilePad.getButton("buttonB").y -= 120; //I'm lazy
 		controls.isInSubstate = true;
 	}
 

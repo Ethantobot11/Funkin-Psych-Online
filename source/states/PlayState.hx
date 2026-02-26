@@ -3720,7 +3720,7 @@ class PlayState extends MusicBeatState
 			moveCameraSection();
 		}
 
-		if (camZooming && ClientPrefs.data.alterZoom)
+		if (camZooming && ClientPrefs.data.alterCamera)
 		{
 			FlxG.camera.zoom = lerp(FlxG.camera.zoom, defaultCamZoom, camGameZoomLerp);
 			camHUD.zoom = lerp(camHUD.zoom, defaultHUDCamZoom, camHUDZoomLerp);
@@ -6378,7 +6378,7 @@ class PlayState extends MusicBeatState
 		characterBopper(curBeat);
 
 		if (camZoomingInterval < 1) camZoomingInterval = 1;
-		if (ClientPrefs.data.alterZoom && camZooming && FlxG.camera.zoom < maxCamZoom && curBeat % camZoomingInterval == 0)
+		if (ClientPrefs.data.alterCamera && camZooming && FlxG.camera.zoom < maxCamZoom && curBeat % camZoomingInterval == 0)
 		{
 			FlxG.camera.zoom += 0.015 * camZoomingStrength;
 			camHUD.zoom += 0.03 * camZoomingStrength;

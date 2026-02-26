@@ -42,9 +42,11 @@ class DiscordClient
 		if (!isInitialized && ClientPrefs.data.discordRPC)
 			initialize();
 
+		#if !android
 		Application.current.window.onClose.add(function() {
 			if(isInitialized) shutdown();
 		});
+		#end
 	}
 
 	public dynamic static function shutdown()

@@ -13,14 +13,8 @@ class GameplaySettingsSubState extends BaseOptionsMenu
 		addOption(option);
 
 		var option:Option = new Option('Alternative Camera',
-			"If checked, camera works like in Codename Engine,\nThis is useful for some CNE mods like Cyber Sensation",
+			"If checked, camera updates directly instead of waiting to next section",
 			'alterCamera',
-			'bool');
-		addOption(option);
-
-		var option:Option = new Option('Alternative Zoom',
-			"If checked, camera zoom works like in Codename Engine,\nThis is useful for some CNE mods like Cyber Sensation",
-			'alterZoom',
 			'bool');
 		addOption(option);
 
