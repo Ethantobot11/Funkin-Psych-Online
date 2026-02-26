@@ -12,9 +12,9 @@ class GameplaySettingsSubState extends BaseOptionsMenu
 			'bool');
 		addOption(option);
 
-		var option:Option = new Option('Alternative Angle',
-			"If checked, camera angle works like in Codename Engine,\nThis is useful for some CNE mods like Cyber Sensation",
-			'alterAngle',
+		var option:Option = new Option('Alternative Camera',
+			"If checked, camera works like in Codename Engine,\nThis is useful for some CNE mods like Cyber Sensation",
+			'alterCamera',
 			'bool');
 		addOption(option);
 

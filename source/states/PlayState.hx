@@ -3714,6 +3714,13 @@ class PlayState extends MusicBeatState
 				timeTxt.text = FlxStringUtil.formatTime(secondsTotal / playbackRate, false);
 		}
 
+		//realtime update for camera follow, this can fix lot's of things
+		if (SONG?.notes[curSection] != null && ClientPrefs.data.alterCamera)
+		{
+			if (generatedMusic && !endingSong && !isCameraOnForcedPos)
+				moveCameraSection();
+		}
+
 		if (camZooming && ClientPrefs.data.alterZoom)
 		{
 			FlxG.camera.zoom = lerp(FlxG.camera.zoom, defaultCamZoom, camGameZoomLerp);
@@ -6453,7 +6460,7 @@ class PlayState extends MusicBeatState
 
 		if (SONG.notes[curSection] != null)
 		{
-			if (generatedMusic && !endingSong && !isCameraOnForcedPos)
+			if (generatedMusic && !endingSong && !isCameraOnForcedPos && !ClientPrefs.data.alterCamera)
 				moveCameraSection();
 
 			if (SONG.notes[curSection].changeBPM)
