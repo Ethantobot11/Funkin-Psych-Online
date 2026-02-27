@@ -33,9 +33,10 @@ jobs:
             buildArgs: "windows -D officialBuild -final -D ANGLE_BUILD"
             artifactName: windowsBuild-x86_64-(ANGLE)
             artifactPath: export\release\windows\bin\*
-          - name: iOS-NORMAL
+          - name: iOS-ANGLE
             os: macos-15
-            buildArgs: "ios -final -nosign -D officialBuild"
+            setupCommand: sh ./setup/unix.sh
+            buildArgs: "ios -final -nosign -D officialBuild -D ANGLE_BUILD"
             artifactName: iOSBuild
             artifactPath: "export/release/ios/build/Release-iphoneos/*.ipa"
     uses: ./.github/workflows/build.yml
