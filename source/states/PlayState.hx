@@ -136,12 +136,6 @@ class PlayState extends MusicBeatState
 	}
 
 	/**
-	 * Current FP Multiplier.
-	 * recommended for Codename Engine Mods.
-	 */
-	public var pointMultiplier:Float = 1;
-
-	/**
 	 * Current camera target. -1 means no automatic camera targetting.
 	 * makes easier to change position shits
 	 */
@@ -2705,13 +2699,13 @@ class PlayState extends MusicBeatState
 	public function updateScore(miss:Bool = false, ?skipRest:Bool = false)
 	{
 		var points = FlxMath.roundDecimal(
-			online.FunkinPoints.fcalcFP(ratingPercent, songMisses, songDensity, totalNotesHit, maxCombo) * pointMultiplier
+			online.FunkinPoints.fcalcFP(ratingPercent, songMisses, songDensity, totalNotesHit, maxCombo)
 		, 2);
 		if (points != songPoints) {
 			songPoints = points;
 			GameClient.send("updateSongFP", Math.ffloor(songPoints));
 			if (totalPlayed != 0) {
-				var maxPoints = online.FunkinPoints.calcFP(1, 0, songDensity, totalPlayed, totalPlayed) * pointMultiplier;
+				var maxPoints = online.FunkinPoints.calcFP(1, 0, songDensity, totalPlayed, totalPlayed);
 				pointsPercent = Math.min(1, Math.max(0, points / maxPoints));
 			}
 			resetRPC(true);
@@ -3176,7 +3170,7 @@ class PlayState extends MusicBeatState
 		songDensity = playingNoteCount == 0 ? 0 : playingNoteCount / (inst.length / playbackRate / 1000) / 2;
 		trace("note density score (w/ fp): " + (1 + songDensity) + ' for total of ${playingNoteCount} notes');
 
-		var maxFP = online.FunkinPoints.calcFP(1, 0, songDensity, playingNoteCount, playingNoteCount) * pointMultiplier;
+		var maxFP = online.FunkinPoints.calcFP(1, 0, songDensity, playingNoteCount, playingNoteCount);
 		trace("max points: ~" + maxFP + 'FP');
 		if (ClientPrefs.data.newFPPreview) {
 			var maxFP = online.FunkinPoints.devFP(1, 0, songDensity, playingNoteCount, playingNoteCount);
@@ -4895,7 +4889,7 @@ class PlayState extends MusicBeatState
 			return false;
 		}
 
-		songPoints = online.FunkinPoints.calcFP(ratingPercent, songMisses, songDensity, totalNotesHit, maxCombo) * pointMultiplier;
+		songPoints = online.FunkinPoints.calcFP(ratingPercent, songMisses, songDensity, totalNotesHit, maxCombo);
 
 		//Should kill you if you tried to cheat
 		if(!startingSong) {
