@@ -1219,7 +1219,7 @@ class PlayState extends MusicBeatState
 			// when the character has failed to load
 			if (char == null || char.loadFailed) {
 				Mods.currentModDirectory = oldModDir;
-				char = new Character(0, 0, (isRight ? SONG.player1 : SONG.player2), playsAsBF() == isRight, false, 'bf');
+				char = new Character(0, 0, (isRight ? SONG.player1 : SONG.player2), playsAsBF() == isRight, false, isRight ? 'bf' : 'dad');
 			}
 			
 			char.ox = player?.ox ?? 0;
@@ -2738,7 +2738,7 @@ class PlayState extends MusicBeatState
 			online.FunkinPoints.fcalcFP(ratingPercent, songMisses, songDensity, totalNotesHit, maxCombo) * pointMultiplier
 		, 2);
 		if (points != songPoints) {
-			songPoints = points * pointMultiplier;
+			songPoints = points;
 			GameClient.send("updateSongFP", Math.ffloor(songPoints));
 			if (totalPlayed != 0) {
 				var maxPoints = online.FunkinPoints.calcFP(1, 0, songDensity, totalPlayed, totalPlayed) * pointMultiplier;
@@ -2746,7 +2746,7 @@ class PlayState extends MusicBeatState
 			}
 			resetRPC(true);
 		}
-		songPoints = points * pointMultiplier;
+		songPoints = points;
 
 		var scoreTextObject = scoreTxt;
 		if (GameClient.isConnected()) {

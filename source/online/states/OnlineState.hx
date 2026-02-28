@@ -81,9 +81,9 @@ class OnlineState extends MusicBeatState {
 	function getItemName(item:String) {
 		if (curSelected == 0 && item == "JOIN" && inputWait)
 		{
-			return "JOIN CODE: " + inputString;
+			return Language.getText("JOIN CODE: ") + inputString;
 		}
-		return item;
+		return Language.getText(item);
 	}
 
     override function create() {
@@ -232,7 +232,7 @@ class OnlineState extends MusicBeatState {
 		playersOnline = new FlxText(0, 100);
 		playersOnline.setFormat("VCR OSD Mono", 20, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		playersOnline.alpha = 0.7;
-		playersOnline.text = "Fetching...";
+		playersOnline.text = Language.getText("Fetching...");
 		playersOnline.screenCenter(X);
 		add(playersOnline);
 
@@ -294,12 +294,12 @@ class OnlineState extends MusicBeatState {
 			var data = FunkinNetwork.fetchFront();
 			Waiter.put(() -> {
 				if (data == null) {
-					playersOnline.text = "NETWORK OFFLINE";
+					playersOnline.text = Language.getText("NETWORK OFFLINE");
 					// networkPlayer.visible = false;
 					// networkBg.visible = false;
 				}
 				else {
-					playersOnline.text = 'Players Online: ' + data.online;
+					playersOnline.text = Language.getText("Players Online: ") + data.online;
 					availableRooms.text = 'Available Rooms: ' + data.rooms;
 					frontMessage.text = data.sez;
 					frontMessage.y = FlxG.height - frontMessage.height - 20;
@@ -409,7 +409,7 @@ class OnlineState extends MusicBeatState {
 					discord.animation.play("active");
 					discord.offset.set(2, 2);
 
-					itemDesc.text = "Join Psych Online Discord Server!";
+					itemDesc.text = Language.getText("Join Psych Online Discord Server!");
 					itemDesc.screenCenter(X);
 
 					if (FlxG.mouse.justPressed) {
@@ -426,7 +426,7 @@ class OnlineState extends MusicBeatState {
 					github.alpha = 1;
 					github.animation.play("active");
 
-					itemDesc.text = "Documentation, FAQ and the Source Code!";
+					itemDesc.text = Language.getText("Documentation, FAQ and the Source Code!");
 					itemDesc.screenCenter(X);
 
 					if (FlxG.mouse.justPressed) {
@@ -436,7 +436,7 @@ class OnlineState extends MusicBeatState {
 							case 'codeberg':
 								RequestSubstate.requestURL("https://codeberg.org/Snirozu/Funkin-Psych-Online/wiki", true);
 							default:
-								Alert.alert('Offline.');
+								Alert.alert(Language.getText('Offline.'));
 						}
 					}
 				}
@@ -450,7 +450,7 @@ class OnlineState extends MusicBeatState {
 						bsky.alpha = 1;
 						bsky.animation.play("active");
 
-						itemDesc.text = "Follow the official Psych Online Bluesky account!";
+						itemDesc.text = Language.getText("Follow the official Psych Online Bluesky account!");
 						itemDesc.screenCenter(X);
 
 						if (FlxG.mouse.justPressed) {
@@ -468,7 +468,7 @@ class OnlineState extends MusicBeatState {
 						twitter.animation.play("active");
 						twitter.offset.set(5, 5);
 
-						itemDesc.text = "Follow the official Psych Online Twitter account!";
+						itemDesc.text = Language.getText("Follow the official Psych Online Twitter account!");
 						itemDesc.screenCenter(X);
 
 						if (FlxG.mouse.justPressed) {
@@ -497,17 +497,17 @@ class OnlineState extends MusicBeatState {
 
 		switch (curSelected) {
 			case 0:
-				itemDesc.text = "Join a room using a room code";
+				itemDesc.text = Language.getText("Join a room using a room code");
 			case 1:
-				itemDesc.text = "Creates a room";
+				itemDesc.text = Language.getText("Creates a room");
 			case 2:
-				itemDesc.text = "Opens a list of all available public rooms";
+				itemDesc.text = Language.getText("Opens a list of all available public rooms");
 			case 3:
-				itemDesc.text = "Psych Online options, configure stuff here!";
+				itemDesc.text = Language.getText("Psych Online options, configure stuff here!");
 			case 4:
-				itemDesc.text = "The Funkin Points Leaderboard!";
+				itemDesc.text = Language.getText("The Funkin Points Leaderboard!");
 			case 5:
-				itemDesc.text = "Download mods from Gamebanana here!";
+				itemDesc.text = Language.getText("Download mods from Gamebanana here!");
 		}
 		itemDesc.screenCenter(X);
 
