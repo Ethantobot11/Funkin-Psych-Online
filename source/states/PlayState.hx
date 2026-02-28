@@ -263,33 +263,21 @@ class PlayState extends MusicBeatState
 	@:isVar public var gf(get, set):Null<Character> = null;
 	@:isVar public var boyfriend(get, set):Character = null;
 	private function get_boyfriend():Character {
-		if (strumLines != null && strumLines?.members[1] != null)
-			return strumLines.members[1].characters[0];
 		return boyfriend;
 	}
 	private function set_boyfriend(bf:Character):Character {
-		if (strumLines != null && strumLines?.members[1] != null)
-			strumLines.members[1].characters = [bf];
 		return this.boyfriend = bf;
 	}
 	private function get_dad():Character {
-		if (strumLines != null && strumLines?.members[0] != null)
-			return strumLines.members[0].characters[0];
 		return dad;
 	}
 	private function set_dad(dad:Character):Character {
-		if (strumLines != null && strumLines?.members[0] != null)
-			strumLines.members[0].characters = [dad];
 		return this.dad = dad;
 	}
 	private function get_gf():Null<Character> {
-		if (strumLines != null && strumLines?.members[2] != null)
-			return strumLines.members[2].characters[0];
 		return gf;
 	}
 	private function set_gf(gf:Character):Null<Character> {
-		if (strumLines != null && strumLines?.members[2] != null)
-			strumLines.members[2].characters = [gf];
 		return this.gf = gf;
 	}
 	public var dummy:Character = null;
