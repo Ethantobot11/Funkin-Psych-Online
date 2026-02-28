@@ -1292,10 +1292,8 @@ class PlayState extends MusicBeatState
 			}
 			iconP1s.sort(sortIconByOX);
 			iconP2s.sort(sortIconByOX);
-		});
 
-		// NOTE: in regular psych girlfriend is initialized before other characters (hopefully this doesn't cause issues with mods)
-		preloadTasks.push(() -> {
+			//merge with other chars
 			oldModDir = Mods.currentModDirectory;
 
 			if (!stageData.hide_girlfriend) {
