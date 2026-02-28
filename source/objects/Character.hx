@@ -50,7 +50,7 @@ typedef AnimArray = {
 	@:optional var flip_x:Bool;
 }
 
-class CharacterCameraPoint extends FlxPoint {
+class CharacterCameraPoint extends FlxBasePoint {
 	public var charType:String = null;
 
 	public function new(character:Character, charType:String) {
