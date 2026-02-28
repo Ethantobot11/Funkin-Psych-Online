@@ -1310,7 +1310,7 @@ class PlayState extends MusicBeatState
 				}
 
 				gf = new Character(0, 0, gfName, false, false, 'gf');
-				gf.loadSpeaker();
+				gf?.loadSpeaker();
 				if (gf?.speaker != null) {
 					gfGroup.add(gf.speaker);
 
