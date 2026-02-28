@@ -437,8 +437,26 @@ class Language {
 
 		"Online Menu" => "Online Menüsü",
 		
+		// GameClient
+		"Failed to connect!" => "Bağlanılamadı!",
+		"JOIN ERROR: " => "KATILMA HATASI: ",
+		"Room error!" => "Oda hatası!",
+		"room.onError: " => "oda.Hata: ",
+		"Reconnecting..." => "Yeniden bağlanıyor...",
+		"Couldn't reconnect!" => "Yeniden bağlanılamadı!",
+		"RECONNECT ERROR: " => "YENİDEN BAĞLANMA HATASI: ",
+		"Reconnected!" => "Yeniden bağlandı!",
+		"Critically failed to reconnect!" => "Yeniden bağlanma kritik şekilde başarısız oldu!",
+		"Disconnected!" => "Bağlantı kesildi!",
+		"Switching Rooms." => "Oda değiştiriliyor.",
+		"Room Disposed?" => "Oda Kapatıldı mı?",
+		"Left/Kicked from room: " => "Odadan ayrıldı/atıldı: ",
+		"Left/Kicked from unknown room!" => "Bilinmeyen odadan ayrıldı/atıldı!",
+		"Joined!" => "Katıldı!",
+		"Leaving the Room, Reason: " => "Odadan Ayrılıyor, Sebep: ",
+		"Reconnecting with Token: " => "Token ile yeniden bağlanıyor: ",
+		
 		// RoomState.hx
-		// RoomState
 		"In the Lobby" => "Lobide",
 		"Typing..." => "Yazıyor...",
 		"Downloading (" => "İndiriliyor (",
@@ -577,7 +595,10 @@ class Language {
 		"ACCEPT, Paste links with CTRL + V" => "KABUL ET, CTRL + V ile link yapıştırın",
 		"BACK" => "GERİ",
 		
-		//Score Text
+		// StoryMenuState
+		"Story Mode" => "Hikaye Modu",
+		
+		// Score Text
 		"PlayState.updateTeamSide.daText" => "%{1}%
 			\nSkor: %{2}%
 			\nIskalar: %{3}%
