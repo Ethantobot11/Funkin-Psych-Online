@@ -259,55 +259,38 @@ class PlayState extends MusicBeatState
 	public var opponentVocals:FlxSound;
 	public var inst:FlxSound;
 
-	//the original chars (only used for something idr)
-	public var __dad:Character;
-	public var __gf:Null<Character>;
-	public var __boyfriend:Character;
-
-	public var dad(get, set):Character;
-	public var gf(get, set):Null<Character>;
-	public var boyfriend(get, set):Character;
+	@:isVar public var dad(get, set):Character = null;
+	@:isVar public var gf(get, set):Null<Character> = null;
+	@:isVar public var boyfriend(get, set):Character = null;
 	private function get_boyfriend():Character {
-		//for safety
-		if (strumLines?.members[1]?.characters[0] == __boyfriend)
-			return __boyfriend;
-
 		if (strumLines != null && strumLines?.members[1] != null)
 			return strumLines.members[1].characters[0];
-		return __boyfriend;
+		return boyfriend;
 	}
 	private function set_boyfriend(bf:Character):Character {
 		if (strumLines != null && strumLines?.members[1] != null)
 			strumLines.members[1].characters = [bf];
-		return __boyfriend = bf;
+		return bf;
 	}
 	private function get_dad():Character {
-		//for safety
-		if (strumLines?.members[1]?.characters[0] == __dad)
-			return __dad;
-
 		if (strumLines != null && strumLines?.members[0] != null)
 			return strumLines.members[0].characters[0];
-		return __dad;
+		return dad;
 	}
 	private function set_dad(dad:Character):Character {
 		if (strumLines != null && strumLines?.members[0] != null)
 			strumLines.members[0].characters = [dad];
-		return __dad = dad;
+		return dad;
 	}
 	private function get_gf():Null<Character> {
-		//for safety
-		if (strumLines?.members[1]?.characters[0] == __gf)
-			return __gf;
-
 		if (strumLines != null && strumLines?.members[2] != null)
 			return strumLines.members[2].characters[0];
-		return __gf;
+		return gf;
 	}
 	private function set_gf(gf:Character):Null<Character> {
 		if (strumLines != null && strumLines?.members[2] != null)
 			strumLines.members[2].characters = [gf];
-		return __gf = gf;
+		return gf;
 	}
 	public var dummy:Character = null;
 	//its you
@@ -1225,7 +1208,7 @@ class PlayState extends MusicBeatState
 			char.ox = player?.ox ?? 0;
 			if (isRight) {
 				if (boyfriend == null || char.ox == 0)
-					__boyfriend = char;
+					boyfriend = char;
 				var icon = new HealthIcon(char.healthIcon, true);
 				icon.ox = char.ox;
 				if (iconP1 == null)
@@ -1235,7 +1218,7 @@ class PlayState extends MusicBeatState
 			}
 			else {
 				if (dad == null || char.ox == 0)
-					__dad = char;
+					dad = char;
 				var icon = new HealthIcon(char.healthIcon, false);
 				icon.ox = char.ox;
 				if (iconP2 == null)
@@ -1328,7 +1311,7 @@ class PlayState extends MusicBeatState
 					gfName = 'gf' + skinsSuffix;
 				}
 
-				__gf = new Character(0, 0, gfName, false, false, 'gf');
+				gf = new Character(0, 0, gfName, false, false, 'gf');
 				gf.loadSpeaker();
 				if (gf?.speaker != null) {
 					gfGroup.add(gf.speaker);
@@ -4564,7 +4547,7 @@ class PlayState extends MusicBeatState
 								var isHard = char == boyfriend;
 								char = boyfriendMap.get(charName);
 								if (isHard)
-									__boyfriend = char;
+									boyfriend = char;
 								if (daSID != null)
 									characters.set(daSID, char);
 
@@ -4605,7 +4588,7 @@ class PlayState extends MusicBeatState
 								var isHard = char == dad;
 								char = dadMap.get(charName);
 								if (isHard)
-									__dad = char;
+									dad = char;
 								if (daSID != null)
 									characters.set(daSID, char);
 
@@ -4634,7 +4617,7 @@ class PlayState extends MusicBeatState
 
 								var lastAlpha:Float = gf.alpha;
 								gf.alpha = 0.00001;
-								__gf = gfMap.get(value2);
+								gf = gfMap.get(value2);
 								gf.alpha = lastAlpha;
 							}
 							setOnScripts('gfName', gf.curCharacter);
