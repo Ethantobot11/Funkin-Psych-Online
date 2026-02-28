@@ -4786,8 +4786,8 @@ class PlayState extends MusicBeatState
 		if (toGirlfren && gf != null) {
 			if (ClientPrefs.data.oldCameraSystem) camFollow.set(tX + gf.getMidpoint().x, tY + gf.getMidpoint().y);
 			else camFollow.setPosition(tX + gf.getMidpoint().x, tY + gf.getMidpoint().y);
-			camFollow.x += gf.cameraPosition[0] + gf.cameraOffset.get().x;
-			camFollow.y += gf.cameraPosition[1] + gf.cameraOffset.get().y;
+			camFollow.x += gf.cameraPosition[0] + girlfriendCameraOffset[0];
+			camFollow.y += gf.cameraPosition[1] + girlfriendCameraOffset[1];
 			tweenCamIn();
 			if (stage3D != null)
 				stage3D.setFollowCamera('gf');
@@ -4800,8 +4800,8 @@ class PlayState extends MusicBeatState
 		{
 			if (ClientPrefs.data.oldCameraSystem) camFollow.set(tX + dad.getMidpoint().x + 150, tY + dad.getMidpoint().y - 100);
 			else camFollow.setPosition(tX + dad.getMidpoint().x + 150, tY + dad.getMidpoint().y - 100);
-			camFollow.x += dad.cameraPosition[0] + dad.cameraOffset.get().x;
-			camFollow.y += dad.cameraPosition[1] + dad.cameraOffset.get().y;
+			camFollow.x += dad.cameraPosition[0] + opponentCameraOffset[0];
+			camFollow.y += dad.cameraPosition[1] + opponentCameraOffset[1];
 			tweenCamIn();
 			cameraLookAt = 0;
 			if (stage3D != null)
@@ -4813,8 +4813,8 @@ class PlayState extends MusicBeatState
 		{
 			if (ClientPrefs.data.oldCameraSystem) camFollow.set(tX + boyfriend.getMidpoint().x - 100, tY + boyfriend.getMidpoint().y - 100);
 			else camFollow.setPosition(tX + boyfriend.getMidpoint().x - 100, tY + boyfriend.getMidpoint().y - 100);
-			camFollow.x -= boyfriend.cameraPosition[0] - boyfriend.cameraOffset.get().x;
-			camFollow.y += boyfriend.cameraPosition[1] + boyfriend.cameraOffset.get().y;
+			camFollow.x -= boyfriend.cameraPosition[0] - boyfriendCameraOffset[0];
+			camFollow.y += boyfriend.cameraPosition[1] + boyfriendCameraOffset[1];
 
 			if (Paths.formatToSongPath(SONG.song) == 'tutorial' && cameraTwn == null && FlxG.camera.zoom != 1)
 			{

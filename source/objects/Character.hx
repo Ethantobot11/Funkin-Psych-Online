@@ -310,9 +310,7 @@ class Character extends FlxSkewedSprite {
 		}
 
 		animOffsets = new Map<String, Array<Dynamic>>();
-		var fixesCharType:String = charType;
-		if (!isPlayer && charType == "bf") fixesCharType = "dad"; //should fix dad camera.
-		cameraOffset = new LazyReturnThing(this, fixesCharType);
+		cameraOffset = new LazyReturnThing(this, charType);
 		this.isPlayer = isPlayer;
 		this.isSkin = isSkin;
 		var library:String = null;
