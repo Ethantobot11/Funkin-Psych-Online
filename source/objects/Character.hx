@@ -302,8 +302,9 @@ class Character extends FlxSkewedSprite {
 		var fixesCharType:String = charType;
 		if (isPlayer && charType == "dad") fixesCharType = "bf";
 		if (!isPlayer && charType == "bf") fixesCharType = "dad";
+		trace(charType + '|' fixesCharType);
 
-		cameraOffset = new CharacterCameraPoint(this, fixesCharType);
+		cameraOffset = new CharacterCameraPoint(this, charType);
 		this.isPlayer = isPlayer;
 		this.isSkin = isSkin;
 		var library:String = null;
