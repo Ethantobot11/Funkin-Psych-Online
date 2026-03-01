@@ -1182,8 +1182,9 @@ class PlayState extends MusicBeatState
 
 			// when the character has failed to load
 			if (char == null || char.loadFailed) {
+				trace("fallback to there");
 				Mods.currentModDirectory = oldModDir;
-				char = new Character(0, 0, (isRight ? SONG.player1 : SONG.player2), playsAsBF() == isRight, false, 'bf');
+				char = new Character(0, 0, (isRight ? SONG.player1 : SONG.player2), playsAsBF() == isRight, false, isRight ? 'bf' : 'dad');
 			}
 			
 			char.ox = player?.ox ?? 0;
@@ -5777,7 +5778,6 @@ class PlayState extends MusicBeatState
 		if (ids.filter(id -> id.startsWith("NOTE")).length > 0 || ids.filter(id -> id.startsWith(Note.maniaKeys + "K_NOTE")).length > 0)
 		{
 			var buttonCode:Int = (unique == -1 ? 0 : unique);
-			trace(buttonCode);
 
 			callOnScripts('onButtonPressPre', [buttonCode]);
 			if (button.justPressed) keyPressed(buttonCode);
@@ -5790,7 +5790,6 @@ class PlayState extends MusicBeatState
 		if (ids.filter(id -> id.startsWith("NOTE")).length > 0 || ids.filter(id -> id.startsWith(Note.maniaKeys + "K_NOTE")).length > 0)
 		{
 			var buttonCode:Int = (unique == -1 ? 0 : unique);
-			trace(buttonCode);
 
 			callOnScripts('onButtonReleasePre', [buttonCode]);
 			if(buttonCode > -1) keyReleased(buttonCode);
@@ -6746,7 +6745,7 @@ class PlayState extends MusicBeatState
 
 	#if HSC_ALLOWED
 	public function addScript(file:String) {
-		trace('addScript: ${file}');
+		//trace('addScript: ${file}');
 		var ext = Path.extension(file).toLowerCase();
 		if (Script.scriptExtensions.contains(ext))
 		{

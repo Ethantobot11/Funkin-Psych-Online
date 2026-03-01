@@ -261,7 +261,6 @@ class MusicBeatSubstate extends FlxSubState
 
 	public override function createPost() {
 		super.createPost();
-		trace("Function should call postCreate");
 		call("postCreate");
 	}
 
