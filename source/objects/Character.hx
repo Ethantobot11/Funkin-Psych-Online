@@ -298,12 +298,6 @@ class Character extends FlxSkewedSprite {
 		}
 
 		animOffsets = new Map<String, Array<Dynamic>>();
-		//mqke sure they got the right offsets
-		var fixesCharType:String = charType;
-		if (isPlayer && charType == "dad") fixesCharType = "bf";
-		if (!isPlayer && charType == "bf") fixesCharType = "dad";
-		trace(charType + '|' + fixesCharType);
-
 		cameraOffset = new CharacterCameraPoint(this, charType);
 		this.isPlayer = isPlayer;
 		this.isSkin = isSkin;

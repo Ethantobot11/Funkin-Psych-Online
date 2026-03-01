@@ -5973,7 +5973,7 @@ class PlayState extends MusicBeatState
 	var opponentPopScore:Bool = false;
 	var opponentNoteHits:Int = 0;
 
-	function opponentNoteHit(note:Note, ?sid:String):Void
+		function opponentNoteHit(note:Note, ?sid:String):Void
 	{
 		opponentNoteHits++;
 		note.hits++;
@@ -6009,10 +6009,21 @@ class PlayState extends MusicBeatState
 
 			var charArray:Array<Character> = [opChar];
 			var animToPlay:String = singAnimations[Std.int(Math.abs(Math.min(singAnimations.length-1, note.noteData)))] + altAnim;
-			if(note.gfNote) {
-				charArray = [gf];
+			
+			if (note != null) {
+				var strumIdx:Int = getStrumIndexFromData(note);
+				
+				if (note.gfNote) {
+					charArray = [gf];
+				} else {
+					charArray = strumLines.members[strumIdx].characters;
+					
+					// --- SID CHECK FOR OPPONENT ---
+					if (sid != null && characters.exists(sid) && (strumIdx == 0 || strumIdx == 1)) {
+						charArray[0] = opChar;
+					}
+				}
 			}
-			if (note != null) charArray = strumLines.members[getStrumIndexFromData(note)].characters;
 
 			for (char in charArray) {
 				if(char != null && !(GameClient.isConnected() && char == gf && sid != null && playersStats.get(sid).player.ox != 0))
@@ -6069,7 +6080,16 @@ class PlayState extends MusicBeatState
 			FlxG.sound.play(Paths.sound(note.hitsound), ClientPrefs.data.hitsoundVolume);
 
 		var charArray:Array<Character> = [self];
-		if (note != null) charArray = strumLines.members[getStrumIndexFromData(note)].characters;
+		if (note != null) {
+			var strumIdx:Int = getStrumIndexFromData(note);
+			charArray = strumLines.members[strumIdx].characters;
+
+			// --- SID CHECK FOR OUR PLAYER ---
+			var mySid:String = GameClient.room?.sessionId;
+			if (mySid != null && characters.exists(mySid) && (strumIdx == 0 || strumIdx == 1)) {
+				charArray[0] = characters.get(mySid);
+			}
+		}
 
 		if(note.hitCausesMiss) {
 			noteMiss(note);
@@ -6137,12 +6157,27 @@ class PlayState extends MusicBeatState
 
 			var char:Character = self;
 			var animCheck:String = 'hey';
+			
 			if(note.gfNote)
 			{
 				char = gf;
 				animCheck = 'cheer';
 			}
-			if (note != null) charArray = strumLines.members[getStrumIndexFromData(note)].characters;
+
+			if (note != null) {
+				var strumIdx:Int = getStrumIndexFromData(note);
+				
+				if (note.gfNote) {
+					charArray = [gf];
+				} else {
+					charArray = strumLines.members[strumIdx].characters;
+
+					var mySid:String = GameClient.room?.sessionId;
+					if (mySid != null && characters.exists(mySid) && (strumIdx == 0 || strumIdx == 1)) {
+						charArray[0] = characters.get(mySid);
+					}
+				}
+			}
 
 			for (char in charArray) {
 				if(char != null && !(GameClient.isConnected() && char == gf && GameClient.getPlayerSelf().ox != 0))
@@ -7245,17 +7280,25 @@ class PlayState extends MusicBeatState
 						gf.specialAnim = true;
 				} 
 				else if (!(message[1] ?? false)) {
-					var char = characters.get(sid);
-					var strumChars = strumLines.members[message[3]].characters;
-					if (strumChars.length <= 0) {
-						strumChars.push(null);
-					}
-					for (charIndex in 0...strumChars.length) {
-						if (strumChars[charIndex] != null)
-							char = strumChars[charIndex];
+					var strumIdx:Int = message[3];
+					var charArray:Array<Character> = [];
 
-						if (char == null)
-							return;
+					if (strumIdx != null && strumLines.members[strumIdx] != null) {
+						charArray = strumLines.members[strumIdx].characters;
+					}
+
+					// Failsafe in case the strumline somehow had no characters
+					if (charArray.length <= 0) {
+						charArray.push(null);
+					}
+
+					// 2. --- SID CHECK ---
+					if (characters.exists(sid) && (strumIdx == 0 || strumIdx == 1)) {
+						charArray[0] = characters.get(sid);
+					}
+
+					for (char in charArray) {
+						if (char == null) continue;
 
 						char.playAnim(message[0], true);
 						if (message[2] ?? false)

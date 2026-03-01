@@ -201,7 +201,7 @@ class ReplayRecorder extends FlxBasic {
 
 	public function recordKeyMobileC(time:Float, IDs:Array<String>, move:Int) {
 		#if TOUCH_CONTROLS
-		trace(time + ' | ' + IDs + ' | ' + move);
+		//trace(time + ' | ' + IDs + ' | ' + move);
 		if (IDs != null || IDs.length >= 0) {
 			var fixedID:String = IDs[0].toLowerCase().replace(" ", "").split("=")[0];
 			if(IDs.length == 1 && !REGISTER_BINDS.contains(fixedID))
@@ -278,7 +278,7 @@ class ReplayRecorder extends FlxBasic {
 		data.goods = state.songGoods;
 		data.bads = state.songBads;
 		data.shits = state.songShits;
-		data.points = state.songPoints; //this shouod fix 5fp => 0fp and similar issues
+		data.points = state.songPoints; //this should fix 5fp => 0fp and similar issues
 		data.beat_time = Date.now().getTime();
 		data.note_offset = ClientPrefs.data.noteOffset;
 		data.keys = Note.maniaKeys;
