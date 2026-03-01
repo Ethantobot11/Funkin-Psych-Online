@@ -5930,11 +5930,28 @@ class PlayState extends MusicBeatState
 
 		// play character anims
 		var charArray:Array<Character> = [self];
-		if ((SONG.notes[curSection] != null && (SONG.notes[curSection].mustHitSection ? playsAsBF() : !playsAsBF()) && SONG.notes[curSection].gfSection)
-			|| (note != null && note.gfNote)) {
-				charArray = [gf];
+		var isGfMiss = (SONG.notes[curSection] != null && (SONG.notes[curSection].mustHitSection ? playsAsBF() : !playsAsBF()) && SONG.notes[curSection].gfSection) || (note != null && note.gfNote);
+
+		if (isGfMiss) {
+			charArray = [gf];
+		} else {
+			if (note != null) {
+				var strumIdx:Int = getStrumIndexFromData(note);
+				charArray = strumLines.members[strumIdx].characters.copy();
+				
+				// --- SID CHECK FOR MISSING A NOTE ---
+				var mySid:String = GameClient.room?.sessionId;
+				if (mySid != null && characters.exists(mySid) && (strumIdx == 0 || strumIdx == 1)) {
+					charArray[0] = characters.get(mySid);
+				}
+			} else {
+				// --- SID CHECK FOR GHOST TAPPING MISS ---
+				var mySid:String = GameClient.room?.sessionId;
+				if (mySid != null && characters.exists(mySid)) {
+					charArray = [characters.get(mySid)];
+				}
+			}
 		}
-		if (note != null) charArray = strumLines.members[getStrumIndexFromData(note)].characters;
 
 		for (char in charArray) {
 			if(char != null && !(GameClient.isConnected() && char == gf && GameClient.getPlayerSelf().ox != 0) /*&& char.hasMissAnimations*/)
@@ -5944,7 +5961,10 @@ class PlayState extends MusicBeatState
 
 				var animToPlay:String = singAnimations[Std.int(Math.abs(Math.min(singAnimations.length-1, direction)))] + 'miss' + suffix;
 				char.playAnim(animToPlay, true);
-				GameClient.send("charPlay", [animToPlay, char == gf, false, getStrumIndexFromData(note)]);
+				
+				// Safely get strum index, default to 1 (player side) if ghost tapping
+				var sIdx:Int = note != null ? getStrumIndexFromData(note) : 1; 
+				GameClient.send("charPlay", [animToPlay, char == gf, false, sIdx]);
 
 				if(char != gf && combo > 5 && gf != null && gf.animOffsets.exists('sad'))
 				{
@@ -5973,7 +5993,7 @@ class PlayState extends MusicBeatState
 	var opponentPopScore:Bool = false;
 	var opponentNoteHits:Int = 0;
 
-		function opponentNoteHit(note:Note, ?sid:String):Void
+	function opponentNoteHit(note:Note, ?sid:String):Void
 	{
 		opponentNoteHits++;
 		note.hits++;
