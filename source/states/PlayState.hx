@@ -5937,7 +5937,7 @@ class PlayState extends MusicBeatState
 		} else {
 			if (note != null) {
 				var strumIdx:Int = getStrumIndexFromData(note);
-				charArray = strumLines.members[strumIdx].characters;
+				charArray = strumLines.members[strumIdx].characters.copy();
 				
 				// --- SID CHECK FOR MISSING A NOTE ---
 				var mySid:String = GameClient.room?.sessionId;
@@ -5993,7 +5993,7 @@ class PlayState extends MusicBeatState
 	var opponentPopScore:Bool = false;
 	var opponentNoteHits:Int = 0;
 
-		function opponentNoteHit(note:Note, ?sid:String):Void
+	function opponentNoteHit(note:Note, ?sid:String):Void
 	{
 		opponentNoteHits++;
 		note.hits++;
@@ -6102,7 +6102,7 @@ class PlayState extends MusicBeatState
 		var charArray:Array<Character> = [self];
 		if (note != null) {
 			var strumIdx:Int = getStrumIndexFromData(note);
-			charArray = strumLines.members[strumIdx].characters;
+			charArray = strumLines.members[strumIdx].characters.copy();
 
 			// --- SID CHECK FOR OUR PLAYER ---
 			var mySid:String = GameClient.room?.sessionId;
@@ -6190,7 +6190,7 @@ class PlayState extends MusicBeatState
 				if (note.gfNote) {
 					charArray = [gf];
 				} else {
-					charArray = strumLines.members[strumIdx].characters;
+					charArray = strumLines.members[strumIdx].characters.copy();
 
 					var mySid:String = GameClient.room?.sessionId;
 					if (mySid != null && characters.exists(mySid) && (strumIdx == 0 || strumIdx == 1)) {
@@ -7304,7 +7304,7 @@ class PlayState extends MusicBeatState
 					var charArray:Array<Character> = [];
 
 					if (strumLines.members[strumIdx] != null) {
-						charArray = strumLines.members[strumIdx].characters;
+						charArray = strumLines.members[strumIdx].characters.copy();
 					}
 
 					// Failsafe in case the strumline somehow had no characters
