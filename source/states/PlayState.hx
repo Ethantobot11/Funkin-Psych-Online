@@ -5937,7 +5937,7 @@ class PlayState extends MusicBeatState
 		} else {
 			if (note != null) {
 				var strumIdx:Int = getStrumIndexFromData(note);
-				charArray = strumLines.members[strumIdx].characters.copy();
+				charArray = strumLines.members[strumIdx].characters;
 				
 				// --- SID CHECK FOR MISSING A NOTE ---
 				var mySid:String = GameClient.room?.sessionId;
@@ -5993,7 +5993,7 @@ class PlayState extends MusicBeatState
 	var opponentPopScore:Bool = false;
 	var opponentNoteHits:Int = 0;
 
-	function opponentNoteHit(note:Note, ?sid:String):Void
+		function opponentNoteHit(note:Note, ?sid:String):Void
 	{
 		opponentNoteHits++;
 		note.hits++;
@@ -6036,7 +6036,7 @@ class PlayState extends MusicBeatState
 				if (note.gfNote) {
 					charArray = [gf];
 				} else {
-					charArray = strumLines.members[strumIdx].characters;
+					charArray = strumLines.members[strumIdx].characters.copy();
 					
 					// --- SID CHECK FOR OPPONENT ---
 					if (sid != null && characters.exists(sid) && (strumIdx == 0 || strumIdx == 1)) {
