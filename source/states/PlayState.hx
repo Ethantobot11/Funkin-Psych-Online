@@ -1077,6 +1077,10 @@ class PlayState extends MusicBeatState
 				skinsSuffix = '-christmas';
 			}
 
+			if (curStage.startsWith('limo')) {
+				skinsSuffix = '-car';
+			}
+
 			if(stageData.objects != null && stageData.objects.length > 0)
 			{
 				var list:Map<String, FlxSprite> = StageData.addObjectsToState(stageData.objects, !stageData.hide_girlfriend ? gfGroup : null, dadGroup, boyfriendGroup, this);
@@ -1161,21 +1165,27 @@ class PlayState extends MusicBeatState
 
 			oldModDir = Mods.currentModDirectory;
 
+			final songPlayer = (isRight ? SONG.player1 : SONG.player2) ?? '';
+
+			function songPlayerMatchesSkin(skin:String) {
+				return songPlayer.startsWith(skin);
+			}
+
 			// if online player is defined
 			if (player != null) {
-				if (player.skin.length > 0 && !(isRight ? SONG.player1 : SONG.player2).startsWith(player.skin.items[0])) {
+				if (player.skin.length > 0 && !songPlayerMatchesSkin(player.skin.items[0])) {
 					Mods.currentModDirectory = player.skin.items[3];
 					char = new Character(0, 0, player.skin.items[0] + skinsSuffix + player.skin.items[isRight ? 2 : 1], playsAsBF() == isRight, true, isRight ? 'bf' : 'dad');
 				}
 			}
 			// if skin is present for the playable character while offline
-			else if (playsAsBF() == isRight && ClientPrefs.data.currentSkin != null && !(isRight ? SONG.player1 : SONG.player2).startsWith(ClientPrefs.data.currentSkin[0])) {
+			else if (playsAsBF() == isRight && ClientPrefs.data.currentSkin != null && !songPlayerMatchesSkin(ClientPrefs.data.currentSkin[0])) {
 				Mods.currentModDirectory = ClientPrefs.data.currentSkin[3];
 				char = new Character(0, 0, ClientPrefs.data.currentSkin[0] + skinsSuffix + ClientPrefs.data.currentSkin[isRight ? 2 : 1], playsAsBF() == isRight, true, isRight ? 'bf' : 'dad');
 			}
 
 			// refuse non-blazin characters for blazin
-			if (char != null && ((isRight ? SONG.player1 : SONG.player2) ?? '').endsWith('-blazin') && !char.curCharacter.endsWith('-blazin')) {
+			if (char != null && songPlayer.endsWith('-blazin') && !char.curCharacter.endsWith('-blazin')) {
 				char.destroy();
 				char = null;
 			}
@@ -1184,7 +1194,16 @@ class PlayState extends MusicBeatState
 			if (char == null || char.loadFailed) {
 				trace("fallback to there");
 				Mods.currentModDirectory = oldModDir;
-				char = new Character(0, 0, (isRight ? SONG.player1 : SONG.player2), playsAsBF() == isRight, false, isRight ? 'bf' : 'dad');
+				char = new Character(0, 0, songPlayer, playsAsBF() == isRight, false, isRight ? 'bf' : 'dad');
+
+				// another fallback, if SONG.player1/2 didn't specify the suffix then it is searched and appended
+				if (char.loadFailed) {
+					for (suffix in (isRight ? online.states.SkinsState.RIGHT_SUFFIX : online.states.SkinsState.LEFT_SUFFIX)) {
+						final charExists = Character.getCharacterFile(songPlayer + suffix, null, true) != null;
+						if (charExists)
+							char = new Character(0, 0, songPlayer + suffix, playsAsBF() == isRight, false, isRight ? 'bf' : 'dad');
+					}
+				}
 			}
 			
 			char.ox = player?.ox ?? 0;
@@ -1508,9 +1527,9 @@ class PlayState extends MusicBeatState
 			preloadTasks.push(() -> {
 				scoreTxt.visible = false;
 
-				function createText(isRight:Bool, ?ox:Int = 0) {
+				function createText(isRight:Bool, ?ox:Int = 0, ?isOnline:Bool = false) {
 					var scoreTxtPlayer = new FlxText(0, 0, FlxG.width, "", 20);
-					scoreTxtPlayer.setFormat(!isPixelStage ? Paths.font("vcr.ttf") : 'Pixel Arial 11 Bold', !isPixelStage ? 18 : 16, FlxColor.WHITE, isRight ? RIGHT : LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+					scoreTxtPlayer.setFormat(!isPixelStage ? Paths.font("vcr.ttf") : 'Pixel Arial 11 Bold', (!isPixelStage ? 18 : 16) - (isOnline ? -4 : 0), FlxColor.WHITE, isRight ? RIGHT : LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 					scoreTxtPlayer.scrollFactor.set();
 					scoreTxtPlayer.borderSize = 1.25;
 					scoreTxtPlayer.visible = !ClientPrefs.data.hideHud;
@@ -1541,7 +1560,7 @@ class PlayState extends MusicBeatState
 				}
 				else {
 					for (sid => player in GameClient.room.state.players) {
-						scoreTxtOthers.set(sid, createText(player.bfSide, player.ox));
+						scoreTxtOthers.set(sid, createText(player.bfSide, player.ox, true));
 					}
 					scoreTxtOthers.get(GameClient.room.sessionId).color = FlxColor.YELLOW;
 				}
@@ -2719,7 +2738,7 @@ class PlayState extends MusicBeatState
 			return;
 		}
 
-		var str:String = ratingName;
+		var str:String = ratingName ?? '?';
 		if (totalPlayed != 0) {
 			var percent:Float = CoolUtil.floorDecimal(ratingPercent * 100, 2);
 			str += ' ($percent%) - $ratingFC';
@@ -3562,29 +3581,6 @@ class PlayState extends MusicBeatState
 			}
 		});
 
-		if (GameClient.isConnected()) {
-			//if player 2 left then go back to lobby // nvm, unreliable on reconnects
-			// if (!GameClient.reconnecting && GameClient.room.state.player2.name == "") {
-			// 	trace("No one is playing, leaving...");
-			// 	endSong();
-			// }
-
-			if (!isReady && (controls.mobileControls && FlxG.mouse.justPressed || controls.ACCEPT) && !inCutscene && canStart && canInput) {
-				isReady = true;
-				FlxG.sound.play(Paths.sound('confirmMenu'), 0.5);
-				if (ClientPrefs.data.flashing)
-					freakyFlicker = FlxFlicker.flicker(waitReadySpr, 0.5, 0.05, true, false, _ -> waitReadySpr.text = "waiting for other player...");
-				GameClient.send("playerReady");
-			}
-
-			if (waitReady) {
-				paused = true;
-				FlxG.sound.music.pause();
-				vocals.pause();
-				opponentVocals.pause();
-			}
-		}
-
 		/*if (FlxG.keys.justPressed.NINE)
 		{
 			iconP1.swapOldIcon();
@@ -3641,11 +3637,34 @@ class PlayState extends MusicBeatState
 		setOnScripts('curDecStep', curDecStep);
 		setOnScripts('curDecBeat', curDecBeat);
 
-		if (controls.PAUSE && startedCountdown && canPause && canInput)
+		if (controls.PAUSE && (GameClient.isConnected() ? isReady : startedCountdown) && canPause && canInput)
 		{
 			var ret:Dynamic = callOnScripts('onPause', null, true);
 			if(ret != FunkinLua.Function_Stop) {
 				openPauseMenu();
+			}
+		}
+
+		if (GameClient.isConnected()) {
+			//if player 2 left then go back to lobby // nvm, unreliable on reconnects
+			// if (!GameClient.reconnecting && GameClient.room.state.player2.name == "") {
+			// 	trace("No one is playing, leaving...");
+			// 	endSong();
+			// }
+
+			if (!isReady && (controls.mobileControls && FlxG.mouse.justPressed || controls.ACCEPT) && !inCutscene && canStart && canInput) {
+				isReady = true;
+				FlxG.sound.play(Paths.sound('confirmMenu'), 0.5);
+				if (ClientPrefs.data.flashing)
+					freakyFlicker = FlxFlicker.flicker(waitReadySpr, 0.5, 0.05, true, false, _ -> waitReadySpr.text = "waiting for other player...");
+				GameClient.send("playerReady");
+			}
+
+			if (waitReady) {
+				paused = true;
+				FlxG.sound.music.pause();
+				vocals.pause();
+				opponentVocals.pause();
 			}
 		}
 
@@ -7504,7 +7523,7 @@ class PlayState extends MusicBeatState
 			op.recalculateRating();
 		}
 
-		var str:String = op.ratingName;
+		var str:String = op.ratingName ?? '?';
 		var percent:Float = 0;
 		if (op.calcTotalPlayed() != 0) {
 			percent = CoolUtil.floorDecimal(op.ratingPercent * 100, 2);

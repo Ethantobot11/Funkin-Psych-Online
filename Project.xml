@@ -7,7 +7,7 @@
 	<architecture exclude="arm64" if="ONLY_ARMV7" />
 	<architecture exclude="arm64-v8a" if="ONLY_ARMV7" />
 
-	<app title="Friday Night Funkin': Psych Extended Online" file="PsychExtendedOnline" main="Main" packageName="com.arkoselabs.psychdextendedonline" package="com.arkoselabs.psychdextendedonline" company="ArkoseLabs" version="0.14.2" />
+	<app title="Friday Night Funkin': Psych Extended Online" file="PsychExtendedOnline" main="Main" packageName="com.arkoselabs.psychdextendedonline" package="com.arkoselabs.psychdextendedonline" company="ArkoseLabs" version="0.14.3" />
 	<app if="mobile" title='Psych Extended Online' />
 
 	<!--Switch Export with Unique ApplicationID and Icon-->

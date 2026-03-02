@@ -16,9 +16,9 @@ import objects.Character;
 #end
 class SkinsState extends MusicBeatState {
 	static var BLACKLISTED_CHARACTERS = ['default'];
-	static var LEFT_SUFFIX = ['-opponent', '-left'];
-	static var RIGHT_SUFFIX = ['-player', '-playable', '-right'];
-	static var SKIP_SUFFICES = ['-pixel', '-christmas', '-blazin'];
+	public static var LEFT_SUFFIX = ['-opponent', '-left'];
+	public static var RIGHT_SUFFIX = ['-player', '-playable', '-right'];
+	static var SKIP_SUFFICES = ['-pixel', '-christmas', '-car', '-blazin'];
 
 	var charactersWithWeeks:Array<Int> = [];
 	// [x] = [character_name_or_dir, left_side_suffix, right_side_suffix, mod_name]
@@ -429,7 +429,8 @@ class SkinsState extends MusicBeatState {
 
 		var f1:String = (controls.mobileControls) ? "Y" : "F1";
 		var f2:String = (controls.mobileControls) ? "Z" : "F2";
-		var tip2 = new FlxText(-20, 0, FlxG.width, '$f1 for Help!\n$f2 to Browse Verified Skins');
+		var f3:String = (controls.mobileControls) ? "?" : "F3";
+		var tip2 = new FlxText(-20, 0, FlxG.width, '$f1 for Help!\n$f2 to Browse Verified Skins\n$f3 to Browse GB Skins Category');
 		tip2.setFormat("VCR OSD Mono", 16, FlxColor.WHITE, RIGHT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		tip2.y = tip1.y;
 		tip2.alpha = tip1.alpha;
@@ -618,6 +619,10 @@ class SkinsState extends MusicBeatState {
 
 		if (mobileButtonJustPressed('Z') || FlxG.keys.justPressed.F2) {
 			switchState(() -> new DownloaderState('collection:110039'));
+		}
+
+		if (FlxG.keys.justPressed.F3) {
+			switchState(() -> new DownloaderState('category:43788'));
 		}
 
 		if (controls.RESET) {
