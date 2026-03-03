@@ -12,6 +12,13 @@ import sys.FileSystem;
 
 import backend.Section;
 
+typedef StrumLine =
+{
+	var cpu:Bool;
+	var characters:String;
+	var startIndex:Int;
+}
+
 typedef SwagSong =
 {
 	var song:String;
@@ -43,6 +50,9 @@ typedef SwagSong =
 
 	//psych engine 1.0
 	@:optional var format:String;
+
+	//codename engine legacy (WIP)
+	@:optional var strumLines:Array<StrumLine>;
 }
 
 class Song

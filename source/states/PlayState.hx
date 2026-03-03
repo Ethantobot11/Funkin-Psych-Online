@@ -629,6 +629,69 @@ class PlayState extends MusicBeatState
 
 	var canSpaceTaunt:Bool = true;
 
+	public function initStrumLineCharacter(isRight:Bool, charName:String, ?addToHealthBar:Bool, ?disableGroup:Bool) {
+		var char:Character = null;
+		oldModDir = Mods.currentModDirectory;
+
+		char = new Character(0, 0, charName, playsAsBF() == isRight, false, isRight ? 'bf' : 'dad');
+
+		if (char.loadFailed) {
+			for (suffix in (isRight ? online.states.SkinsState.RIGHT_SUFFIX : online.states.SkinsState.LEFT_SUFFIX)) {
+				final charExists = Character.getCharacterFile(charName + suffix, null, true) != null;
+				if (charExists) {
+					char = new Character(0, 0, charName + suffix, playsAsBF() == isRight, false, isRight ? 'bf' : 'dad');
+					break;
+				}
+			}
+		}
+
+		if (addToHealthBar) {
+			if (isRight) {
+				if (boyfriend == null || char.ox == 0)
+					boyfriend = char;
+
+				var icon = new HealthIcon(char.healthIcon, true);
+				icon.ox = char.ox;
+
+				if (iconP1 == null)
+					iconP1 = icon;
+
+				char.gameIconIndex = iconP1s.length;
+				iconP1s.push(icon);
+			}
+			else {
+				if (dad == null || char.ox == 0)
+					dad = char;
+
+				var icon = new HealthIcon(char.healthIcon, false);
+				icon.ox = char.ox;
+
+				if (iconP2 == null)
+					iconP2 = icon;
+
+				char.gameIconIndex = iconP2s.length;
+				iconP2s.push(icon);
+			}
+		}
+
+		if (!playsAsBF()) {
+			char.flipX = !char.flipX;
+		}
+
+		startCharacterPos(char, !isRight);
+		if (disableGroup) {
+			add(char);
+		} else {
+			(isRight ? boyfriendGroup : dadGroup).add(char);
+		}
+
+		startCharacterScripts(char.curCharacter, null, isRight);
+
+		Mods.currentModDirectory = oldModDir;
+
+		return char;
+	}
+
 	public function addStrum(isCPU:Bool, targetCharacters:Array<Character>, targetNoteData:Int, ?amount:Null<Int>) {
 		if (amount == null) amount = Note.maniaKeys;
 
@@ -6501,10 +6564,14 @@ class PlayState extends MusicBeatState
 			}
 		}
 
-		if (self.danceEveryNumBeats != 0 && beat % self.danceEveryNumBeats == 0 && self.animation.curAnim != null && !self.animation.curAnim.name.startsWith('sing') && !self.stunned)
-			self.dance();
-		if (getOpponent().danceEveryNumBeats != 0 && beat % getOpponent().danceEveryNumBeats == 0 && getOpponent().animation.curAnim != null && !getOpponent().animation.curAnim.name.startsWith('sing') && !getOpponent().stunned)
-			getOpponent().dance();
+		//idle support to extra chars
+		for (strumIndex in 0...strumLines.members.length) {
+			var chars:Array<Character> = strumLines.members[strunIndex].characters;
+			for (char in chars) {
+				if (char.danceEveryNumBeats != 0 && beat % char.danceEveryNumBeats == 0 && char.animation.curAnim != null && !char.animation.curAnim.name.startsWith('sing') && !char.stunned && char != gf)
+					char.dance();
+			}
+		}
 
 		onlineCharacterBopper(beat);
 	}
