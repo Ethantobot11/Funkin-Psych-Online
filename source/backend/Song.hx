@@ -50,9 +50,6 @@ typedef SwagSong =
 
 	//psych engine 1.0
 	@:optional var format:String;
-
-	//codename engine legacy (WIP)
-	@:optional var strumLines:Array<StrumLine>;
 }
 
 class Song
