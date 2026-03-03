@@ -50,6 +50,9 @@ jobs:
           path: |
             ~/.gradle
             .haxelib/
+            /home/runner/haxelib/
+            /Users/runner/haxelib/
+            C:/hostedtoolcache/windows/haxe/4.3.6/x64/lib/
             ~/.haxelib/
             export/release/android/haxe/
             export/release/android/obj/
@@ -131,6 +134,9 @@ jobs:
           path: |
             ~/.gradle
             .haxelib/
+            /home/runner/haxelib/
+            /Users/runner/haxelib/
+            C:/hostedtoolcache/windows/haxe/4.3.6/x64/lib/
             ~/.haxelib/
             export/release/android/haxe/
             export/release/android/obj/
