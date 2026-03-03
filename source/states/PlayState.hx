@@ -6566,7 +6566,7 @@ class PlayState extends MusicBeatState
 
 		//idle support to extra chars
 		for (strumIndex in 0...strumLines.members.length) {
-			var chars:Array<Character> = strumLines.members[strunIndex].characters;
+			var chars:Array<Character> = strumLines.members[strumIndex].characters;
 			for (char in chars) {
 				if (char.danceEveryNumBeats != 0 && beat % char.danceEveryNumBeats == 0 && char.animation.curAnim != null && !char.animation.curAnim.name.startsWith('sing') && !char.stunned && char != gf)
 					char.dance();
