@@ -427,7 +427,7 @@ class ModsMenuState extends MusicBeatState
 			var modPackGPU:String = Paths.mods(values[0] + '/pack.' + GPU_IMAGE_EXT);
 			var modPackPng:String = Paths.mods(values[0] + '/pack.png');
 
-			if (unkinFileSystem.exists(modPackGPU)) {
+			if (FunkinFileSystem.exists(modPackGPU)) {
 				loadedIcon = FunkinFileSystem.getBitmapData(modPackGPU);
 			}
 			else if (FunkinFileSystem.exists(modPackPng)) {
