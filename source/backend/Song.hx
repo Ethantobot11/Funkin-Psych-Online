@@ -16,6 +16,7 @@ typedef StrumLine =
 {
 	var cpu:Bool;
 	var character:String;
+	var type:Int;
 	var startData:Null<Int>;
 }
 

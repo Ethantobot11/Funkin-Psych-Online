@@ -1455,15 +1455,11 @@ class PlayState extends MusicBeatState
 			//try something
 			if (SONG.strumLines != null && SONG.strumLines != []) {
 				for (strumIndex => strumData in SONG.strumLines) {
-					var char = initStrumLineCharacter(0, 0, strumData.character, strumData.cpu);
 					if (strumData.startData != null) {
+						var char:Character = null;
+						if (strumData.character != null) char = initStrumLineCharacter(0, 0, strumData.character, !strumData.cpu);
 						var strum = createStrum(strumData.cpu, [char], strumData.startData);
-						strum.characters.push(char);
-						//some things for making easier to access
-						scripts.set('strumLine[${strumIndex + 2}]', strum);
-						scripts.set('strumLine[${strumIndex + 2}]_character[0]', char);
 					}
-					scripts.set('char_${strumData.character}', char);
 				}
 			}
 		});
