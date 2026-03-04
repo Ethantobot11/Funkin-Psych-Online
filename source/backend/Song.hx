@@ -14,10 +14,12 @@ import backend.Section;
 
 typedef StrumLine =
 {
+	var visible:Bool; //WIP Logic
+	var position:String; //WIP Logic
+	var characters:Array<String>;
 	var cpu:Bool;
-	var character:String;
-	var type:Int;
-	var startData:Null<Int>;
+	var type:Int; //WIP Logic
+	var startData:Null<Int>; //Will be removed after the `notes` array separation
 }
 
 typedef SwagSong =

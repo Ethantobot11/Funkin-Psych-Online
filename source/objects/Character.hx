@@ -104,7 +104,15 @@ class CharacterCameraPoint extends FlxBasePoint {
 }
 
 class Character extends FlxSkewedSprite {
-	//Swap thing test
+	public var isCodenameChar:Bool = false;
+	public var playerOffsets:Bool = false;
+	@:noCompletion var __baseFlipped:Bool = false;
+	@:noCompletion var __reverseDrawProcedure:Bool = false;
+
+	public inline function isFlippedOffsets() {
+		return (isPlayer != playerOffsets) != (flipX != __baseFlipped);
+	}
+
 	public function swapLeftRightAnimations() {
 		CoolUtil.switchAnimFrames(animation.getByName('singRIGHT'), animation.getByName('singLEFT'));
 		CoolUtil.switchAnimFrames(animation.getByName('singRIGHTmiss'), animation.getByName('singLEFTmiss'));
@@ -127,7 +135,7 @@ class Character extends FlxSkewedSprite {
 			return animOffsets.get(name);
 		return [0, 0];
 	}
-	
+
 	public function getCameraPosition() {
 		var midpoint:FlxPoint = getMidpoint();
 		var event:FlxPoint = new FlxPoint(midpoint.x + (isPlayer ? -100 : 150) + getAnimOffset(getAnimName())[0] + cameraOffset.x,
@@ -150,8 +158,7 @@ class Character extends FlxSkewedSprite {
 		#if flxanimate } #end
 		return name;
 	}
-	
-	/* Lazy cameraOffset compability */
+
 	public var cameraOffset:FlxPoint;
 
 	public var sprite3D:AnimatedSprite3D;
@@ -763,9 +770,20 @@ class Character extends FlxSkewedSprite {
 			animation.play(AnimName, Force, Reversed, Frame);
 		}
 
-		var daOffset = animOffsets.get(AnimName);
-		if (animOffsets.exists(AnimName)) {
-			offset.set(daOffset[0], daOffset[1]);
+		if (isCodenameChar) {
+			offset.set(0, 0);
+			var daOffset = getAnimOffset(AnimName);
+			if (daOffset != null) {
+				frameOffset.set(daOffset[0], daOffset[1]);
+			else
+				frameOffset.set(0, 0);
+		}
+		else
+		{
+			var daOffset = animOffsets.get(AnimName);
+			if (animOffsets.exists(AnimName))
+				offset.set(daOffset[0], daOffset[1]);
+			frameOffset.set(0, 0);
 		}
 
 		if (curCharacter.startsWith('gf')) {
@@ -899,7 +917,20 @@ class Character extends FlxSkewedSprite {
 			atlas.draw();
 			return;
 		}
-		super.draw();
+
+		if (isCodenameChar && isFlippedOffsets()) {
+			__reverseDrawProcedure = true;
+			flipX = !flipX;
+			scale.x *= -1;
+
+			super.draw();
+
+			flipX = !flipX;
+			scale.x *= -1;
+			__reverseDrawProcedure = false;
+		} else {
+			super.draw();
+		}
 	}
 
 	public function destroyAtlas()
