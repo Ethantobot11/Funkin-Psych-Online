@@ -1,18 +1,17 @@
-- Add ASTC and BPTC (That's not my job, but I hope we can get this soon as possible)
+- Add ASTC and BPTC
 - Add ignoreGFAnim to Chart File
-- Add Multiple Characters to Chart File (for Codname Charts)
-- Add Multiple StrumLines to Chart File (for Codname Charts)
-- Add Girlfriend StrumLine by Default for Supported Charts (for Codname Charts)
-- Add 3v3 Support to StrumLines
+- Put Chart File's Notes Section to StrumLines and Seperate Them
+- Add Girlfriend StrumLine by Default for Supported Charts
+- Add 3v3 Support for Playing with Psych Online Players
 - Make MacOS & Linux Builds
 - Completely Remove the Mobile Controls Things From PC Builds
 - Add Touch Support to Some Menus (GameOverSubstate, PauseMenuSubState, FreeplayState, etc...)
 - Add Custom Options via Hscript and Json (Make this Compatible with Old Psych Extended as Possible)
-- Hide Miss Animations for Teammates in 2v2/3v3 Mode (for extra characters)
-- Hide Press Animations for Teammates in 2v2/3v3 Mode (for extra strumlines)
+- Hide Extra Character Miss Animations for Teammates in 2v2/3v3 Mode
+- Hide Extra Character Press Animations for Teammates in 2v2/3v3 Mode
 - Add Multiple Strumlines to Chart Editor
 - Add backwards lua compability
 - Rewrite the Mobile Controls Library(?)
 - Switch Hscript-Improved to HScript-Iris-Improved(?)
-- Add HScript Improved Compability to HScript Iris Improved (if i can add HScript-Iris-Improved)
+- Add HScript Improved Compability to HScript Iris Improved(?)
 - Refactor/Redo Scriptable States Support(?)

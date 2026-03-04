@@ -692,7 +692,13 @@ class PlayState extends MusicBeatState
 		return char;
 	}
 
+	//backwards compatibility
 	public function addStrum(isCPU:Bool, targetCharacters:Array<Character>, targetNoteData:Int, ?amount:Null<Int>) {
+		addTextToDebug("addStrum: this code deprecated, use createStrum for avoiding this message" + fileName, FlxColor.YELLOW);
+		createStrum(isCPU, targetCharacters, targetNoteData, amount);
+	}
+
+	public function createStrum(isCPU:Bool, targetCharacters:Array<Character>, targetNoteData:Int, ?amount:Null<Int>) {
 		if (amount == null) amount = Note.maniaKeys;
 
 		var strumWidth = amount * Note.swagScaledWidth - (Note.getNoteOffsetX() * (amount - 1));
@@ -769,6 +775,7 @@ class PlayState extends MusicBeatState
 			//strumLineNotes.add(babyArrow);
 			babyArrow.postAddedToGroup();
 		}
+		return strumGroup;
 	}
 
 	override public function create()
@@ -1356,10 +1363,6 @@ class PlayState extends MusicBeatState
 			}
 			iconP1s.sort(sortIconByOX);
 			iconP2s.sort(sortIconByOX);
-			//try something
-			for (strum in SONG.strumLines) {
-				initStrumLineCharacter(0, 0, strum.character, strum.cpu);
-			}
 		});
 
 		// NOTE: in regular psych girlfriend is initialized before other characters (hopefully this doesn't cause issues with mods)
@@ -1444,9 +1447,24 @@ class PlayState extends MusicBeatState
 			//maybe this can fix all problems lol
 			var event = EventManager.get(AmountEvent).recycle(4);
 			if (!scripts.event("onPreGenerateStrums", event).cancelled) {
-				addStrum(true, [dad], 0);
-				addStrum(false, [boyfriend], 4);
+				createStrum(true, [dad], 0);
+				createStrum(false, [boyfriend], 4);
 				scripts.event("onPostGenerateStrums", event);
+			}
+
+			//try something
+			if (SONG.strumLines != null && SONG.strumLines != []) {
+				for (strumIndex => strumData in SONG.strumLines) {
+					var char = initStrumLineCharacter(0, 0, strumData.character, strumData.cpu);
+					if (strumData.startData != null) {
+						var strum = createStrum(strum.cpu, [char], strumData.startData);
+						strum.characters.push(char);
+						//some things for making easier to access
+						scripts.set('strumLine[${strumIndex + 2}]', strum);
+						scripts.set('strumLine[${strumIndex + 2}]_character[0]', char);
+					}
+					scripts.set('char_${strumData.character}', char);
+				}
 			}
 		});
 

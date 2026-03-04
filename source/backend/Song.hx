@@ -16,7 +16,7 @@ typedef StrumLine =
 {
 	var cpu:Bool;
 	var character:String;
-	var startIndex:Int;
+	var startData:Null<Int>;
 }
 
 typedef SwagSong =
