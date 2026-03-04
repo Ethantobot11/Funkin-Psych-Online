@@ -57,7 +57,7 @@ class FunkinJoyStick extends JoyStick {
 		else if (FileSystem.exists(xmlPath) && FileSystem.exists(graphicPng))
 			loadFrom(graphicPng, xmlPath);
 		else #end {
-			var fallbackExt:String? = null;
+			var fallbackExt:String = null;
 			for (ext in [
 				GPU_IMAGE_EXT,
 				IMAGE_EXT
