@@ -1456,9 +1456,13 @@ class PlayState extends MusicBeatState
 			if (SONG.strumLines != null && SONG.strumLines != []) {
 				for (strumIndex => strumData in SONG.strumLines) {
 					if (strumData.startData != null) {
-						var char:Character = null;
-						if (strumData.character != null) char = initStrumLineCharacter(0, 0, strumData.character, !strumData.cpu);
-						var strum = createStrum(strumData.cpu, [char], strumData.startData);
+						var chars:Array<Character> = [];
+						if (strumData.characters != null && strumData.characters != []) {
+							for (char in strumData.characters) {
+								chars.push(initStrumLineCharacter(0, 0, char, !strumData.cpu));
+							}
+						}
+						var strum = createStrum(strumData.cpu, chars, strumData.startData);
 					}
 				}
 			}

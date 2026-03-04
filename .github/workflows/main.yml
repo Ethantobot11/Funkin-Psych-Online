@@ -12,7 +12,7 @@ jobs:
           - name: Android-NORMAL
             os: ubuntu-latest
             setupCommand: sh ./setup/unix-alter.sh
-            buildArgs: "android -ONLY_ARM64"
+            buildArgs: "android"
             artifactName: androidBuild
             artifactPath: "export/release/android/bin/app/build/outputs/apk/release/*.apk"
             doCache: "YES"
@@ -36,7 +36,7 @@ jobs:
           - name: Android-ANGLE
             os: ubuntu-latest
             setupCommand: sh ./setup/unix.sh
-            buildArgs: "android -ONLY_ARM64 -D ANGLE_BUILD"
+            buildArgs: "android -D ANGLE_BUILD"
             artifactName: androidBuild-(ANGLE)
             artifactPath: "export/release/android/bin/app/build/outputs/apk/release/*.apk"
             doCache: "NO"
