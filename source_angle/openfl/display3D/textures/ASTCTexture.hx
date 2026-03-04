@@ -1,3 +1,5 @@
+// taken from https://github.com/ShadowEngineTeam/FNF-Shadow-Engine/blob/d4fc5be04f4faf6b41574c00efa028a4fa972933/source/library_shadows/gpu_textures/openfl/display3D/textures/ASTCTexture.hx
+
 package openfl.display3D.textures;
 
 #if !flash
