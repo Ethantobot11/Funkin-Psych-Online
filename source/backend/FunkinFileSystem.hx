@@ -166,43 +166,32 @@ class FunkinFileSystem
 	 * @param path The path to find the bitmap for.
 	 * @return The Bitmap of the path. If `null`, the path does not exist.
 	 */
-	public static function getBitmapData(path:String):Null<BitmapData>
-	{
-		var bitmap:Null<BitmapData> = null;
-
-		try
-		{
-			var image:Null<Image> = null;
-
-			if (fromLime(path, false))
-			{
-				var fullPath:String = formatLimePath(path);
-				image = Assets.getImage(fullPath, false);
-
-				if (image == null)
-				{
-					throw new Exception("Lime returned `null` when getting the image. This should not happen!");
-				}
+	public static function getBitmapData(id:String, ?useCache:Bool = true):BitmapData {
+		var bitmap:BitmapData = null;
+		var gpuPath = haxe.io.Path.withoutExtension(id) + '.' + GPU_IMAGE_EXT;
+		if (Assets.exists(gpuPath)) {
+			var texture:Texture = switch (GPU_IMAGE_EXT) {
+				case 'astc': openfl.Lib.current.stage.context3D.createASTCTexture(Assets.getBytes(gpuPath));
+				case 'dds':  openfl.Lib.current.stage.context3D.createBCTexture(Assets.getBytes(gpuPath));
+				default: null;
 			}
-			#if sys
-			else if(FileSystem.exists(path))
-			{
-				image = Image.fromFile(path);
-			}
-			#end
-
-			if (image != null)
-			{
-				bitmap = BitmapData.fromImage(image);
+			if (texture != null) {
+				bitmap = BitmapData.fromTexture(texture);
+				if (useCache && cache.enabled) cache.setBitmapData(id, bitmap);
+				return bitmap;
 			}
 		}
-		catch(e:Exception)
-		{
-			trace('Failed to get the bitmap from "${path}". More info:\n${e.details()}');
-			bitmap = null;
+
+		// fallback to normal image
+		var image:Image = LimeAssets.getImage(id, false);
+		if (image != null) {
+			bitmap = BitmapData.fromImage(image);
+			bitmap.__asset = true;
+			if (useCache && cache.enabled) cache.setBitmapData(id, bitmap);
+			return bitmap;
 		}
 
-		return bitmap;
+		return null;
 	}
 
 	public static function readDirectory(path:String, ?recursive:Bool = false):Array<String>

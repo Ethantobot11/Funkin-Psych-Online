@@ -30,14 +30,29 @@ using StringTools;
 class Paths_CNE {
 	public static var tempFramesCache:Map<String, FlxFramesCollection> = [];
 
-	inline static public function getSparrowAtlasAlt(key:String)
-		return FlxAtlasFrames.fromSparrow('$key.png', File.getContent(key + '.xml'));
+	inline static public function getSparrowAtlasAlt(key:String) {
+		for (ext in getImageExtensions()) {
+			if (FunkinFileSystem.exists('$key.$ext'))
+				return FlxAtlasFrames.fromSparrow('$key.$ext', File.getContent(key + '.xml'));
+		}
+		return null;
+	}
 
-	inline static public function getPackerAtlasAlt(key:String)
-		return FlxAtlasFrames.fromSpriteSheetPacker('$key.png', '$key.txt');
+	inline static public function getPackerAtlasAlt(key:String) {
+		for (ext in getImageExtensions()) {
+			if (FunkinFileSystem.exists('$key.$ext'))
+				return FlxAtlasFrames.fromSpriteSheetPacker('$key.$ext', '$key.txt');
+		}
+		return null;
+	}
 
-	inline static public function getAsepriteAtlasAlt(key:String)
-		return FlxAtlasFrames.fromAseprite('$key.png', '$key.json');
+	inline static public function getAsepriteAtlasAlt(key:String) {
+		for (ext in getImageExtensions()) {
+			if (FunkinFileSystem.exists('$key.$ext'))
+				return FlxAtlasFrames.fromAseprite('$key.$ext', '$key.json');
+		}
+		return null;
+	}
 
 	static public function image(key:String, ?library:String, checkForAtlas:Bool = false, ?ext:String) {
 		if (ext == null) ext = 'png';
@@ -85,7 +100,17 @@ class Paths_CNE {
 		var noExt = Path.withoutExtension(path);
 		var atlasImage:Dynamic = null;
 
-		if (!SkipMultiCheck && #if MODS_ALLOWED FunkinFileSystem.exists('$noExt/1.png') #else Assets.exists('$noExt/1.png') #end) {
+		var foundMulti = false;
+		if (!SkipMultiCheck) {
+			for (ext in getImageExtensions()) {
+				if (#if MODS_ALLOWED FunkinFileSystem.exists('$noExt/1.$ext') #else Assets.exists('$noExt/1.$ext') #end) {
+					foundMulti = true;
+					break;
+				}
+			}
+		}
+
+		if (foundMulti) {
 			// MULTIPLE SPRITESHEETS!!
 
 			var graphic = FlxG.bitmap.add("flixel/images/logo/default.png", false, '$noExt/mult');
@@ -97,10 +122,17 @@ class Paths_CNE {
 			var cur = 1;
 			var finalFrames = new MultiFramesCollection(graphic);
 			trace("Final Frames: " + finalFrames);
-			while(FunkinFileSystem.exists('$noExt/$cur.png')) {
-				var spr = loadFrames('$noExt/$cur.png', false, null, false, true);
-				trace("spr: " + spr);
-				finalFrames.addFrames(spr);
+			while(true) {
+				var found = false;
+				for (ext in getImageExtensions()) {
+					if (FunkinFileSystem.exists('$noExt/$cur.$ext')) {
+						var spr = loadFrames('$noExt/$cur.$ext', false, null, false, true);
+						finalFrames.addFrames(spr);
+						found = true;
+						break;
+					}
+				}
+				if (!found) break;
 				cur++;
 			}
 			return finalFrames;
@@ -118,5 +150,12 @@ class Paths_CNE {
 		if (graph == null)
 			return null;
 		return graph.imageFrame;
+	}
+
+	static inline function getImageExtensions():Array<String> {
+		return [
+			Paths.GPU_IMAGE_EXT,
+			Paths.IMAGE_EXT
+		];
 	}
 }

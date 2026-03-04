@@ -275,8 +275,13 @@ class FunkinNetwork {
 		}
 	}
 
-	public static function getDefaultAvatar():BitmapData {
-		return Assets.getBitmapData('assets/images/' + 'bf' + FlxG.random.int(1, 2) + '.png');
+	public static function getDefaultAvatar():BitmapData
+	{
+		var num = FlxG.random.int(1, 2);
+		var basePath = 'assets/images/bf' + num;
+		if (Assets.exists(basePath + '.' + GPU_IMAGE_EXT))
+			return Assets.getBitmapData(basePath + '.' + GPU_IMAGE_EXT);
+		return Assets.getBitmapData(basePath + '.png');
 	}
 
 	public static function requestAPI(data:OneOf<HTTPRequest, String>, ?alertError:Bool = true):Null<HTTPResponse> {

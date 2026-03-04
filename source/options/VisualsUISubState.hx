@@ -354,7 +354,7 @@ class VisualsUISubState extends BaseOptionsMenu
 
 		var skin:String = Note.defaultNoteSkin;
 		var customSkin:String = skin + Note.getNoteSkinPostfix();
-		if(Paths.fileExists('images/$customSkin.png', IMAGE)) skin = customSkin;
+		if(Paths.fileExists('images/$customSkin.${Paths.GPU_IMAGE_EXT}', Paths.getImageAssetType(Paths.GPU_IMAGE_EXT)) || Paths.fileExists('images/$customSkin.${Paths.IMAGE_EXT}', Paths.getImageAssetType(Paths.IMAGE_EXT))) skin = customSkin;
 
 		note.texture = skin; //Load texture and anims
 		note.reloadNote();

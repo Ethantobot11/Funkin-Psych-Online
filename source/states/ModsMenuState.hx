@@ -424,10 +424,14 @@ class ModsMenuState extends MusicBeatState
 			add(newMod.alphabet);
 			//Don't ever cache the icons, it's a waste of loaded memory
 			var loadedIcon:BitmapData = null;
-			var iconToUse:String = Paths.mods(values[0] + '/pack.png');
-			if(FunkinFileSystem.exists(iconToUse))
-			{
-				loadedIcon = FunkinFileSystem.getBitmapData(iconToUse);
+			var modPackGPU:String = Paths.mods(values[0] + '/pack.' + GPU_IMAGE_EXT);
+			var modPackPng:String = Paths.mods(values[0] + '/pack.png');
+
+			if (unkinFileSystem.exists(modPackGPU)) {
+				loadedIcon = FunkinFileSystem.getBitmapData(modPackGPU);
+			}
+			else if (FunkinFileSystem.exists(modPackPng)) {
+				loadedIcon = FunkinFileSystem.getBitmapData(modPackPng);
 			}
 
 			newMod.icon = new AttachedSprite();

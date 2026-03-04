@@ -12,19 +12,38 @@ class FunkinMobilePad extends MobilePad {
 	override public function createVirtualButton(x:Float, y:Float, framePath:String, ?scale:Float = 1.0, ?ColorS:Int = 0xFFFFFF, ?returned:String):MobileButton {
 		var frames:FlxGraphic;
 
-		final path:String = MobileConfig.mobileFolderPath + 'MobilePad/Textures/$framePath.png';
+		final basePath:String = MobileConfig.mobileFolderPath + 'MobilePad/Textures/' + framePath;
 		#if MODS_ALLOWED
-		final modsPath:String = Paths.modFolders('mobile/MobilePad/Textures/$framePath.png');
-		if(FunkinFileSystem.exists(modsPath))
-			frames = FlxGraphic.fromBitmapData(FunkinFileSystem.getBitmapData(modsPath));
-		else #end if(Assets.exists(path))
-			frames = FlxGraphic.fromBitmapData(Assets.getBitmapData(path));
+		final modBase:String = Paths.modFolders('mobile/MobilePad/Textures/' + framePath);
+		#endif
+
+		var modGraphicGPU:String = #if MODS_ALLOWED Paths.modFolders('mobile/MobilePad/Textures/' + framePath + '.' + GPU_IMAGE_EXT) #else null #end;
+		var modGraphicPng:String = #if MODS_ALLOWED Paths.modFolders('mobile/MobilePad/Textures/' + framePath + '.png') #else null #end;
+
+		var graphicGPU:String = basePath + '.' + GPU_IMAGE_EXT;
+		var graphicPng:String = basePath + '.png';
+		var defaultGraphic:String = basePath + 'default.png';
+
+		#if MODS_ALLOWED
+		if (modGraphicGPU != null && FunkinFileSystem.exists(modGraphicGPU))
+			frames = FlxGraphic.fromBitmapData(FunkinFileSystem.getBitmapData(modGraphicGPU));
+		else if (modGraphicPng != null && FunkinFileSystem.exists(modGraphicPng))
+			frames = FlxGraphic.fromBitmapData(FunkinFileSystem.getBitmapData(modGraphicPng));
 		else
-			frames = FlxGraphic.fromBitmapData(Assets.getBitmapData(MobileConfig.mobileFolderPath + 'MobilePad/Textures/default.png'));
+		#end
+		if (Assets.exists(graphicGPU))
+			frames = FlxGraphic.fromBitmapData(Assets.getBitmapData(graphicGPU));
+		else if (Assets.exists(graphicPng))
+			frames = FlxGraphic.fromBitmapData(Assets.getBitmapData(graphicPng));
+		else
+			frames = FlxGraphic.fromBitmapData(Assets.getBitmapData(defaultGraphic));
 
 		var button = new MobileButton(x, y, returned);
 		button.scale.set(scale, scale);
-		button.frames = FlxTileFrames.fromGraphic(frames, FlxPoint.get(Std.int(frames.width / 2), frames.height));
+		button.frames = FlxTileFrames.fromGraphic(
+			frames,
+			FlxPoint.get(Std.int(frames.width / 2), frames.height)
+		);
 
 		button.updateHitbox();
 		button.updateLabelPosition();

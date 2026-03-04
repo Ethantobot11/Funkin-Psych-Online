@@ -35,6 +35,8 @@ class Paths
 {
 	inline public static var SOUND_EXT = #if web "mp3" #else "ogg" #end;
 	inline public static var VIDEO_EXT = "mp4";
+	inline public static var IMAGE_EXT:String = "png";
+	inline public static var GPU_IMAGE_EXT:String = #if mobile "astc" #else "dds" #end;
 	inline public static var PATH_SLASH = #if windows '\\' #else '/' #end;
 
 	public static function excludeAsset(key:String) {
@@ -47,8 +49,10 @@ class Paths
 		'assets/music/freakyMenu.$SOUND_EXT',
 		'assets/shared/music/breakfast.$SOUND_EXT',
 		'assets/shared/music/tea-time.$SOUND_EXT',
-		'assets/images/bf1.png',
-		'assets/images/bf2.png',
+		'assets/images/bf1.${IMAGE_EXT}',
+		'assets/images/bf1.${GPU_IMAGE_EXT}',
+		'assets/images/bf2.${IMAGE_EXT}',
+		'assets/images/bf2.${GPU_IMAGE_EXT}',
 	];
 	/// haya I love you for the base cache dump I took to the max
 	public static function clearUnusedMemory() {
@@ -288,51 +292,36 @@ class Paths
 	static var lastImageErrorFile:String = null;
 
 	public static var currentTrackedAssets:Map<String, FlxGraphic> = [];
+
+	public static function getImageAssetType(ext:String):AssetType
+	{
+		return switch (ext.toLowerCase())
+		{
+			case 'png' | 'jpg' | 'jpeg': IMAGE;
+			default: BINARY;
+		}
+	}
+
 	static public function image(key:String, ?library:String = null, ?allowGPU:Bool = true, ?isGlobalPath:Bool = false):FlxGraphic
 	{
 		var bitmap:BitmapData = null;
 		var file:String = null;
 
+		var extensions:Array<String> = [GPU_IMAGE_EXT, IMAGE_EXT];
+
 		#if MODS_ALLOWED
-		if (isGlobalPath) {
-			file = modFolders(key + '.png');
-			if (FunkinFileSystem.exists(modFolders(key + '_${ClientPrefs.data.lang}.png'))) {
-				file = modFolders(key + '_${ClientPrefs.data.lang}.png');
-			}
-		}
-		else {
-			file = modsImages(key);
-			if (FunkinFileSystem.exists(modsImages(key + '_${ClientPrefs.data.lang}'))) {
-				file = modsImages(key + '_${ClientPrefs.data.lang}');
-			}
-		}
-		//trace(file);
-		if (currentTrackedAssets.exists(file))
-		{
-			localTrackedAssets.push(file);
-			return currentTrackedAssets.get(file);
-		}
-		else if (FunkinFileSystem.exists(file))
-			bitmap = FunkinFileSystem.getBitmapData(file);
-		else if (currentTrackedAssets.exists(file))
-		{
-			localTrackedAssets.push(file);
-			return currentTrackedAssets.get(file);
-		}
-		else if (FunkinFileSystem.exists(file))
-			bitmap = FunkinFileSystem.getBitmapData(file);
-		else
-		#end
+		for (ext in extensions)
 		{
 			if (isGlobalPath) {
-				file = getPath('$key.png', IMAGE, library);
-				if (FunkinFileSystem.exists(getPath('${key}_${ClientPrefs.data.lang}.png', IMAGE, library))) {
-					file = getPath('${key}_${ClientPrefs.data.lang}.png', IMAGE, library);
+				file = modFolders(key + '.' + ext);
+				if (FunkinFileSystem.exists(modFolders(key + '_${ClientPrefs.data.lang}.' + ext))) {
+					file = modFolders(key + '_${ClientPrefs.data.lang}.' + ext);
 				}
-			} else {
-				file = getPath('images/$key.png', IMAGE, library);
-				if (FunkinFileSystem.exists(getPath('images/${key}_${ClientPrefs.data.lang}.png', IMAGE, library))) {
-					file = getPath('images/${key}_${ClientPrefs.data.lang}.png', IMAGE, library);
+			}
+			else {
+				file = modsImages(key + '.' + ext);
+				if (FunkinFileSystem.exists(modsImages(key + '_${ClientPrefs.data.lang}.' + ext))) {
+					file = modsImages(key + '_${ClientPrefs.data.lang}.' + ext);
 				}
 			}
 			//trace(file);
@@ -341,8 +330,46 @@ class Paths
 				localTrackedAssets.push(file);
 				return currentTrackedAssets.get(file);
 			}
-			else if (OpenFlAssets.exists(file, IMAGE))
-				bitmap = OpenFlAssets.getBitmapData(file);
+			else if (FunkinFileSystem.exists(file))
+				bitmap = FunkinFileSystem.getBitmapData(file);
+			else if (currentTrackedAssets.exists(file))
+			{
+				localTrackedAssets.push(file);
+				return currentTrackedAssets.get(file);
+			}
+			else if (FunkinFileSystem.exists(file))
+				bitmap = FunkinFileSystem.getBitmapData(file);
+
+			if (bitmap != null) break;
+		}
+
+		if (bitmap == null)
+		#end
+		{
+			for (ext in extensions)
+			{
+				if (isGlobalPath) {
+					file = getPath('$key.' + ext, getImageAssetType(ext), library);
+					if (FunkinFileSystem.exists(getPath('${key}_${ClientPrefs.data.lang}.' + ext, getImageAssetType(ext), library))) {
+						file = getPath('${key}_${ClientPrefs.data.lang}.' + ext, getImageAssetType(ext), library);
+					}
+				} else {
+					file = getPath('images/$key.' + ext, getImageAssetType(ext), library);
+					if (FunkinFileSystem.exists(getPath('images/${key}_${ClientPrefs.data.lang}.' + ext, getImageAssetType(ext), library))) {
+						file = getPath('images/${key}_${ClientPrefs.data.lang}.' + ext, getImageAssetType(ext), library);
+					}
+				}
+				//trace(file);
+				if (currentTrackedAssets.exists(file))
+				{
+					localTrackedAssets.push(file);
+					return currentTrackedAssets.get(file);
+				}
+				else if (OpenFlAssets.exists(file, getImageAssetType(ext)))
+					bitmap = OpenFlAssets.getBitmapData(file);
+
+				if (bitmap != null) break;
+			}
 		}
 
 		if (bitmap != null)
@@ -660,6 +687,10 @@ class Paths
 	}
 
 	inline static public function modsImages(key:String) {
+		var gpuFile:String = modFolders('images/' + key + '.${GPU_IMAGE_EXT}');
+		if (FileSystem.exists(gpuFile))
+			return gpuFile;
+
 		return modFolders('images/' + key + '.png');
 	}
 
@@ -722,6 +753,13 @@ class Paths
 		// is folder or image path
 		if (Std.isOfType(folderOrImg, String)) {
 			var originalPath:String = folderOrImg;
+
+			// Build extension priority list
+			var extensions:Array<String> = [
+				GPU_IMAGE_EXT,
+				IMAGE_EXT
+			];
+
 			for (i in 0...10) {
 				var st:String = '$i';
 				if (i == 0)
@@ -737,11 +775,16 @@ class Paths
 						break;
 					}
 				}
-				else if (Paths.fileExists('images/$originalPath/spritemap$st.png', IMAGE)) {
-					// trace('found Sprite PNG');
-					changedImage = true;
-					loadSpriteMap(frames, spriteJson, folderOrImg = Paths.image('$originalPath/spritemap$st'));
-					break;
+				else {
+					for (ext in extensions) {
+						if (Paths.fileExists('images/$originalPath/spritemap$st.$ext', getImageAssetType(ext))) {
+							// trace('found Sprite Image');
+							changedImage = true;
+							loadSpriteMap(frames, spriteJson, folderOrImg = Paths.image('$originalPath/spritemap$st'));
+							break;
+						}
+					}
+					if (changedImage) break;
 				}
 			}
 

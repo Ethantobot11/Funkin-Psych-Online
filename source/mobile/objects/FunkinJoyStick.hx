@@ -30,15 +30,52 @@ class FunkinJoyStick extends JoyStick {
 			graphic = MobileConfig.mobileFolderPath + graphic;
 
 		#if mobile_controls_file_support
-		var xmlGraphicExists:Bool = (FileSystem.exists('$graphic.xml') && FileSystem.exists('$graphic.png'));
-		var modGraphicXml:String = Paths.modFolders('mobile/$fixedModPath.xml');
+		var xmlPath:String = '$graphic.xml';
+		var modXml:String = Paths.modFolders('mobile/$fixedModPath.xml');
+		var modGraphicGPU:String = Paths.modFolders('mobile/$fixedModPath.' + GPU_IMAGE_EXT);
 		var modGraphicPng:String = Paths.modFolders('mobile/$fixedModPath.png');
-		if (FileSystem.exists(modGraphicXml) && FileSystem.exists(modGraphicPng))
-			object.loadGraphic(FlxGraphic.fromFrame(FlxAtlasFrames.fromSparrow(BitmapData.fromFile(modGraphicPng), File.getContent(modGraphicXml)).getByName(img)));
-		else if (xmlGraphicExists)
-			object.loadGraphic(FlxGraphic.fromFrame(FlxAtlasFrames.fromSparrow(BitmapData.fromFile('$graphic.png'), File.getContent('$graphic.xml')).getByName(img)));
-		else #end
-			object.loadGraphic(FlxGraphic.fromFrame(FlxAtlasFrames.fromSparrow(Assets.getBitmapData('$graphic.png'), Assets.getText('$graphic.xml')).getByName(img)));
+		var graphicGPU:String = '$graphic.' + GPU_IMAGE_EXT;
+		var graphicPng:String = '$graphic.png';
+
+		inline function loadFrom(img:String, xml:String) {
+			object.loadGraphic(
+				FlxGraphic.fromFrame(
+					FlxAtlasFrames.fromSparrow(
+						BitmapData.fromFile(img),
+						File.getContent(xml)
+					).getByName(img)
+				)
+			);
+		}
+
+		if (FileSystem.exists(modXml) && FileSystem.exists(modGraphicGPU))
+			loadFrom(modGraphicGPU, modXml);
+		else if (FileSystem.exists(modXml) && FileSystem.exists(modGraphicPng))
+			loadFrom(modGraphicPng, modXml);
+		else if (FileSystem.exists(xmlPath) && FileSystem.exists(graphicGPU))
+			loadFrom(graphicGPU, xmlPath);
+		else if (FileSystem.exists(xmlPath) && FileSystem.exists(graphicPng))
+			loadFrom(graphicPng, xmlPath);
+		else #end {
+			var fallbackExt:String? = null;
+			for (ext in [
+				GPU_IMAGE_EXT,
+				IMAGE_EXT
+			]) if (Assets.exists('$graphic.$ext')) {
+				fallbackExt = ext;
+				break;
+			}
+
+			if (fallbackExt != null)
+				object.loadGraphic(
+					FlxGraphic.fromFrame(
+						FlxAtlasFrames.fromSparrow(
+							Assets.getBitmapData('$graphic.$fallbackExt'),
+							Assets.getText(xmlPath)
+						).getByName(img)
+					)
+				);
+		}
 	}
 
 	public function new(x:Float = 0, y:Float = 0, ?graphic:String, ?onMove:Float->Float->Float->String->Void)
