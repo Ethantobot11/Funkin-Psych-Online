@@ -424,7 +424,7 @@ class ModsMenuState extends MusicBeatState
 			add(newMod.alphabet);
 			//Don't ever cache the icons, it's a waste of loaded memory
 			var loadedIcon:BitmapData = null;
-			var modPackGPU:String = Paths.mods(values[0] + '/pack.' + GPU_IMAGE_EXT);
+			var modPackGPU:String = Paths.mods(values[0] + '/pack.' + Paths.GPU_IMAGE_EXT);
 			var modPackPng:String = Paths.mods(values[0] + '/pack.png');
 
 			if (FunkinFileSystem.exists(modPackGPU)) {

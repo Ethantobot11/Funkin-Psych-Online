@@ -59,8 +59,8 @@ class FunkinJoyStick extends JoyStick {
 		else #end {
 			var fallbackExt:String = null;
 			for (ext in [
-				GPU_IMAGE_EXT,
-				IMAGE_EXT
+				Paths.GPU_IMAGE_EXT,
+				Paths.IMAGE_EXT
 			]) if (Assets.exists('$graphic.$ext')) {
 				fallbackExt = ext;
 				break;

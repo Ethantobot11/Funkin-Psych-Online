@@ -279,8 +279,8 @@ class FunkinNetwork {
 	{
 		var num = FlxG.random.int(1, 2);
 		var basePath = 'assets/images/bf' + num;
-		if (Assets.exists(basePath + '.' + GPU_IMAGE_EXT))
-			return Assets.getBitmapData(basePath + '.' + GPU_IMAGE_EXT);
+		if (Assets.exists(basePath + '.' + Paths.GPU_IMAGE_EXT))
+			return Assets.getBitmapData(basePath + '.' + Paths.GPU_IMAGE_EXT);
 		return Assets.getBitmapData(basePath + '.png');
 	}
 

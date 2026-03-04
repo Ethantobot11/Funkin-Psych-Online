@@ -17,7 +17,7 @@ class FunkinMobilePad extends MobilePad {
 		final modBase:String = Paths.modFolders('mobile/MobilePad/Textures/' + framePath);
 		#end
 
-		var modGraphicGPU:String = #if MODS_ALLOWED Paths.modFolders('mobile/MobilePad/Textures/' + framePath + '.' + GPU_IMAGE_EXT) #else null #end;
+		var modGraphicGPU:String = #if MODS_ALLOWED Paths.modFolders('mobile/MobilePad/Textures/' + framePath + '.' + Paths.GPU_IMAGE_EXT) #else null #end;
 		var modGraphicPng:String = #if MODS_ALLOWED Paths.modFolders('mobile/MobilePad/Textures/' + framePath + '.png') #else null #end;
 
 		var graphicGPU:String = basePath + '.' + GPU_IMAGE_EXT;
