@@ -104,15 +104,6 @@ class CharacterCameraPoint extends FlxBasePoint {
 }
 
 class Character extends FlxSkewedSprite {
-	public var isCodenameChar:Bool = false;
-	public var playerOffsets:Bool = false;
-	@:noCompletion var __baseFlipped:Bool = false;
-	@:noCompletion var __reverseDrawProcedure:Bool = false;
-
-	public inline function isFlippedOffsets() {
-		return (isPlayer != playerOffsets) != (flipX != __baseFlipped);
-	}
-
 	public function swapLeftRightAnimations() {
 		CoolUtil.switchAnimFrames(animation.getByName('singRIGHT'), animation.getByName('singLEFT'));
 		CoolUtil.switchAnimFrames(animation.getByName('singRIGHTmiss'), animation.getByName('singLEFTmiss'));
@@ -134,29 +125,6 @@ class Character extends FlxSkewedSprite {
 		if (animOffsets.exists(name))
 			return animOffsets.get(name);
 		return [0, 0];
-	}
-
-	public function getCameraPosition() {
-		var midpoint:FlxPoint = getMidpoint();
-		var event:FlxPoint = new FlxPoint(midpoint.x + (isPlayer ? -100 : 150) + getAnimOffset(getAnimName())[0] + cameraOffset.x,
-			midpoint.y - 100 + getAnimOffset(getAnimName())[1] + cameraOffset.y);
-
-		return new FlxPoint(event.x, event.y);
-	}
-	
-	public inline function getAnimName()
-	{
-		var name = null;
-		#if flxanimate
-		if (atlas != null)
-			name = atlasPlayingAnim;
-		else
-		{
-		#end
-			if (animation.curAnim != null)
-				name = animation.curAnim.name;
-		#if flxanimate } #end
-		return name;
 	}
 
 	public var cameraOffset:FlxPoint;
@@ -770,21 +738,12 @@ class Character extends FlxSkewedSprite {
 			animation.play(AnimName, Force, Reversed, Frame);
 		}
 
-		if (isCodenameChar) {
-			offset.set(0, 0);
-			var daOffset = getAnimOffset(AnimName);
-			if (daOffset != null)
-				frameOffset.set(daOffset[0], daOffset[1]);
-			else
-				frameOffset.set(0, 0);
-		}
+		offset.set(0, 0);
+		var daOffset = getAnimOffset(AnimName);
+		if (daOffset != null)
+			frameOffset.set(daOffset[0], daOffset[1]);
 		else
-		{
-			var daOffset = animOffsets.get(AnimName);
-			if (animOffsets.exists(AnimName))
-				offset.set(daOffset[0], daOffset[1]);
 			frameOffset.set(0, 0);
-		}
 
 		if (curCharacter.startsWith('gf')) {
 			if (AnimName == 'singLEFT') {
@@ -918,19 +877,7 @@ class Character extends FlxSkewedSprite {
 			return;
 		}
 
-		if (isCodenameChar && isFlippedOffsets()) {
-			__reverseDrawProcedure = true;
-			flipX = !flipX;
-			scale.x *= -1;
-
-			super.draw();
-
-			flipX = !flipX;
-			scale.x *= -1;
-			__reverseDrawProcedure = false;
-		} else {
-			super.draw();
-		}
+		super.draw();
 	}
 
 	public function destroyAtlas()
