@@ -30,7 +30,7 @@ using StringTools;
 class Paths_CNE {
 	public static var tempFramesCache:Map<String, FlxFramesCollection> = [];
 
-	inline static public function getSparrowAtlasAlt(key:String) {
+	static public function getSparrowAtlasAlt(key:String) {
 		for (ext in getImageExtensions()) {
 			if (FunkinFileSystem.exists('$key.$ext'))
 				return FlxAtlasFrames.fromSparrow('$key.$ext', File.getContent(key + '.xml'));
@@ -38,7 +38,7 @@ class Paths_CNE {
 		return null;
 	}
 
-	inline static public function getPackerAtlasAlt(key:String) {
+	static public function getPackerAtlasAlt(key:String) {
 		for (ext in getImageExtensions()) {
 			if (FunkinFileSystem.exists('$key.$ext'))
 				return FlxAtlasFrames.fromSpriteSheetPacker('$key.$ext', '$key.txt');
@@ -46,7 +46,7 @@ class Paths_CNE {
 		return null;
 	}
 
-	inline static public function getAsepriteAtlasAlt(key:String) {
+	static public function getAsepriteAtlasAlt(key:String) {
 		for (ext in getImageExtensions()) {
 			if (FunkinFileSystem.exists('$key.$ext'))
 				return FlxAtlasFrames.fromAseprite('$key.$ext', '$key.json');

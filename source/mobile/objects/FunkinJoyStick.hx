@@ -32,9 +32,9 @@ class FunkinJoyStick extends JoyStick {
 		#if mobile_controls_file_support
 		var xmlPath:String = '$graphic.xml';
 		var modXml:String = Paths.modFolders('mobile/$fixedModPath.xml');
-		var modGraphicGPU:String = Paths.modFolders('mobile/$fixedModPath.' + GPU_IMAGE_EXT);
+		var modGraphicGPU:String = Paths.modFolders('mobile/$fixedModPath.' + Paths.GPU_IMAGE_EXT);
 		var modGraphicPng:String = Paths.modFolders('mobile/$fixedModPath.png');
-		var graphicGPU:String = '$graphic.' + GPU_IMAGE_EXT;
+		var graphicGPU:String = '$graphic.' + Paths.GPU_IMAGE_EXT;
 		var graphicPng:String = '$graphic.png';
 
 		inline function loadFrom(img:String, xml:String) {

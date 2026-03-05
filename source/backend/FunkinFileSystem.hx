@@ -170,24 +170,25 @@ class FunkinFileSystem
 		var bitmap:BitmapData = null;
 		var gpuPath = haxe.io.Path.withoutExtension(id) + '.' + Paths.GPU_IMAGE_EXT;
 		if (Assets.exists(gpuPath)) {
-			var texture:Texture = switch (Paths.GPU_IMAGE_EXT) {
+			var texture:openfl.display3D.textures.Texture = switch (Paths.GPU_IMAGE_EXT) {
 				case 'astc': openfl.Lib.current.stage.context3D.createASTCTexture(Assets.getBytes(gpuPath));
 				case 'dds':  openfl.Lib.current.stage.context3D.createBCTexture(Assets.getBytes(gpuPath));
 				default: null;
 			}
 			if (texture != null) {
 				bitmap = BitmapData.fromTexture(texture);
-				if (useCache && cache.enabled) cache.setBitmapData(id, bitmap);
+				if (useCache) cache.setBitmapData(id, bitmap);
 				return bitmap;
 			}
 		}
 
 		// fallback to normal image
-		var image:Image = LimeAssets.getImage(id, false);
+		var image:Image = Assets.getImage(id, false);
 		if (image != null) {
 			bitmap = BitmapData.fromImage(image);
+			@:privateAccess
 			bitmap.__asset = true;
-			if (useCache && cache.enabled) cache.setBitmapData(id, bitmap);
+			if (useCache) cache.setBitmapData(id, bitmap);
 			return bitmap;
 		}
 
