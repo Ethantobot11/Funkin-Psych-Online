@@ -433,6 +433,10 @@ class Character extends FlxSkewedSprite {
 		animationsArray = [];
 		animOffsets = [];
 		curCharacter = character;
+		//Reset the variables
+		__baseFlipped = false;
+		__oppositeOffsets = false;
+
 		switch (curCharacter) {
 			// case 'your character name in case you want to hardcode them instead':
 			default:
@@ -452,6 +456,7 @@ class Character extends FlxSkewedSprite {
 		recalculateDanceIdle();
 		dance();
 
+		var prevFlipX = flipX;
 		if (isPlayer) {
 			flipX = !flipX;
 
@@ -475,6 +480,7 @@ class Character extends FlxSkewedSprite {
 					}
 			}*/
 		}
+		__oppositeOffsets = (flipX != prevFlipX);
 		__baseFlipped = flipX;
 	}
 
@@ -869,6 +875,7 @@ class Character extends FlxSkewedSprite {
 		}
 	}
 	
+	@:noCompletion var __oppositeOffsets:Bool = false;
 	@:noCompletion var __baseFlipped:Bool = false;
 	@:noCompletion var __reverseDrawProcedure:Bool = false;
 	public override function getScreenBounds(?newRect:FlxRect, ?camera:FlxCamera):FlxRect {
@@ -882,7 +889,7 @@ class Character extends FlxSkewedSprite {
 	}
 
 	public function isFlippedOffsets()
-		return flipX != __baseFlipped;
+		return __oppositeOffsets != (flipX != __baseFlipped);
 
 	public override function draw()
 	{
