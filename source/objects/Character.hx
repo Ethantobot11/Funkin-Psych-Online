@@ -358,6 +358,7 @@ class Character extends FlxSkewedSprite {
 		healthIcon = json.healthicon;
 		singDuration = json.sing_duration;
 		flipX = (json.flip_x == true);
+		__baseFlipped = (json.flip_x == true);
 
 		if (json.healthbar_colors != null && json.healthbar_colors.length > 2)
 			healthColorArray = json.healthbar_colors;
@@ -868,6 +869,20 @@ class Character extends FlxSkewedSprite {
 		}
 	}
 	
+	@:noCompletion var __reverseDrawProcedure:Bool = false;
+	public override function getScreenBounds(?newRect:FlxRect, ?camera:FlxCamera):FlxRect {
+		if (__reverseDrawProcedure) {
+			scale.x *= -1;
+			var bounds:FlxRect = super.getScreenBounds(newRect, camera);
+			scale.x *= -1;
+			return bounds;
+		}
+		return super.getScreenBounds(newRect, camera);
+	}
+
+	public function isFlippedOffsets()
+		return originalFlipX != flipX;
+
 	public override function draw()
 	{
 		if(isAnimateAtlas)
@@ -877,7 +892,17 @@ class Character extends FlxSkewedSprite {
 			return;
 		}
 
-		super.draw();
+		if (isFlippedOffsets()) {
+			__reverseDrawProcedure = true;
+			flipX = !flipX;
+			scale.x *= -1;
+
+			super.draw();
+
+			flipX = !flipX;
+			scale.x *= -1;
+			__reverseDrawProcedure = false;
+		} else super.draw();
 	}
 
 	public function destroyAtlas()
