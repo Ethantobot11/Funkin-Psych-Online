@@ -358,7 +358,6 @@ class Character extends FlxSkewedSprite {
 		healthIcon = json.healthicon;
 		singDuration = json.sing_duration;
 		flipX = (json.flip_x == true);
-		__baseFlipped = (json.flip_x == true);
 
 		if (json.healthbar_colors != null && json.healthbar_colors.length > 2)
 			healthColorArray = json.healthbar_colors;
