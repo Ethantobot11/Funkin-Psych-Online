@@ -435,7 +435,6 @@ class Character extends FlxSkewedSprite {
 		curCharacter = character;
 		//Reset the variables
 		__baseFlipped = false;
-		__oppositeOffsets = false;
 
 		switch (curCharacter) {
 			// case 'your character name in case you want to hardcode them instead':
@@ -480,7 +479,6 @@ class Character extends FlxSkewedSprite {
 					}
 			}*/
 		}
-		__oppositeOffsets = (flipX != prevFlipX);
 		__baseFlipped = flipX;
 	}
 
@@ -875,7 +873,6 @@ class Character extends FlxSkewedSprite {
 		}
 	}
 	
-	@:noCompletion var __oppositeOffsets:Bool = false;
 	@:noCompletion var __baseFlipped:Bool = false;
 	@:noCompletion var __reverseDrawProcedure:Bool = false;
 	public override function getScreenBounds(?newRect:FlxRect, ?camera:FlxCamera):FlxRect {
@@ -889,7 +886,7 @@ class Character extends FlxSkewedSprite {
 	}
 
 	public function isFlippedOffsets()
-		return __oppositeOffsets != (flipX != __baseFlipped);
+		return (isPlayer != false) != (flipX != __baseFlipped); //ig using false is the safest solution but idk.
 
 	public override function draw()
 	{
