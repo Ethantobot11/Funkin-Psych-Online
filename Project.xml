@@ -111,6 +111,20 @@
 	<assets path="assets/week_assets" library="week_assets" rename="assets" exclude="*.ogg" if="web" />
 	<assets path="assets/week_assets" library="week_assets" rename="assets" exclude="*.mp3"
 		unless="web" />
+
+	<section if="mobile">
+		<assets path="assets-astc/preload" rename="assets" />
+		<assets path="assets-astc/secrets" rename="assets" />
+		<assets path="assets-astc/shared" rename="assets/shared" />
+		<assets path="assets-astc/week_assets" rename="assets" />
+	</section>
+
+	<section if="desktop">
+		<assets path="assets-bc/preload" rename="assets" />
+		<assets path="assets-bc/secrets" rename="assets" />
+		<assets path="assets-bc/shared" rename="assets/shared" />
+		<assets path="assets-bc/week_assets" rename="assets" />
+	</section>
 	
 	<section if="MODS_ALLOWED">
 		<assets path='example_mods' rename='mods' embed='false' />
