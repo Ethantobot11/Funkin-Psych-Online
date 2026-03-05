@@ -7,8 +7,8 @@ class GAssets {
 			return null;
 
 		var ext = Paths.IMAGE_EXT;
-		/*if (img.path != null && img.path.endsWith(Paths.GPU_IMAGE_EXT))
-			ext = Paths.GPU_IMAGE_EXT;*/
+		if (path.endsWith(Paths.GPU_IMAGE_EXT))
+			ext = Paths.GPU_IMAGE_EXT;
 
 		Paths.excludeAsset('assets/images/' + path + "." + ext);
 		return img.bitmap.clone();
