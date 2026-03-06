@@ -790,11 +790,18 @@ class Character extends FlxSkewedSprite {
 			animation.play(AnimName, Force, Reversed, Frame);
 		}
 
-		var daOffset = getAnimOffset(AnimName);
-		if (daOffset != null)
-			offset.set(daOffset[0], daOffset[1]);
-		else
-			offset.set(0, 0);
+		if (betterOffsets) {
+			var daOffset = getAnimOffset(AnimName);
+			frameOffset.set(daOffset[0], daOffset[1]);
+			daOffset.putWeak();
+			offset.set(positionArray[0] * (isPlayer != playerOffsets ? 1 : -1), -positionArray[1]);
+		} else {
+			var daOffset = getAnimOffset(AnimName);
+			if (daOffset != null)
+				offset.set(daOffset[0], daOffset[1]);
+			else
+				offset.set(0, 0);
+		}
 
 		if (curCharacter.startsWith('gf')) {
 			if (AnimName == 'singLEFT') {
