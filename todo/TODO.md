@@ -1,5 +1,7 @@
 - Add ASTC and BPTC
 - Add ignoreGFAnim to Chart File
+- Add CNE Stage Support
+- Finish the Language System (I'll kill you Samet)
 - Put Chart File's Notes Section to StrumLines and Seperate Them
 - Add Girlfriend StrumLine by Default for Supported Charts
 - Add 3v3 Support for Playing with Psych Online Players

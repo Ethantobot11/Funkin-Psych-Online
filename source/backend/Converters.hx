@@ -10,14 +10,13 @@ class Converters {
 	/**
 	 * Converts a Codename Engine XML string to a Psych Engine JSON string.
 	 * @param xmlString The raw XML string from the CNE character file.
-	 * @param imagePath The path to the character image (e.g., "characters/bfex").
+	 * @param fallbackImagePath The path to the character image (e.g., "characters/taeyai-dream").
 	 * @return A formatted JSON string for PsychEngine.
 	 */
-	public static function parseCodenameChar(xmlString:String, imagePath:String = "characters/my_character"):String {
+	public static function parseCodenameChar(xmlString:String, fallbackImagePath:String = "characters/my_character"):String {
 		// Parse the XML
 		var rawXml = Xml.parse(xmlString).firstElement();
 		var xml = new Access(rawXml);
-
 		var finalImagePath:String = xml.has.sprite ? 'characters/' + xml.att.sprite : fallbackImagePath;
 
 		var charFile:CharacterFile = {
