@@ -793,7 +793,7 @@ class Character extends FlxSkewedSprite {
 		if (betterOffsets) {
 			var daOffset = getAnimOffset(AnimName);
 			frameOffset.set(daOffset[0], daOffset[1]);
-			offset.set(positionArray[0] * (isPlayer != playerOffsets ? 1 : -1), -positionArray[1]);
+			offset.x = positionArray[0] * (isPlayer != playerOffsets ? 1 : -1); //-positionArray[1] used beforr but it brokes the player y, so it removed.
 		} else {
 			var daOffset = getAnimOffset(AnimName);
 			if (daOffset != null)
@@ -941,7 +941,7 @@ class Character extends FlxSkewedSprite {
 	public var betterOffsets:Bool = false;
 	public var playerOffsets:Bool = false;
 	public function isFlippedOffsets()
-		return (isPlayer != playerOffsets) != (flipX != __baseFlipped);
+		return ((PlayState.playsAsBF() ? isPlayer : !isPlayer) != playerOffsets) != (flipX != (PlayState.playsAsBF() ? __baseFlipped : !__baseFlipped));
 
 	public override function draw()
 	{

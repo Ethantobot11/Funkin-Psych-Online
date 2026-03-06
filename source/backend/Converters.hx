@@ -75,7 +75,7 @@ class Converters {
 			}
 		}
 
-		return Json.stringify(charFile, "\t");
+		return Json.stringify(charFile, null, "\t");
 	}
 
 	// --- CONVERTION SETTINGS (`32, round, 5` is recommended) ---
