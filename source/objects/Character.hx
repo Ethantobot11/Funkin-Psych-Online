@@ -496,8 +496,8 @@ class Character extends FlxSkewedSprite {
 
 		if(animOffsets.exists('singLEFTmiss') || animOffsets.exists('singDOWNmiss') || animOffsets.exists('singUPmiss') || animOffsets.exists('singRIGHTmiss')) hasMissAnimations = true;
 		recalculateDanceIdle();
-		//I'm pretty sure swapping will cause null object errors but I need to trya anyway
-		if (isPlayer != playerOffsets)
+		//I'm pretty sure swapping will cause null object errors but I need to try anyway
+		if (isPlayer != playerOffsets && betterOffsets)
 			swapLeftRightAnimations();
 
 		dance();
@@ -790,11 +790,12 @@ class Character extends FlxSkewedSprite {
 			animation.play(AnimName, Force, Reversed, Frame);
 		}
 
+		offset.set(0, 0);
 		var daOffset = getAnimOffset(AnimName);
 		if (daOffset != null)
-			offset.set(daOffset[0], daOffset[1]);
+			frameOffset.set(daOffset[0], daOffset[1]);
 		else
-			offset.set(0, 0);
+			frameOffset.set(0, 0);
 
 		if (curCharacter.startsWith('gf')) {
 			if (AnimName == 'singLEFT') {
