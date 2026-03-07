@@ -473,12 +473,6 @@ class Character extends FlxSkewedSprite {
 	}
 	
 	public function changeCharacter(character:String, ?charType:String) {
-		//Reset the variables
-		betterOffsets = false;
-		__baseFlipped = false;
-		playerOffsets = false;
-		flipX = false;
-		scale.x = 1;
 		animationsArray = [];
 		animOffsets = [];
 		curCharacter = character;

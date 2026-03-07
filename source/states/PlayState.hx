@@ -2100,6 +2100,95 @@ class PlayState extends MusicBeatState
 			FlxColor.fromRGB(boyfriend.healthColorArray[0], boyfriend.healthColorArray[1], boyfriend.healthColorArray[2]));
 	}
 
+	public function changeCharacter(ogCharacter:Character, newCharacter:String, type:String) {
+		switch(type.toLowerCase()) {
+			case 'bf':
+				var isValid = true;
+				if (ogCharacter != null) {
+					if (ogCharacter.isPlayer != boyfriend.isPlayer)
+						isValid = false;
+
+					/* useless because can broke many songs
+					if (!ClientPrefs.data.modchartSkinChanges && ogCharacter.isSkin)
+						isValid = false;
+					*/
+				}
+
+				if (isValid) {
+					var charID = newCharacter; 
+
+					if (!boyfriendMap.exists(charID)) {
+						var newBoyfriend:Character;
+						if (ogCharacter?.isSkin && newCharacter == SONG.player1) {
+							newBoyfriend = ogCharacter;
+						} else {
+							newBoyfriend = new Character(0, 0, newCharacter, playsAsBF(), false, 'bf');
+							newBoyfriend.ox = ogCharacter?.ox ?? 0;
+							newBoyfriend.gameIconIndex = ogCharacter?.gameIconIndex ?? 0;
+							
+							if (!playsAsBF()) {
+								newBoyfriend.flipX = !newBoyfriend.flipX;
+							}
+							
+							boyfriendGroup.add(newBoyfriend);
+							startCharacterPos(newBoyfriend);
+							newBoyfriend.alpha = 0.00001;
+							startCharacterScripts(newBoyfriend.curCharacter, null, true);
+						}
+						boyfriendMap.set(charID, newBoyfriend);
+					}
+				}
+
+			case 'dad':
+				var isValid = true;
+				if (ogCharacter != null) {
+					if (ogCharacter.isPlayer != dad.isPlayer)
+						isValid = false;
+
+					/* useless because can broke many songs
+					if (!ClientPrefs.data.modchartSkinChanges && ogCharacter.isSkin)
+						isValid = false;
+					*/
+				}
+
+				if (isValid) {
+					var charID = newCharacter;
+
+					if(!dadMap.exists(charID)) {
+						var newDad:Character;
+						if (ogCharacter?.isSkin && newCharacter == SONG.player2) {
+							newDad = ogCharacter;
+						} else {
+							newDad = new Character(0, 0, newCharacter, !playsAsBF(), false, 'dad');
+							newDad.ox = ogCharacter?.ox ?? 0;
+							newDad.gameIconIndex = ogCharacter?.gameIconIndex ?? 0;
+
+							if (!playsAsBF()) {
+								newDad.flipX = !newDad.flipX;
+							}
+
+							dadGroup.add(newDad);
+							startCharacterPos(newDad, true);
+							newDad.alpha = 0.00001;
+							startCharacterScripts(newDad.curCharacter, null, false);
+						}
+						dadMap.set(charID, newDad);
+					}
+				}
+
+			case 'gf':
+				if(ogCharacter != null && !gfMap.exists(newCharacter)) {
+					var newGf:Character = new Character(0, 0, newCharacter);
+					// newGf.scrollFactor.set(0.95, 0.95);
+					gfMap.set(newCharacter, newGf);
+					gfGroup.add(newGf);
+					startCharacterPos(newGf);
+					newGf.alpha = 0.00001;
+					startCharacterScripts(newGf.curCharacter);
+				}
+		}
+	}
+
 	public function addCharacterToList(newCharacter:String, type:Int) {
 		switch(type) {
 			case 0:
@@ -2288,7 +2377,7 @@ class PlayState extends MusicBeatState
 		return null;
 	}
 
-	function startCharacterPos(char:Character, ?gfCheck:Bool = false) {
+	public function startCharacterPos(char:Character, ?gfCheck:Bool = false) {
 		//char.setPositionToFeet(stageData.characterFeetPos);
 		if(gfCheck && char.curCharacter.startsWith('gf')) { //IF DAD IS GIRLFRIEND, HE GOES TO HER POSITION
 			char.setPosition(GF_X, GF_Y);
