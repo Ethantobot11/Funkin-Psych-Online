@@ -175,6 +175,7 @@ class Character extends FlxSkewedSprite {
 
 	public var positionArray:Array<Float> = [0, 0];
 	var ogPositionArray:Array<Float> = [0, 0];
+	var previousPositionArray:Array<Float> = [];
 	public var cameraPosition:Array<Float> = [0, 0];
 
 	// x offset index (for multiple characters)
@@ -393,6 +394,10 @@ class Character extends FlxSkewedSprite {
 		// positioning
 		if (json.position != null)
 			ogPositionArray = positionArray = json.position;
+		if (previousPositionArray != [] && previousPositionArray != null)
+			recalculateCharacterPos();
+
+		previousPositionArray = json.position;
 		cameraPosition = json.camera_position;
 
 		// data
@@ -472,9 +477,16 @@ class Character extends FlxSkewedSprite {
 		// trace('Loaded file to character ' + curCharacter);
 	}
 	
+	public function recalculateCharacterPos() {
+		x -= previousPositionArray[0] + ox * (isPlayer == PlayState.instance.playsAsBF() ? 250 : -250);
+		y -= previousPositionArray[1];
+		x += positionArray[0] + ox * (isPlayer == PlayState.instance.playsAsBF() ? 250 : -250);
+		y += positionArray[1];
+	}
+	
 	public function changeCharacter(character:String, ?charType:String) {
 		//Reset the variables
-		if (isFlippedOffsets()) scale.x *= -1;
+		scale.x = 1; //this should fix
 		__baseFlipped = false;
 		playerOffsets = false;
 		betterOffsets = false;
@@ -500,7 +512,6 @@ class Character extends FlxSkewedSprite {
 
 		if(animOffsets.exists('singLEFTmiss') || animOffsets.exists('singDOWNmiss') || animOffsets.exists('singUPmiss') || animOffsets.exists('singRIGHTmiss')) hasMissAnimations = true;
 		recalculateDanceIdle();
-		//I'm pretty sure swapping will cause null object errors but I need to try anyway
 		if (isPlayer != playerOffsets && betterOffsets)
 			swapLeftRightAnimations();
 
