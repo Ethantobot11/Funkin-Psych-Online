@@ -39,7 +39,7 @@ class Converters {
 			betterOffsets: true, // CNE like offset swapping feature
 			isPlayer: xml.has.isPlayer ? (xml.att.isPlayer == "true") : false
 		};
-		if (xml.att.isPlayer == "true") charFile.flip_x = !charFile.flip_x; //Player Flip Fix
+		if (xml.has.isPlayer && xml.att.isPlayer == "true") charFile.flip_x = !charFile.flip_x; //Player Flip Fix
 
 		// Parse animations
 		if (xml.hasNode.anim) {
