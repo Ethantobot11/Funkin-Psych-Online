@@ -633,13 +633,13 @@ class PlayState extends MusicBeatState
 		var char:Character = null;
 		oldModDir = Mods.currentModDirectory;
 
-		char = new Character(startX, startY, charName, playsAsBF() == isRight, false, tag);
+		char = new Character(startX, startY, charName, playsAsBF() == isRight, false, tag, isRight);
 
 		if (char.loadFailed) {
 			for (suffix in (isRight ? online.states.SkinsState.RIGHT_SUFFIX : online.states.SkinsState.LEFT_SUFFIX)) {
 				final charExists = Character.getCharacterFile(charName + suffix, null, true) != null;
 				if (charExists) {
-					char = new Character(startX, startY, charName + suffix, playsAsBF() == isRight, false, tag);
+					char = new Character(startX, startY, charName + suffix, playsAsBF() == isRight, false, tag, isRight);
 					break;
 				}
 			}
@@ -1245,13 +1245,13 @@ class PlayState extends MusicBeatState
 			if (player != null) {
 				if (player.skin.length > 0 && !songPlayerMatchesSkin(player.skin.items[0])) {
 					Mods.currentModDirectory = player.skin.items[3];
-					char = new Character(0, 0, player.skin.items[0] + skinsSuffix + player.skin.items[isRight ? 2 : 1], playsAsBF() == isRight, true, isRight ? 'bf' : 'dad');
+					char = new Character(0, 0, player.skin.items[0] + skinsSuffix + player.skin.items[isRight ? 2 : 1], playsAsBF() == isRight, true, isRight ? 'bf' : 'dad', isRight);
 				}
 			}
 			// if skin is present for the playable character while offline
 			else if (playsAsBF() == isRight && ClientPrefs.data.currentSkin != null && !songPlayerMatchesSkin(ClientPrefs.data.currentSkin[0])) {
 				Mods.currentModDirectory = ClientPrefs.data.currentSkin[3];
-				char = new Character(0, 0, ClientPrefs.data.currentSkin[0] + skinsSuffix + ClientPrefs.data.currentSkin[isRight ? 2 : 1], playsAsBF() == isRight, true, isRight ? 'bf' : 'dad');
+				char = new Character(0, 0, ClientPrefs.data.currentSkin[0] + skinsSuffix + ClientPrefs.data.currentSkin[isRight ? 2 : 1], playsAsBF() == isRight, true, isRight ? 'bf' : 'dad', isRight);
 			}
 
 			// refuse non-blazin characters for blazin
@@ -1264,14 +1264,14 @@ class PlayState extends MusicBeatState
 			if (char == null || char.loadFailed) {
 				trace("fallback to there");
 				Mods.currentModDirectory = oldModDir;
-				char = new Character(0, 0, songPlayer, playsAsBF() == isRight, false, isRight ? 'bf' : 'dad');
+				char = new Character(0, 0, songPlayer, playsAsBF() == isRight, false, isRight ? 'bf' : 'dad', isRight);
 
 				// another fallback, if SONG.player1/2 didn't specify the suffix then it is searched and appended
 				if (char.loadFailed) {
 					for (suffix in (isRight ? online.states.SkinsState.RIGHT_SUFFIX : online.states.SkinsState.LEFT_SUFFIX)) {
 						final charExists = Character.getCharacterFile(songPlayer + suffix, null, true) != null;
 						if (charExists)
-							char = new Character(0, 0, songPlayer + suffix, playsAsBF() == isRight, false, isRight ? 'bf' : 'dad');
+							char = new Character(0, 0, songPlayer + suffix, playsAsBF() == isRight, false, isRight ? 'bf' : 'dad', isRight);
 					}
 				}
 			}

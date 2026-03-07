@@ -141,6 +141,7 @@ class Character extends FlxSkewedSprite {
 	public var debugMode:Bool = false;
 
 	public var isPlayer:Bool = false;
+	public var isGlobalPlayer:Bool = false;
 	public var curCharacter:String = DEFAULT_CHARACTER;
 	public var isMissing:Bool = false;
 	public var resultsName:String = null;
@@ -304,8 +305,9 @@ class Character extends FlxSkewedSprite {
 		return speaker;
 	}
 
-	public function new(x:Float, y:Float, ?character:String = 'bf', ?isPlayer:Bool = false, ?isSkin:Bool = false, ?charType:String) {
+	public function new(x:Float, y:Float, ?character:String = 'bf', ?isPlayer:Bool = false, ?isSkin:Bool = false, ?charType:String, ?isGlobalPlayer:Null<Bool>) {
 		super(x, y);
+		if (isGlobalPlayer != null) this.isGlobalPlayer = isGlobalPlayer;
 
 		modDir = Mods.currentModDirectory;
 
@@ -793,7 +795,7 @@ class Character extends FlxSkewedSprite {
 		if (betterOffsets) {
 			var daOffset = getAnimOffset(AnimName);
 			frameOffset.set(daOffset[0], daOffset[1]);
-			offset.x = positionArray[0] * (isPlayer != playerOffsets ? 1 : -1); //-positionArray[1] used beforr but it brokes the player y, so it removed.
+			offset.set(positionArray[0] * (isPlayer != playerOffsets ? 1 : -1), -positionArray[1]);
 		} else {
 			var daOffset = getAnimOffset(AnimName);
 			if (daOffset != null)
@@ -937,11 +939,11 @@ class Character extends FlxSkewedSprite {
 		return super.getScreenBounds(newRect, camera);
 	}
 
-	//better and player offsets for codename chars
+	//better offset system for loading codename chars
 	public var betterOffsets:Bool = false;
 	public var playerOffsets:Bool = false;
 	public function isFlippedOffsets()
-		return ((PlayState.playsAsBF() ? isPlayer : !isPlayer) != playerOffsets) != (flipX != (PlayState.playsAsBF() ? __baseFlipped : !__baseFlipped));
+		return (isGlobalPlayer != playerOffsets) != (flipX != __baseFlipped);
 
 	public override function draw()
 	{
