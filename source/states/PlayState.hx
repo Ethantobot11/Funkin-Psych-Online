@@ -2100,93 +2100,120 @@ class PlayState extends MusicBeatState
 			FlxColor.fromRGB(boyfriend.healthColorArray[0], boyfriend.healthColorArray[1], boyfriend.healthColorArray[2]));
 	}
 
+	//Universal character change function for extra chars (used on Errorians first)
 	public function changeCharacter(ogCharacter:Character, newCharacter:String, type:String) {
-		switch(type.toLowerCase()) {
-			case 'bf':
-				var isValid = true;
-				if (ogCharacter != null) {
-					if (ogCharacter.isPlayer != boyfriend.isPlayer)
-						isValid = false;
+		if (ogCharacter == null || ogCharacter.curCharacter == newCharacter) 
+			return;
 
-					/* useless because can broke many songs
-					if (!ClientPrefs.data.modchartSkinChanges && ogCharacter.isSkin)
-						isValid = false;
-					*/
-				}
+		switch(type.toLowerCase().trim()) {
+			case 'bf' | 'boyfriend' | '0':
+				//if (!ClientPrefs.data.modchartSkinChanges && ogCharacter.isSkin) return;
 
-				if (isValid) {
-					var charID = newCharacter; 
+				if (!boyfriendMap.exists(newCharacter)) {
+					var newBoyfriend:Character;
+					if (ogCharacter.isSkin && newCharacter == SONG.player1) {
+						newBoyfriend = ogCharacter;
+					} else {
+						newBoyfriend = new Character(0, 0, newCharacter, ogCharacter.isPlayer, false, 'bf');
+						newBoyfriend.ox = ogCharacter.ox;
+						newBoyfriend.gameIconIndex = ogCharacter.gameIconIndex;
 
-					if (!boyfriendMap.exists(charID)) {
-						var newBoyfriend:Character;
-						if (ogCharacter?.isSkin && newCharacter == SONG.player1) {
-							newBoyfriend = ogCharacter;
-						} else {
-							newBoyfriend = new Character(0, 0, newCharacter, playsAsBF(), false, 'bf');
-							newBoyfriend.ox = ogCharacter?.ox ?? 0;
-							newBoyfriend.gameIconIndex = ogCharacter?.gameIconIndex ?? 0;
-							
-							if (!playsAsBF()) {
-								newBoyfriend.flipX = !newBoyfriend.flipX;
-							}
-							
-							boyfriendGroup.add(newBoyfriend);
-							startCharacterPos(newBoyfriend);
-							newBoyfriend.alpha = 0.00001;
-							startCharacterScripts(newBoyfriend.curCharacter, null, true);
+						if (!ogCharacter.isPlayer) {
+							newBoyfriend.flipX = !newBoyfriend.flipX;
 						}
-						boyfriendMap.set(charID, newBoyfriend);
+
+						boyfriendGroup.add(newBoyfriend);
+						startCharacterPos(newBoyfriend);
+						newBoyfriend.alpha = 0.00001;
+						startCharacterScripts(newBoyfriend.curCharacter, true);
 					}
+					boyfriendMap.set(newCharacter, newBoyfriend);
 				}
 
-			case 'dad':
-				var isValid = true;
-				if (ogCharacter != null) {
-					if (ogCharacter.isPlayer != dad.isPlayer)
-						isValid = false;
+				var lastAlpha:Float = ogCharacter.alpha;
+				ogCharacter.alpha = 0.00001;
 
-					/* useless because can broke many songs
-					if (!ClientPrefs.data.modchartSkinChanges && ogCharacter.isSkin)
-						isValid = false;
-					*/
+				var newlySpawned = boyfriendMap.get(newCharacter);
+
+				if (ogCharacter == boyfriend) {
+					boyfriend = newlySpawned;
+					setOnScripts('boyfriendName', boyfriend.curCharacter);
 				}
 
-				if (isValid) {
-					var charID = newCharacter;
+				newlySpawned.alpha = lastAlpha;
+				if (iconP1s[newlySpawned.gameIconIndex] != null) {
+					iconP1s[newlySpawned.gameIconIndex].changeIcon(newlySpawned.healthIcon);
+				}
 
-					if(!dadMap.exists(charID)) {
-						var newDad:Character;
-						if (ogCharacter?.isSkin && newCharacter == SONG.player2) {
-							newDad = ogCharacter;
-						} else {
-							newDad = new Character(0, 0, newCharacter, !playsAsBF(), false, 'dad');
-							newDad.ox = ogCharacter?.ox ?? 0;
-							newDad.gameIconIndex = ogCharacter?.gameIconIndex ?? 0;
+			case 'dad' | 'opponent' | '1':
+				//if (!ClientPrefs.data.modchartSkinChanges && ogCharacter.isSkin) return;
 
-							if (!playsAsBF()) {
-								newDad.flipX = !newDad.flipX;
-							}
+				// --- 1. Cache if it doesn't exist ---
+				if (!dadMap.exists(newCharacter)) {
+					var newDad:Character;
+					if (ogCharacter.isSkin && newCharacter == SONG.player2) {
+						newDad = ogCharacter;
+					} else {
+						newDad = new Character(0, 0, newCharacter, ogCharacter.isPlayer, false, 'dad');
+						newDad.ox = ogCharacter.ox;
+						newDad.gameIconIndex = ogCharacter.gameIconIndex;
 
-							dadGroup.add(newDad);
-							startCharacterPos(newDad, true);
-							newDad.alpha = 0.00001;
-							startCharacterScripts(newDad.curCharacter, null, false);
+						if (!ogCharacter.isPlayer) {
+							newDad.flipX = !newDad.flipX;
 						}
-						dadMap.set(charID, newDad);
+
+						dadGroup.add(newDad);
+						startCharacterPos(newDad, true);
+						newDad.alpha = 0.00001;
+						startCharacterScripts(newDad.curCharacter, false);
 					}
+					dadMap.set(newCharacter, newDad);
 				}
 
-			case 'gf':
-				if(ogCharacter != null && !gfMap.exists(newCharacter)) {
+				var wasGf:Bool = ogCharacter.curCharacter.startsWith('gf-') || ogCharacter.curCharacter == 'gf';
+				var lastAlpha:Float = ogCharacter.alpha;
+				ogCharacter.alpha = 0.00001;
+
+				var newlySpawned = dadMap.get(newCharacter);
+
+				if (ogCharacter == dad) {
+					dad = newlySpawned;
+					setOnScripts('dadName', dad.curCharacter);
+				}
+
+				if (!newlySpawned.curCharacter.startsWith('gf-') && newlySpawned.curCharacter != 'gf') {
+					if (wasGf && gf != null) gf.visible = true;
+				} else if (gf != null) {
+					gf.visible = false;
+				}
+
+				newlySpawned.alpha = lastAlpha;
+				if (iconP2s[newlySpawned.gameIconIndex] != null) {
+					iconP2s[newlySpawned.gameIconIndex].changeIcon(newlySpawned.healthIcon);
+				}
+
+			case 'gf' | 'girlfriend' | '2':
+				if (!gfMap.exists(newCharacter)) {
 					var newGf:Character = new Character(0, 0, newCharacter);
-					// newGf.scrollFactor.set(0.95, 0.95);
 					gfMap.set(newCharacter, newGf);
 					gfGroup.add(newGf);
 					startCharacterPos(newGf);
 					newGf.alpha = 0.00001;
 					startCharacterScripts(newGf.curCharacter);
 				}
+
+				var lastAlpha:Float = ogCharacter.alpha;
+				ogCharacter.alpha = 0.00001;
+				var newlySpawned = gfMap.get(newCharacter);
+				newlySpawned.alpha = lastAlpha;
+
+				if (ogCharacter == gf) {
+					gf = newlySpawned;
+					setOnScripts('gfName', gf.curCharacter);
+				}
 		}
+
+		reloadHealthBarColors();
 	}
 
 	public function addCharacterToList(newCharacter:String, type:Int) {

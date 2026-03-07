@@ -494,7 +494,7 @@ class Character extends FlxSkewedSprite {
 
 		if(animOffsets.exists('singLEFTmiss') || animOffsets.exists('singDOWNmiss') || animOffsets.exists('singUPmiss') || animOffsets.exists('singRIGHTmiss')) hasMissAnimations = true;
 		recalculateDanceIdle();
-		if (isPlayer != playerOffsets && betterOffsets)
+		if ((PlayState.playsAsBF() && isPlayer != playerOffsets || nPlayState.playsAsBF() && isPlayer == playerOffsets) && betterOffsets)
 			swapLeftRightAnimations();
 
 		dance();
@@ -789,7 +789,7 @@ class Character extends FlxSkewedSprite {
 		if (betterOffsets) {
 			var daOffset = getAnimOffset(AnimName);
 			frameOffset.set(daOffset[0], daOffset[1]);
-			offset.set(positionArray[0] * (isPlayer != playerOffsets ? 1 : -1), daOffset[1]);
+			offset.set(positionArray[0] * (isPlayer != playerOffsets ? 1 : -1), -positionArray[1]);
 		} else {
 			var daOffset = getAnimOffset(AnimName);
 			if (daOffset != null)
