@@ -479,9 +479,9 @@ class Character extends FlxSkewedSprite {
 	
 	public function recalculateCharacterPos() {
 		if (PlayState.instance != null) {
-			x -= previousPositionArray[0] + ox * (isPlayer == PlayState.instance.playsAsBF() ? 250 : -250);
+			x -= previousPositionArray[0] + ox * (isPlayer == PlayState.playsAsBF() ? 250 : -250);
 			y -= previousPositionArray[1];
-			x += positionArray[0] + ox * (isPlayer == PlayState.instance.playsAsBF() ? 250 : -250);
+			x += positionArray[0] + ox * (isPlayer == PlayState.playsAsBF() ? 250 : -250);
 			y += positionArray[1];
 		}
 	}
