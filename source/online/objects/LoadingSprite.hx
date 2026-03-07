@@ -2,6 +2,7 @@ package online.objects;
 
 import flixel.graphics.FlxGraphic;
 import flixel.FlxBasic;
+import openfl.geom.Matrix;
 import openfl.geom.Point;
 import openfl.geom.Rectangle;
 
@@ -12,7 +13,7 @@ class LoadingSprite extends FlxTypedGroup<FlxBasic> {
 	public function new(?tasksLength:Float, ?camera:FlxCamera) {
         super();
         
-		var funkay = new FlxSprite();
+		/*var funkay = new FlxSprite();
 		var _funkayGraphic = Paths.image('funkay', null, false);
 		var funkayGraphic = (_funkayGraphic ?? FlxGraphic.fromRectangle(1675, 1083, FlxColor.BLACK)).bitmap;
 		funkay.makeGraphic(FlxG.width, FlxG.height, funkayGraphic.getPixel32(0, 0), true, "_funkay"); // kms
@@ -20,7 +21,7 @@ class LoadingSprite extends FlxTypedGroup<FlxBasic> {
 		funkay.graphic.bitmap.copyPixels(funkayGraphic, new Rectangle(0, 0, funkay.graphic.bitmap.width, funkay.graphic.bitmap.height),
 			new Point(FlxG.width / 2 - funkayGraphic.image.width / 2, 0));
 		funkay.antialiasing = ClientPrefs.data.antialiasing;
-        add(funkay);
+        add(funkay);*/
 
 		loadBar = new FlxSprite(0, FlxG.height - 20).makeGraphic(FlxG.width, 10, 0xFFff16d2);
 		loadBar.scale.x = 0;

@@ -169,7 +169,7 @@ class FunkinFileSystem
 	public static function getBitmapData(id:String, ?useCache:Bool = true):BitmapData {
 		var bitmap:BitmapData = null;
 		var gpuPath = haxe.io.Path.withoutExtension(id) + '.' + Paths.GPU_IMAGE_EXT;
-		if (Assets.exists(gpuPath)) {
+		if (exists(gpuPath)) {
 			var texture:Dynamic = switch (Paths.GPU_IMAGE_EXT) {
 				case 'astc': openfl.Lib.current.stage.context3D.createASTCTexture(Assets.getBytes(gpuPath));
 				case 'dds':  openfl.Lib.current.stage.context3D.createBCTexture(Assets.getBytes(gpuPath));
