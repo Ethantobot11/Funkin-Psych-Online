@@ -613,6 +613,11 @@ class Character extends FlxSkewedSprite {
 	inline public function isAnimationNull():Bool
 		return !isAnimateAtlas ? (animation.curAnim == null) : (atlas.anim.curSymbol == null);
 
+	//A little fiz Cyber Sensation mod
+	public function getAnimName():String {
+		return getAnimationName();
+	}
+
 	inline public function getAnimationName():String
 	{
 		var name:String = '';

@@ -1,5 +1,4 @@
 - Add ASTC and BPTC
-- Add ignoreGFAnim to Chart File
 - Add CNE Stage Support
 - Finish the Language System (I'll kill you Samet)
 - Put Chart File's Notes Section to StrumLines and Seperate Them

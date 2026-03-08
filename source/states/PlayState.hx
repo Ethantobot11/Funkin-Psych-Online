@@ -3258,6 +3258,7 @@ class PlayState extends MusicBeatState
 				songSpeed = ClientPrefs.getGameplaySetting('scrollspeed');
 		}
 
+		/*
 		for (i => songNotes in dataNotes) {
 			var section = noteData[dataNotesSection[i]];
 			var daStrumTime:Float = songNotes[0];
@@ -3364,6 +3365,136 @@ class PlayState extends MusicBeatState
 				// 	//playingTime += noteDiff / (noteDiff * noteDiff) / 1000;
 				// // else
 				// // 	playingTime += noteDiff * 0.1;
+
+				lastStrumTime = daStrumTime;
+			}
+
+			if (swagNote.mustPress)
+			{
+				swagNote.followX += FlxG.width / 2; // general offset
+			}
+			else if(ClientPrefs.data.middleScroll)
+			{
+				swagNote.followX += 310;
+				if(daNoteData > 1) //Up and Right
+				{
+					swagNote.followX += FlxG.width / 2 + 25;
+				}
+			}
+
+			if(!noteTypes.contains(swagNote.noteType)) {
+				noteTypes.push(swagNote.noteType);
+			}
+		}
+		*/
+
+		for (i => songNotes in dataNotes) {
+			var section = noteData[dataNotesSection[i]];
+			var daStrumTime:Float = songNotes[0];
+			if (daStrumTime > inst.length)
+				continue;
+
+			var rawNoteData:Int = Std.int(songNotes[1]);
+			var daNoteData:Int = Std.int(songNotes[1] % Note.maniaKeys);
+
+			if (rawNoteData < 0) // this should prevent most exe mods from crashing
+				continue;
+
+			var strumLineID:Int = 0;
+			if (songNotes.length > 4) {
+				strumLineID = Std.int(songNotes[4]);
+			} else {
+				var isPlayerNote:Bool = section.mustHitSection;
+				if (!isPsychRelease) {
+					if (rawNote[1] > Note.maniaKeys - 1) {
+						isPlayerNote = !section.mustHitSection;
+					}
+				}
+				else {
+					isPlayerNote = rawNote[1] < Note.maniaKeys;
+				}
+				strumLineID = (isPlayerNote ? 1 : 0);
+			}
+
+			var oldNote:Note;
+			if (unspawnNotes.length > 0)
+				oldNote = unspawnNotes[Std.int(unspawnNotes.length - 1)];
+			else
+				oldNote = null;
+
+			var swagNote:Note = new Note(daStrumTime, daNoteData, oldNote);
+			
+			swagNote.strumLineID = strumLineID;
+			swagNote.mustPress = !strumLines.members[strumLineID].cpu;
+
+			swagNote.sustainLength = songNotes[2];
+			swagNote.gfNote = (section.gfSection && (songNotes[1] < Note.maniaKeys));
+			swagNote.noteType = songNotes[3];
+			swagNote.rawNoteData = rawNoteData;
+			if(!Std.isOfType(songNotes[3], String)) swagNote.noteType = ChartingState.noteTypeList[songNotes[3]]; //Backward compatibility + compatibility with Week 7 charts
+
+			if (noBadNotes && (swagNote.hitCausesMiss || swagNote.hitHealth < 0)) {
+				swagNote.destroy();
+				continue;
+			}
+
+			swagNote.scrollFactor.set();
+
+			var susLength:Float = swagNote.sustainLength;
+			susLength = susLength / Conductor.stepCrochet;
+			unspawnNotes.push(swagNote);
+
+			var floorSus:Int = Math.floor(susLength);
+			if(floorSus > 0) {
+				for (susNote in 0...floorSus+1)
+				{
+					oldNote = unspawnNotes[Std.int(unspawnNotes.length - 1)];
+
+					var sustainNote:Note = new Note(daStrumTime + (Conductor.stepCrochet * susNote), daNoteData, oldNote, true);
+					sustainNote.rawNoteData = rawNoteData;
+					sustainNote.strumLineID = strumLineID;
+					sustainNote.mustPress = gottaHitNote;
+					sustainNote.gfNote = (section.gfSection && (songNotes[1]<Note.maniaKeys));
+					sustainNote.noteType = swagNote.noteType;
+					sustainNote.scrollFactor.set();
+					swagNote.tail.push(sustainNote);
+					sustainNote.parent = swagNote;
+					unspawnNotes.push(sustainNote);
+					
+					sustainNote.correctionOffset = swagNote.height / 2;
+					if(!PlayState.isPixelStage)
+					{
+						if(oldNote.isSustainNote)
+						{
+							oldNote.scale.y *= Note.SUSTAIN_SIZE / oldNote.frameHeight;
+							oldNote.scale.y /= playbackRate;
+							oldNote.updateHitbox();
+						}
+
+						if(ClientPrefs.data.downScroll)
+							sustainNote.correctionOffset = 0;
+					}
+					else if(oldNote.isSustainNote)
+					{
+						oldNote.scale.y /= playbackRate;
+						oldNote.updateHitbox();
+					}
+
+					if (sustainNote.mustPress) sustainNote.followX += FlxG.width / 2; // general offset
+					else if(ClientPrefs.data.middleScroll)
+					{
+						sustainNote.followX += 310;
+						if(daNoteData > 1) //Up and Right
+						{
+							sustainNote.followX += FlxG.width / 2 + 25;
+						}
+					}
+				}
+			}
+
+			if (isPlayerNote(swagNote)) {
+				if (daStrumTime - lastStrumTime > 10)
+					playingNoteCount++;
 
 				lastStrumTime = daStrumTime;
 			}
@@ -6504,9 +6635,9 @@ class PlayState extends MusicBeatState
 		grpHoldSplashes.add(end.noteHoldSplash = splash);
 	}
 
-	public function getStrumIndexFromData(note:Note) {
-		var strumIndex = Std.int(Math.floor(note.rawNoteData / Note.maniaKeys));
-		return strumIndex;
+	// Backwards compatibility.
+	public inline function getStrumIndexFromData(note:Note) {
+		return note.strumLineID;
 	}
 
 	public function spawnNoteSplashOnNote(note:Note) {
