@@ -3451,7 +3451,7 @@ class PlayState extends MusicBeatState
 	function eventPushedUnique(event:EventNote) {
 		switch(event.event) {
 			case "Camera Movement":
-				curCameraTarget = event.value1;
+				curCameraTarget = Std.parseInt(event.value1);
 			//Codename Engine Support (you can't use these in the editor, just there for compatibility)
 			case 'Camera Flash':
 				//make the event work on PsychEngine
