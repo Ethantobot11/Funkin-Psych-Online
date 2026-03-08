@@ -280,19 +280,17 @@ class Converters {
 					}
 				}
 
-				if (s >= 3) { //ignore gf strum, it's used in source now
-					var chars:Array<String> = [];
-					if (strum.characters != null)
-						chars = strum.characters;
+				var chars:Array<String> = [];
+				if (strum.characters != null)
+					chars = strum.characters;
 
-					var strumLineData:Dynamic = {
-						visible: strum.visible,
-						characters: chars,
-						cpu: (strum.type == 0 || strum.type == 2),
-						type: strum.type
-					};
-					psychJson.strumLines.push(strumLineData);
-				}
+				var strumLineData:Dynamic = {
+					visible: strum.visible,
+					characters: chars,
+					cpu: (strum.type == 0 || strum.type == 2),
+					type: strum.type
+				};
+				psychJson.strumLines.push(strumLineData);
 
 				// FIX: Explicit typing for notes loop
 				var strumNotes:Array<Dynamic> = strum.notes;
