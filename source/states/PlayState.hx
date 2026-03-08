@@ -3406,12 +3406,12 @@ class PlayState extends MusicBeatState
 			} else {
 				var isPlayerNote:Bool = section.mustHitSection;
 				if (!isPsychRelease) {
-					if (rawNote[1] > Note.maniaKeys - 1) {
+					if (songNotes[1] > Note.maniaKeys - 1) {
 						isPlayerNote = !section.mustHitSection;
 					}
 				}
 				else {
-					isPlayerNote = rawNote[1] < Note.maniaKeys;
+					isPlayerNote = songNotes[1] < Note.maniaKeys;
 				}
 				strumLineID = (isPlayerNote ? 1 : 0);
 			}
@@ -3453,7 +3453,7 @@ class PlayState extends MusicBeatState
 					var sustainNote:Note = new Note(daStrumTime + (Conductor.stepCrochet * susNote), daNoteData, oldNote, true);
 					sustainNote.rawNoteData = rawNoteData;
 					sustainNote.strumLineID = strumLineID;
-					sustainNote.mustPress = gottaHitNote;
+					sustainNote.mustPress = !strumLines.members[strumLineID].cpu;
 					sustainNote.gfNote = (section.gfSection && (songNotes[1]<Note.maniaKeys));
 					sustainNote.noteType = swagNote.noteType;
 					sustainNote.scrollFactor.set();
