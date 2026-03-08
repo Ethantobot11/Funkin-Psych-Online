@@ -15,11 +15,6 @@ class StrumLine extends FlxTypedGroup<StrumNote> {
 	public var cpu:Bool;
 
 	/**
-	 * Targetted Note Data for this strumline.
-	 */
-	public var targetNoteData:Int;
-
-	/**
 	 * The note count this strumline.
 	 */
 	public var noteCount:Int;
@@ -37,11 +32,10 @@ class StrumLine extends FlxTypedGroup<StrumNote> {
 	 */
 	public var onNoteUpdate:FlxTypedSignal<NoteUpdateEvent->Void> = new FlxTypedSignal<NoteUpdateEvent->Void>();
 
-	public function new(?cpu:Bool, ?characters:Array<Character>, ?noteCount:Int, ?targetNoteData:Int) {
+	public function new(?cpu:Bool, ?characters:Array<Character>, ?noteCount:Int) {
 		super();
 		this.cpu = cpu;
 		this.noteCount = noteCount;
 		this.characters = characters;
-		this.targetNoteData = targetNoteData;
 	}
 }

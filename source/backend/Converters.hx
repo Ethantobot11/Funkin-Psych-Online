@@ -92,6 +92,7 @@ class Converters {
 		var curCamera:Dynamic = 0;
 		var psychJson:Dynamic = {
 			song: metaData.displayName,
+			strumLines: [],
 			notes: [],
 			events: [],
 			bpm: metaData.bpm,
@@ -260,7 +261,7 @@ class Converters {
 			altAnim: false
 		});
 
-			if (chartData.strumLines != null) {
+		if (chartData.strumLines != null) {
 			var numberThing:Dynamic = 2;
 			// Counter for extra players (starts at 2 so first extra becomes 3)
 
@@ -277,6 +278,20 @@ class Converters {
 						// Index 2 -> GF
 						// Extras (s > 2) names are not assigned to standard json fields
 					}
+				}
+
+				if (s >= 2) {
+					var chars:Array<String> = [];
+					if (strum.characters != null && s >= 3)
+						chars = strum.characters;
+
+					var strumLineData:Dynamic = {
+						visible: strum.visible,
+						characters: chars,
+						cpu: (strum.type == 0 || strum.type == 2),
+						type: strum.type
+					};
+					psychJson.strumLines.push(strumLineData);
 				}
 
 				// FIX: Explicit typing for notes loop
@@ -304,12 +319,19 @@ class Converters {
 							if (targetSecIdx >= psychJson.notes.length) targetSecIdx = psychJson.notes.length - 1;
 							var sec:Dynamic = psychJson.notes[targetSecIdx];
 							var intFix:Dynamic = sec.mustHitSection ? 1 : 0;
-							var psychNote:Dynamic = [note.time, (note.id % 4) + 4 * intFix, note.sLen];
+							var psychNote:Dynamic = [note.time, note.id % 4, note.sLen];
 							if (note.type != null && note.type > 0 && chartData.noteTypes != null) 
 								psychNote.push(chartData.noteTypes[note.type]);
 							if (altIndex > 0 && altEvents[s][altIndex - 1].anim) {
 								if(psychNote.length < 4) psychNote.push("Alt Animation");
 								else psychNote[3] = "Alt Animation";
+							}
+							//use new strumline id system for cne charts
+							if(psychNote.length < 4) {
+								psychNote.push(null);
+								psychNote.push(s);
+							} else {
+								psychNote.push(s);
 							}
 							sec.sectionNotes.push(psychNote);
 						}
@@ -328,12 +350,19 @@ class Converters {
 							if (targetSecIdx >= psychJson.notes.length) targetSecIdx = psychJson.notes.length - 1;
 							var sec:Dynamic = psychJson.notes[targetSecIdx];
 							var intFix:Dynamic = !sec.mustHitSection ? 1 : 0;
-							var psychNote:Dynamic = [note.time, (note.id % 4) + (4 * intFix), note.sLen];
+							var psychNote:Dynamic = [note.time, note.id % 4, note.sLen];
 							if (note.type != null && note.type > 0 && chartData.noteTypes != null) 
 								psychNote.push(chartData.noteTypes[note.type]);
 							if (altIndex > 0 && altEvents[s][altIndex - 1].anim) {
 								if(psychNote.length < 4) psychNote.push("Alt Animation");
 								else psychNote[3] = "Alt Animation";
+							}
+							//use new strumline id system for cne charts
+							if(psychNote.length < 4) {
+								psychNote.push(null);
+								psychNote.push(s);
+							} else {
+								psychNote.push(s);
 							}
 							sec.sectionNotes.push(psychNote);
 						}
@@ -351,8 +380,7 @@ class Converters {
 							if (targetSecIdx < 0) targetSecIdx = 0;
 							if (targetSecIdx >= psychJson.notes.length) targetSecIdx = psychJson.notes.length - 1;
 							var sec:Dynamic = psychJson.notes[targetSecIdx];
-							// GF is usually mapped to 8-11 or handled separately, here we map to 8-11
-							var psychNote:Dynamic = [note.time, (note.id % 4) + (4 * 2), note.sLen];
+							var psychNote:Dynamic = [note.time, note.id % 4, note.sLen];
 							if (note.type == 0) {
 								// Added GF Sing for 0 type if desired, otherwise remove logic below to be pure ID
 								psychNote.push("GF Sing");
@@ -363,6 +391,13 @@ class Converters {
 							if (altIndex > 0 && altEvents[s][altIndex - 1].anim) {
 								if(psychNote.length < 4) psychNote.push("Alt Animation");
 								else psychNote[3] = "Alt Animation";
+							}
+							//use new strumline id system for cne charts
+							if(psychNote.length < 4) {
+								psychNote.push(null);
+								psychNote.push(s);
+							} else {
+								psychNote.push(s);
 							}
 							sec.sectionNotes.push(psychNote);
 						}
@@ -382,8 +417,7 @@ class Converters {
 							if (targetSecIdx < 0) targetSecIdx = 0;
 							if (targetSecIdx >= psychJson.notes.length) targetSecIdx = psychJson.notes.length - 1;
 							var sec:Dynamic = psychJson.notes[targetSecIdx];
-							// Map to strums 12+, 16+, etc.
-							var psychNote:Dynamic = [note.time, (note.id % 4) + (4 * numberThing), note.sLen];
+							var psychNote:Dynamic = [note.time, note.id % 4, note.sLen];
 							// Only add note types if strictly necessary (from chart data), no generic "Player X Sing" bc multiple strums exists
 							if (note.type != null && note.type > 0 && chartData.noteTypes != null) 
 								psychNote.push(chartData.noteTypes[note.type]);
@@ -391,6 +425,14 @@ class Converters {
 								if(psychNote.length < 4) psychNote.push("Alt Animation");
 								else psychNote[3] = "Alt Animation";
 							}
+							//use new strumline id system for cne charts
+							if(psychNote.length < 4) {
+								psychNote.push(null);
+								psychNote.push(s);
+							} else {
+								psychNote.push(s);
+							}
+
 							sec.sectionNotes.push(psychNote);
 						}
 				}

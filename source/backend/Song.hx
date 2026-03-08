@@ -19,7 +19,6 @@ typedef StrumLine =
 	var characters:Array<String>;
 	var cpu:Bool;
 	var type:Int; //WIP Logic
-	var startData:Null<Int>; //Will be removed after the `notes` array separation
 }
 
 typedef SwagSong =

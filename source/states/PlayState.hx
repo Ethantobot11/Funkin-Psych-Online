@@ -629,9 +629,18 @@ class PlayState extends MusicBeatState
 
 	var canSpaceTaunt:Bool = true;
 
-	public function initStrumLineCharacter(startX:Int = 0, startY:Int = 0, charName:String, isRight:Bool, ?tag:String, ?addToHealthBar:Bool, ?disableGroup:Bool) {
+	public function initStrumLineCharacter(startX:Int = 0, startY:Int = 0, charName:String, isRight:Bool, ?type:Int, ?addToHealthBar:Bool) {
 		var char:Character = null;
 		oldModDir = Mods.currentModDirectory;
+		var tag:String = null;
+		switch (type) {
+			case 0:
+				tag = "dad";
+			case 1:
+				tag = "bf";
+			case 2:
+				tag = "gf";
+		}
 
 		char = new Character(startX, startY, charName, playsAsBF() == isRight, false, tag);
 
@@ -679,10 +688,15 @@ class PlayState extends MusicBeatState
 		}
 
 		startCharacterPos(char, !isRight);
-		if (disableGroup) {
-			add(char);
-		} else {
-			(isRight ? boyfriendGroup : dadGroup).add(char);
+		switch (tag) {
+			case "dad":
+				dadGroup.add(char);
+			case "bf":
+				boyfriendGroup.add(char);
+			case "gf":
+				gfGroup.add(char);
+			default:
+				boyfriendGroup.add(char);
 		}
 
 		startCharacterScripts(char.curCharacter, null, isRight);
@@ -695,10 +709,10 @@ class PlayState extends MusicBeatState
 	//backwards compatibility
 	public function addStrum(isCPU:Bool, targetCharacters:Array<Character>, targetNoteData:Int, ?amount:Null<Int>) {
 		addTextToDebug("addStrum: this code deprecated, use createStrum for avoiding this message", FlxColor.YELLOW);
-		createStrum(isCPU, targetCharacters, targetNoteData, amount);
+		createStrum(isCPU, targetCharacters, true, amount);
 	}
 
-	public function createStrum(isCPU:Bool, targetCharacters:Array<Character>, targetNoteData:Int, ?amount:Null<Int>) {
+	public function createStrum(isCPU:Bool, targetCharacters:Array<Character>, ?startVisibilty:Bool = true, ?amount:Null<Int>) {
 		if (amount == null) amount = Note.maniaKeys;
 
 		var strumWidth = amount * Note.swagScaledWidth - (Note.getNoteOffsetX() * (amount - 1));
@@ -713,7 +727,7 @@ class PlayState extends MusicBeatState
 		}
 
 		var strumLineY:Float = ClientPrefs.data.downScroll ? (FlxG.height - 150) : 50;
-		var strumGroup:StrumLine = new StrumLine(isCPU, targetCharacters, amount, targetNoteData);
+		var strumGroup:StrumLine = new StrumLine(isCPU, targetCharacters, amount);
 		strumGroup.cameras = [camHUD];
 		strumLines.add(strumGroup);
 
@@ -756,6 +770,7 @@ class PlayState extends MusicBeatState
 
 			scripts.event("onPostStrumCreation", event);
 
+			babyArrow.visible = startVisibilty;
 			strumGroup.add(babyArrow);
 			if (replayPlayer == null && ClientPrefs.data.noteUnderlayOpacity > 0 && strumGroup == getPlayerStrums(true) && ClientPrefs.data.noteUnderlayType == 'By Note') {
 				var underlay = new FlxSprite().makeGraphic(1, FlxG.width * 2, FlxColor.BLACK);
@@ -1438,6 +1453,13 @@ class PlayState extends MusicBeatState
 			comboGroup.cameras = [camHUD];
 
 			noteGroup.add(strumLines);
+
+			//Null Object Fix
+			if (replayPlayer == null && ClientPrefs.data.noteUnderlayOpacity > 0) {
+				noteUnderlays = new FlxTypedGroup<FlxSprite>();
+				noteGroup.add(noteUnderlays);
+			}
+
 			#if HSC_ALLOWED
 			scripts.set("SONG", SONG);
 			scripts.setupPlayState();
@@ -1452,18 +1474,16 @@ class PlayState extends MusicBeatState
 				scripts.event("onPostGenerateStrums", event);
 			}
 
-			//try something
+			//Hardcoded Extra Strumlines
 			if (SONG.strumLines != null && SONG.strumLines != []) {
 				for (strumIndex => strumData in SONG.strumLines) {
-					if (strumData.startData != null) {
-						var chars:Array<Character> = [];
-						if (strumData.characters != null && strumData.characters != []) {
-							for (char in strumData.characters) {
-								chars.push(initStrumLineCharacter(0, 0, char, !strumData.cpu));
-							}
+					var chars:Array<Character> = [];
+					if (strumData.characters != null && strumData.characters != []) {
+						for (char in strumData.characters) {
+							chars.push(initStrumLineCharacter(0, 0, char, !strumData.cpu, strumData.type));
 						}
-						var strum = createStrum(strumData.cpu, chars, strumData.startData);
 					}
+					var strum = createStrum(strumData.cpu, chars, strumData.visible);
 				}
 			}
 		});
@@ -1492,11 +1512,6 @@ class PlayState extends MusicBeatState
 		});
 
 		preloadTasks.push(() -> {
-			if (replayPlayer == null && ClientPrefs.data.noteUnderlayOpacity > 0) {
-				noteUnderlays = new FlxTypedGroup<FlxSprite>();
-				noteGroup.add(noteUnderlays);
-			}
-
 			strumLineNotes = new StrumLine();
 
 			noteGroup.add(strumLineNotes);
@@ -3908,8 +3923,8 @@ class PlayState extends MusicBeatState
 
 		//should fix realtime cpu switch lag.
 		notes.forEachAlive(function(note:Note) {
-			if (note.mustPress == strumLines.members[getStrumIndexFromData(note)].cpu) {
-				note.mustPress = !strumLines.members[getStrumIndexFromData(note)].cpu;
+			if (note.mustPress == strumLines.members[getStrumFromNote(note)].cpu) {
+				note.mustPress = !strumLines.members[getStrumFromNote(note)].cpu;
 			}
 		});
 
@@ -4116,7 +4131,7 @@ class PlayState extends MusicBeatState
 			{
 				var dunceNote:Note = unspawnNotes[0];
 				var noteType = dunceNote.noteType;
-				var strumlineID = getStrumIndexFromData(dunceNote);
+				var strumlineID = getStrumFromNote(dunceNote);
 				var mustHit = dunceNote.mustPress;
 				var animSuffix = dunceNote.animSuffix;
 				var event = EventManager.get(NoteCreationEvent).recycle(dunceNote, noteType, strumlineID, mustHit, animSuffix);
@@ -4156,7 +4171,7 @@ class PlayState extends MusicBeatState
 						var fakeCrochet:Float = (60 / SONG.bpm) * 1000;
 						notes.forEachAlive(function(daNote:Note)
 						{
-							var strumGroup:StrumLine = strumLines.members[getStrumIndexFromData(daNote)];
+							var strumGroup:StrumLine = strumLines.members[getStrumFromNote(daNote)];
 							var __updateNote_strum:StrumNote = strumGroup.members[daNote.noteData];
 							var __updateNote_event:NoteUpdateEvent = this.__updateNote_event;
 
@@ -6287,7 +6302,7 @@ class PlayState extends MusicBeatState
 			charArray = [gf];
 		} else {
 			if (note != null) {
-				var strumIdx:Int = getStrumIndexFromData(note);
+				var strumIdx:Int = getStrumFromNote(note);
 				charArray = strumLines.members[strumIdx].characters.copy();
 				
 				// --- SID CHECK FOR MISSING A NOTE ---
@@ -6314,7 +6329,7 @@ class PlayState extends MusicBeatState
 				char.playAnim(animToPlay, true);
 				
 				// Safely get strum index, default to 1 (player side) if ghost tapping
-				var sIdx:Int = note != null ? getStrumIndexFromData(note) : 1; 
+				var sIdx:Int = note != null ? getStrumFromNote(note) : 1; 
 				GameClient.send("charPlay", [animToPlay, char == gf, false, sIdx]);
 
 				if(char != gf && combo > 5 && gf != null && gf.animOffsets.exists('sad'))
@@ -6382,7 +6397,7 @@ class PlayState extends MusicBeatState
 			var animToPlay:String = singAnimations[Std.int(Math.abs(Math.min(singAnimations.length-1, note.noteData)))] + altAnim;
 			
 			if (note != null) {
-				var strumIdx:Int = getStrumIndexFromData(note);
+				var strumIdx:Int = getStrumFromNote(note);
 				
 				if (note.gfNote) {
 					charArray = [gf];
@@ -6418,7 +6433,7 @@ class PlayState extends MusicBeatState
 		var compat:String = note.mustPress ? 'goodNoteHit' : 'opponentNoteHit';
 		var compatCNE:String = note.mustPress ? 'onPlayerHit' : 'onDadHit';
 		var event:NoteHitEvent;
-		var strumLine = strumLines.members[getStrumIndexFromData(note)];
+		var strumLine = strumLines.members[getStrumFromNote(note)];
 
 		event = scripts.event(compatCNE, EventManager.get(NoteHitEvent).recycle(false, !note.isSustainNote, !note.isSustainNote, note, strumLine.characters, true, note.noteType, note.noteData, songScore, note.isSustainNote ? null : ratingPercent, 0.023, daRating.name));
 		strumLine.onHit.dispatch(event);
@@ -6452,7 +6467,7 @@ class PlayState extends MusicBeatState
 
 		var charArray:Array<Character> = [self];
 		if (note != null) {
-			var strumIdx:Int = getStrumIndexFromData(note);
+			var strumIdx:Int = getStrumFromNote(note);
 			charArray = strumLines.members[strumIdx].characters.copy();
 
 			// --- SID CHECK FOR OUR PLAYER ---
@@ -6536,7 +6551,7 @@ class PlayState extends MusicBeatState
 			}
 
 			if (note != null) {
-				var strumIdx:Int = getStrumIndexFromData(note);
+				var strumIdx:Int = getStrumFromNote(note);
 				
 				if (note.gfNote) {
 					charArray = [gf];
@@ -6560,9 +6575,9 @@ class PlayState extends MusicBeatState
 						char.playAnim(animCheck, true);
 						char.specialAnim = true;
 						char.heyTimer = 0.6;
-						GameClient.send("charPlay", [animCheck, note.gfNote, true, getStrumIndexFromData(note)]);
+						GameClient.send("charPlay", [animCheck, note.gfNote, true, getStrumFromNote(note)]);
 					} else {
-						GameClient.send("charPlay", [animToPlay, note.gfNote, false, getStrumIndexFromData(note)]);
+						GameClient.send("charPlay", [animToPlay, note.gfNote, false, getStrumFromNote(note)]);
 					}
 				}
 			}
@@ -6570,8 +6585,8 @@ class PlayState extends MusicBeatState
 
 		if(!cpuControlled)
 		{
-			var spr = strumLines.members[getStrumIndexFromData(note)].members[note.noteData];
-			GameClient.send("strumPlay", ["confirm", note.noteData, 0, getStrumIndexFromData(note)]);
+			var spr = strumLines.members[getStrumFromNote(note)].members[note.noteData];
+			GameClient.send("strumPlay", ["confirm", note.noteData, 0, getStrumFromNote(note)]);
 			if(spr != null) spr.playAnim('confirm', true);
 		}
 		else {
@@ -6586,7 +6601,7 @@ class PlayState extends MusicBeatState
 		var compat:String = note.mustPress ? 'goodNoteHit' : 'opponentNoteHit';
 		var compatCNE:String = note.mustPress ? 'onPlayerHit' : 'onDadHit';
 		var event:NoteHitEvent;
-		var strumLine = strumLines.members[getStrumIndexFromData(note)];
+		var strumLine = strumLines.members[getStrumFromNote(note)];
 
 		var noteDiffNoAbs:Float = note.strumTime - (Conductor.judgeSongPosition ?? Conductor.songPosition) + ClientPrefs.getRatingOffset();
 		var noteDiff:Float = Math.abs(noteDiffNoAbs);
@@ -6618,7 +6633,7 @@ class PlayState extends MusicBeatState
 			return;
 
 		if (note != null) {
-			var strum:StrumNote = strumLines.members[getStrumIndexFromData(note)].members[note.noteData];
+			var strum:StrumNote = strumLines.members[getStrumFromNote(note)].members[note.noteData];
 
 			if(strum != null && note.tail.length != 0)
 				spawnHoldSplash(note);
@@ -6628,7 +6643,7 @@ class PlayState extends MusicBeatState
 	public function spawnHoldSplash(note:Note) {
 		var end:Note = note.isSustainNote ? note.parent.tail[note.parent.tail.length - 1] : note.tail[note.tail.length - 1];
 		var splash:SustainSplash = grpHoldSplashes.recycle(SustainSplash);
-		var strum:StrumNote = strumLines.members[getStrumIndexFromData(note)].members[note.noteData];
+		var strum:StrumNote = strumLines.members[getStrumFromNote(note)].members[note.noteData];
 
 		splash.setupSusSplash(strum, note, playbackRate);
 		#if HSC_ALLOWED scripts.call("onSpawnHoldSplash", [splash, strum, note]); #end //for changing cameras
@@ -6636,7 +6651,7 @@ class PlayState extends MusicBeatState
 	}
 
 	// Backwards compatibility.
-	public inline function getStrumIndexFromData(note:Note) {
+	public inline function getStrumFromNote(note:Note) {
 		return note.strumLineID;
 	}
 
@@ -6645,7 +6660,7 @@ class PlayState extends MusicBeatState
 			return;
 
 		if(note != null) {
-			var strum:StrumNote = strumLines.members[getStrumIndexFromData(note)].members[note.noteData];
+			var strum:StrumNote = strumLines.members[getStrumFromNote(note)].members[note.noteData];
 			if(strum != null)
 				spawnNoteSplash(strum.x - (Note.swagWidth - Note.swagScaledWidth), strum.y - (Note.swagWidth - Note.swagScaledWidth), note.noteData, note, strum);
 		}
@@ -7179,7 +7194,7 @@ class PlayState extends MusicBeatState
 
 	function strumPlayAnim(isDad:Bool, id:Int, time:Float, ?sid:String, note:Note) {
 		var spr:StrumNote = null;
-		var strumIndex = getStrumIndexFromData(note);
+		var strumIndex = getStrumFromNote(note);
 		var strums = isDad ? getOpponentStrums(strumIndex) : getPlayerStrums(strumIndex);
 
 		if (sid != null && (strumIndex == 0 || strumIndex == 1)) {
