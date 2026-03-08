@@ -703,7 +703,7 @@ class PlayState extends MusicBeatState
 			case "gf":
 				gfGroup.add(char);
 			default:
-				boyfriendGroup.add(char);
+				add(char);
 		}
 
 		startCharacterScripts(char.curCharacter, null, isRight);
@@ -1476,23 +1476,29 @@ class PlayState extends MusicBeatState
 			//maybe this can fix all problems lol
 			var event = EventManager.get(AmountEvent).recycle(4);
 			if (!scripts.event("onPreGenerateStrums", event).cancelled) {
-				createStrum(true, [dad], true);
-				createStrum(false, [boyfriend], true);
-				createStrum(true, [gf], false);
-				scripts.event("onPostGenerateStrums", event);
-			}
-
-			//Hardcoded Extra Strumlines
-			if (SONG.strumLines != null && SONG.strumLines != []) {
-				for (strumIndex => strumData in SONG.strumLines) {
-					var chars:Array<Character> = [];
-					if (strumData.characters != null && strumData.characters != []) {
-						for (char in strumData.characters) {
-							chars.push(initStrumLineCharacter(0, 0, char, !strumData.cpu, strumData.type));
+				//Softcoded Extra Strumlines
+				if (SONG.strumLines != null && SONG.strumLines != []) {
+					for (strumIndex => strumData in SONG.strumLines) {
+						var chars:Array<Character> = [];
+						if (strumData.characters != null && strumData.characters != [] && strumIndex >= 3) {
+							for (char in strumData.characters) {
+								chars.push(initStrumLineCharacter(0, 0, char, !strumData.cpu, strumData.type));
+							}
 						}
+						//hardcoded because I don't have enough time to do online char stuff.
+						switch(strumIndex) {
+							case 0: chars.push(dad);
+							case 1: chars.push(boyfriend);
+							case 2: chars.push(gf);
+						}
+						var strum = createStrum(strumData.cpu, chars, strumData.visible);
 					}
-					var strum = createStrum(strumData.cpu, chars, strumData.visible);
+				} else {
+					createStrum(true, [dad], true);
+					createStrum(false, [boyfriend], true);
+					createStrum(true, [gf], false);
 				}
+				scripts.event("onPostGenerateStrums", event);
 			}
 		});
 
