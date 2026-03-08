@@ -157,7 +157,7 @@ class Song
 		var chartsFolder:String = 'charts/${diffString}';
 		var isEvent:Bool = false;
 		if (jsonInput.startsWith('events')) {
-			chartsFolder = "";
+			chartsFolder = 'events';
 			isEvent = true;
 		}
 

@@ -649,13 +649,13 @@ class PlayState extends MusicBeatState
 				tag = "gf";
 		}
 
-		char = new Character(startX, startY, charName, playsAsBF() == isRight, false, tag);
+		char = new Character(startX, startY, charName, playsAsBF() == isRight, false);
 
 		if (char.loadFailed) {
 			for (suffix in (isRight ? online.states.SkinsState.RIGHT_SUFFIX : online.states.SkinsState.LEFT_SUFFIX)) {
 				final charExists = Character.getCharacterFile(charName + suffix, null, true) != null;
 				if (charExists) {
-					char = new Character(startX, startY, charName + suffix, playsAsBF() == isRight, false, tag);
+					char = new Character(startX, startY, charName + suffix, playsAsBF() == isRight, false);
 					break;
 				}
 			}
