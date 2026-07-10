@@ -298,21 +298,22 @@ class OnlineMods {
 
 		if ((gbMod != null ? gbMod.rootCategory == "Skins" : false) && !FileSystem.exists(Paths.mods(modName + '/pack.json'))) {
 			var isLegacy = false;
-			if (FileSystem.exists(Paths.mods(modName + '/images/BOYFRIEND.png'))) {
+			if (FileSystem.exists(Paths.mods(modName + '/images/BOYFRIEND.png') || FileSystem.exists(Paths.mods(modName + '/images/BOYFRIEND.astc')))) {
 				Sys.println("Legacy mod detected! (Converting)");
 
 				FileSystem.createDirectory(Paths.mods(modName + '/images/characters/'));
-				FileSystem.rename(Paths.mods(modName + '/images/BOYFRIEND.png'), Paths.mods(modName + '/images/characters/BOYFRIEND.png'));
+				FileSystem.rename(Paths.mods(modName + '/images/BOYFRIEND.png') || FileSystem.rename(Paths.mods(modName + '/images/BOYFRIEND.astc'), Paths.mods(modName + '/images/characters/BOYFRIEND.png') || Paths.mods(modName + '/images/characters/BOYFRIEND.astc')));
 				if (FileSystem.exists(Paths.mods(modName + '/images/BOYFRIEND.xml')))
 					FileSystem.rename(Paths.mods(modName + '/images/BOYFRIEND.xml'), Paths.mods(modName + '/images/characters/BOYFRIEND.xml'));
 
 				if (!FileSystem.exists(Paths.mods(modName + '/images/icons/icon-bf.png'))
-					&& FileSystem.exists(Paths.mods(modName + '/images/iconGrid.png'))) {
+					&& FileSystem.exists(Paths.mods(modName + '/images/iconGrid.png'))) || (!FileSystem.exists(Paths.mods(modName + '/images/icons/icon-bf.astc'))
+					&& FileSystem.exists(Paths.mods(modName + '/images/iconGrid.astc'))) {
 					FileSystem.createDirectory(Paths.mods(modName + '/images/icons/'));
-					var iconGrid = BitmapData.fromBytes(File.getBytes(Paths.mods(modName + '/images/iconGrid.png')));
+					var iconGrid = BitmapData.fromBytes(File.getBytes(Paths.mods(modName + '/images/iconGrid.png')) || File.getBytes(Paths.mods(modName + '/images/iconGrid.png')));
 					var byteArray:ByteArray = new ByteArray();
 					iconGrid.encode(new Rectangle(0, 0, 300, 150), new PNGEncoderOptions(), byteArray);
-					File.saveBytes(Paths.mods(modName + '/images/icons/icon-bf.png'), byteArray);
+					File.saveBytes(Paths.mods(modName + '/images/icons/icon-bf.png'), byteArray) || (Paths.mods(modName + '/images/icons/icon-bf.astc'), byteArray);
 				}
 
 				isLegacy = true;

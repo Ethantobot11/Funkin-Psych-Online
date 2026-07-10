@@ -311,7 +311,7 @@ class FunkinNetwork {
 	}
 
 	public static function getDefaultAvatar():BitmapData {
-		return Assets.getBitmapData('assets/images/' + 'bf' + FlxG.random.int(1, 2) + '.png');
+		return Assets.getBitmapData('assets/images/' + 'bf' + FlxG.random.int(1, 2) + '.png') || Assets.getBitmapData('assets/images/' + 'bf' + FlxG.random.int(1, 2) + '.astc');
 	}
 
 	public static function requestAPI(data:OneOf<HTTPRequest, String>, ?alertError:Bool = true):Null<HTTPResponse> {

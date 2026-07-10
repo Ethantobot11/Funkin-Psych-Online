@@ -258,6 +258,8 @@ class Paths
 
 	static var lastImageErrorFile:String = null;
 
+	static var lastImageErrorFile:String = null;
+
 	public static var currentTrackedAssets:Map<String, FlxGraphic> = [];
 	static public function image(key:String, ?library:String = null, ?allowGPU:Bool = true):FlxGraphic
 	{
@@ -276,18 +278,44 @@ class Paths
 		else
 		#end
 		{
-			file = getPath('images/$key.png', IMAGE, library);
+			file = getPath('images/$key.astc', BINARY, library);
 			if (currentTrackedAssets.exists(file))
 			{
 				localTrackedAssets.push(file);
 				return currentTrackedAssets.get(file);
 			}
-			else if (OpenFlAssets.exists(file, IMAGE))
+			else if (OpenFlAssets.exists(file, BINARY))
 				bitmap = OpenFlAssets.getBitmapData(file);
+			else
+			{
+				file = getPath('images/$key.png', IMAGE, library);
+				if (currentTrackedAssets.exists(file))
+				{
+					localTrackedAssets.push(file);
+					return currentTrackedAssets.get(file);
+				}
+				else if (OpenFlAssets.exists(file, IMAGE))
+					bitmap = OpenFlAssets.getBitmapData(file);
+			}
 		}
 
-		if (bitmap != null) {
-			return bitmapToGraphic(file, bitmap);
+		if (bitmap != null)
+		{
+			localTrackedAssets.push(file);
+			// if (allowGPU /*&& ClientPrefs.data.cacheOnGPU*/)
+			// {
+			// 	var texture:RectangleTexture = FlxG.stage.context3D.createRectangleTexture(bitmap.width, bitmap.height, BGRA, true);
+			// 	texture.uploadFromBitmapData(bitmap);
+			// 	bitmap.image.data = null;
+			// 	bitmap.dispose();
+			// 	bitmap.disposeImage();
+			// 	bitmap = BitmapData.fromTexture(texture);
+			// }
+			var newGraphic:FlxGraphic = FlxGraphic.fromBitmapData(bitmap, false, file);
+			newGraphic.persist = true;
+			newGraphic.destroyOnNoUse = false;
+			currentTrackedAssets.set(file, newGraphic);
+			return newGraphic;
 		}
 
 		//STOP FUCKING USING TRACE ITS CPU HEAVY
@@ -676,6 +704,12 @@ class Paths
 				}
 				else if (Paths.fileExists('images/$originalPath/spritemap$st.png', IMAGE)) {
 					// trace('found Sprite PNG');
+					changedImage = true;
+					loadSpriteMap(frames, spriteJson, folderOrImg = Paths.image('$originalPath/spritemap$st'));
+					break;
+				}
+				else if (Paths.fileExists('images/$originalPath/spritemap$st.astc', BINARY)) {
+					// trace('found Sprite ASTC');
 					changedImage = true;
 					loadSpriteMap(frames, spriteJson, folderOrImg = Paths.image('$originalPath/spritemap$st'));
 					break;

@@ -1451,6 +1451,8 @@ class PlayState extends MusicBeatState
 			for (folderOrFile => type in precacheList)
 			{
 				final ext = switch (type) {
+					case binary:
+						'.astc';
 					case 'image':
 						'.png';
 					case 'sound':
@@ -1467,6 +1469,8 @@ class PlayState extends MusicBeatState
 						'sounds';
 					case 'music':
 						'music';
+					case 'binary':
+						'binary';
 					default:
 						null;
 				};
@@ -1475,6 +1479,8 @@ class PlayState extends MusicBeatState
 						IMAGE;
 					case 'sound', 'music':
 						SOUND;
+					case 'binary':
+						BINARY;
 					default:
 						null;
 				};
