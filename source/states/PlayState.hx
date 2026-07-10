@@ -2165,14 +2165,14 @@ class PlayState extends MusicBeatState
 
 		addControl(null, (GameClient.isConnected() ? "PAUSE_CHAT_TAUNT" : "PAUSE_TAUNT"));
 		if (replayData == null && !cpuControlled) {
-			for (hitbox in Main.mobileControls.hitboxes) {
-				for (button in Main.mobileControls.buttons) {
-					hitbox.deadzones.push(button);
+			for (hitbox in mobileManager.hitboxes) {
+				for (button in mobileManager.buttons) {
+					hitbox.deadZones.push(button);
 				}
 				hitbox.onButtonDown.add(onButtonPress);
 				hitbox.onButtonUp.add(onButtonRelease);
-				hitbox.onButtonDown.add((control:mobile.openfl.controls.InputHandler, id:String) -> replayRecorder?.recordKeyMobileC(Conductor?.songPosition, id, 0));
-				hitbox.onButtonUp.add((control:mobile.openfl.controls.InputHandler, id:String) -> replayRecorder?.recordKeyMobileC(Conductor?.songPosition, id, 1));
+				hitbox.onButtonDown.add((control:mobile.flixel.controls.InputHandler, id:String) -> replayRecorder?.recordKeyMobileC(Conductor?.songPosition, id, 0));
+				hitbox.onButtonUp.add((control:mobile.flixel.controls.InputHandler, id:String) -> replayRecorder?.recordKeyMobileC(Conductor?.songPosition, id, 1));
 			}
 		}
 		#end
@@ -3112,15 +3112,15 @@ class PlayState extends MusicBeatState
 		super.closeSubState();
 		#if FEATURE_TOUCH_CONTROLS
 		if (replayData == null && !cpuControlled) {
-			for (hitbox in Main.mobileControls.hitboxes) {
+			for (hitbox in mobileManager.hitboxes) {
 				if (hitbox != null) {
-					for (button in Main.mobileControls.buttons) {
-						hitbox.deadzones.push(button);
+					for (button in mobileManager.buttons) {
+						hitbox.deadZones.push(button);
 					}
 					hitbox.onButtonDown.add(onButtonPress);
 					hitbox.onButtonUp.add(onButtonRelease);
-					hitbox.onButtonDown.add((control:mobile.openfl.controls.InputHandler, id:String) -> replayRecorder?.recordKeyMobileC(Conductor?.songPosition, id, 0));
-					hitbox.onButtonUp.add((control:mobile.openfl.controls.InputHandler, id:String) -> replayRecorder?.recordKeyMobileC(Conductor?.songPosition, id, 1));
+					hitbox.onButtonDown.add((control:mobile.flixel.controls.InputHandler, id:String) -> replayRecorder?.recordKeyMobileC(Conductor?.songPosition, id, 0));
+					hitbox.onButtonUp.add((control:mobile.flixel.controls.InputHandler, id:String) -> replayRecorder?.recordKeyMobileC(Conductor?.songPosition, id, 1));
 				}
 			}
 		}
@@ -5395,7 +5395,7 @@ class PlayState extends MusicBeatState
 	}
 
 	#if FEATURE_TOUCH_CONTROLS
-	private function onButtonPress(control:mobile.openfl.controls.InputHandler, id:String):Void
+	private function onButtonPress(control:mobile.flixel.controls.InputHandler, id:String):Void
 	{
 		var noteID:String = id.toLowerCase();
 		//trace(noteID);
@@ -5414,7 +5414,7 @@ class PlayState extends MusicBeatState
 				}
 
 				callOnScripts('onButtonPressPre', [buttonCode]);
-				if (Main.mobileControls.checkState(noteID, "justPressed")) keyPressed(buttonCode);
+				keyPressed(buttonCode);
 				callOnScripts('onButtonPress', [buttonCode]);
 
 			}
@@ -5427,13 +5427,13 @@ class PlayState extends MusicBeatState
 				}
 
 				callOnScripts('onButtonPressPre', [buttonCode]);
-				if (Main.mobileControls.checkState(noteID, "justPressed")) keyPressed(buttonCode);
+				keyPressed(buttonCode);
 				callOnScripts('onButtonPress', [buttonCode]);
 			}
 		}
 	}
 
-	private function onButtonRelease(control:mobile.openfl.controls.InputHandler, id:String):Void
+	private function onButtonRelease(control:mobile.flixel.controls.InputHandler, id:String):Void
 	{
 		var noteID:String = id.toLowerCase();
 		if (noteID != null)
@@ -5449,7 +5449,7 @@ class PlayState extends MusicBeatState
 				}
 
 				callOnScripts('onButtonReleasePre', [buttonCode]);
-				if(buttonCode > -1) keyReleased(buttonCode);
+				keyReleased(buttonCode);
 				callOnScripts('onButtonRelease', [buttonCode]);
 			}
 			else if (noteID.contains("note_")) 
@@ -5461,7 +5461,7 @@ class PlayState extends MusicBeatState
 				}
 
 				callOnScripts('onButtonReleasePre', [buttonCode]);
-				if(buttonCode > -1) keyReleased(buttonCode);
+				keyReleased(buttonCode);
 				callOnScripts('onButtonRelease', [buttonCode]);
 			}
 		}

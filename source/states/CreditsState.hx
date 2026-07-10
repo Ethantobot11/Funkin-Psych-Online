@@ -39,6 +39,9 @@ class CreditsState extends MusicBeatState
 		#end
 
 		var defaultList:Array<Array<String>> = [ //Name - Icon name - Description - Link - BG Color
+			['Psych Online Mobile'],
+			['KralOyuncu & ArkoseLabs',	 'arkoselabs',	'Porters of Psych Online Mobile (Unofficial)',					'https://youtube.com/@arkoselabsofficial',		'95240E'],
+			[''],
 			['Psych Online'],
 			['Snirozu', 'snirozu', 'helo i made this mod :)', 'https://sniro.boo', 'FFCC33'],
 			['Til', 'til', 'Code Contributor with over 30 commits!\nDeveloper of the upcoming Mobile Port', 'https://techniktil.tilnotdrip.org', 'FFFF00'],
@@ -141,7 +144,7 @@ class CreditsState extends MusicBeatState
 		changeSelection();
 		super.create();
 
-		addControl(null, "OPTIONS");
+		addControl("UP_DOWN", "OPTIONS");
 	}
 
 	var quitting:Bool = false;

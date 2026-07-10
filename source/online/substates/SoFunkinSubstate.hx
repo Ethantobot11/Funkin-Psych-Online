@@ -195,6 +195,11 @@ class SoFunkinSubstate extends MusicBeatSubstate {
 	override function update(elapsed:Float) {
 		super.update(elapsed);
 
+		#if android
+		if (KeyboardHelper.isKeyboardClosed())
+			disableInputWaitNext = true;
+		#end
+
 		if (futureIcon != null) {
 			if (futureIcon.isComplete || futureIcon.isError) {
 				if (!futureIcon.isError && futureIcon.value != null) {

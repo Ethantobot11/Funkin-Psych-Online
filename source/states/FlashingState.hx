@@ -19,7 +19,7 @@ class FlashingState extends MusicBeatState
 		add(bg);
 
 		warnText = new FlxText(0, 0, FlxG.width,
-			"Hey, watch out!\n
+			"Hey, watch out this port is unoffical!\n
 			This game can trigger photosensitive epilepsy! \n
 			If you have motion sickness you should check these settings!  \n\n
 			Press ENTER to check Accessibility Settings.\n

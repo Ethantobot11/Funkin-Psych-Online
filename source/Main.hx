@@ -27,16 +27,8 @@ import haxe.CallStack;
 import haxe.io.Path;
 import sys.io.Process;
 
-#if FEATURE_TOUCH_CONTROLS
-import mobile.openfl.controls.MobileControls;
-import mobile.openfl.screen.ScreenUtil;
-#end
-
 class Main extends Sprite
 {
-	#if FEATURE_TOUCH_CONTROLS
-	public static var mobileControls:MobileControls;
-	#end
 	public static var gameContainer:FlxGame;
 
 	var game = {
@@ -62,7 +54,7 @@ class Main extends Sprite
 	 * 
 	 * ANY TRY TO CIRCUMVENT THE PROPER WORKING OF THIS VARIABLE
 	 * WILL RESULT IN THE SOURCE/BUILD TO BE REPORTED
-	 * FUCK YOU, I FOUND THE MACRO AND MODIFIED IT -KralOyuncu
+	 * PLEASE ENABLE THIS IF YOU'RE MAKING FORKS OF THIS MOBILE PORT -ArkoseLabs
 	 * 
 	 * ! ! ! ! ! !
 	 */
@@ -184,16 +176,8 @@ class Main extends Sprite
 		//#if LUA_ALLOWED Lua.set_callbacks_function(cpp.Callable.fromStaticFunction(psychlua.CallbackHandler.call)); #end
 		Controls.instance = new Controls();
 		ClientPrefs.loadDefaultKeys();
-		#if FEATURE_TOUCH_CONTROLS
-		mobileControls = new MobileControls(1280, 720);
-		#end
 		gameContainer = new FlxGame(game.width, game.height, game.initialState, #if (flixel < "5.0.0") game.zoom, #end game.framerate, game.framerate, game.skipSplash, game.startFullscreen);
 		addChild(gameContainer);
-		#if FEATURE_TOUCH_CONTROLS
-		addChild(mobileControls);
-		ScreenUtil.init(stage);
-		FlxG.mouse.useSystemCursor = true;
-		#end
 
 		fpsVar = new FPS(10, 3, 0xFFFFFF);
 		addChild(fpsVar);

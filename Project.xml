@@ -131,6 +131,7 @@
 	<haxelib name="yagp" />
 	<haxelib name="tink_await" />
 	<!-- <haxelib name="interpret" /> -->
+	<haxelib name="mobile-controls" />
 
 	<define name="FEATURE_TOUCH_CONTROLS" />
 	<define name="FEATURE_STORAGE_TYPES" if="android"/>

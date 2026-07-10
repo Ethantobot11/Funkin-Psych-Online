@@ -170,7 +170,7 @@ class OptionsState extends MusicBeatState
 		super.create();
 
 		online.GameClient.send("status", "In the Game Options");
-		addControl(null, "OPTIONS");
+		addControl("UP_DOWN", "OPTIONS");
 	}
 
 	override function closeSubState() {

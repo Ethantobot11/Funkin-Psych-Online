@@ -128,8 +128,10 @@ class OnlineState extends MusicBeatState {
 		warp.makeGraphic(FlxG.width, FlxG.height, FlxColor.TRANSPARENT);
 		warp.updateHitbox();
 		warp.screenCenter();
+		#if !mobile
 		if (!ClientPrefs.data.lowQuality && ClientPrefs.data.shaders)
 			add(new WarpEffect(warp));
+		#end
 		warp.antialiasing = ClientPrefs.data.antialiasing;
 		add(warp);
 

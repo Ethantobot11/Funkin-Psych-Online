@@ -1,0 +1,24 @@
+{
+  "dpads": [
+    {
+      "name": "dpadLeft",
+      "id": ["ui_left"],
+      "texture": "dpad_left",
+      "offset": [[0, 0]],
+      "hitbox": [[130, 130]],
+      "showbounds": false,
+      "position": [10, 600],
+      "scale": 0.9
+    },
+	{
+      "name": "dpadRight",
+      "id": ["ui_right"],
+      "texture": "dpad_right",
+      "offset": [[0, 0]],
+      "hitbox": [[130, 130]],
+      "showbounds": false,
+      "position": [140, 600],
+      "scale": 0.9
+    }
+  ]
+}

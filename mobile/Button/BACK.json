@@ -3,10 +3,13 @@
     {
       "name": "back",
       "id": "back",
-      "graphic": "button_circle",
-      "subgraphic": "icon_button_b",
+      "texture": "button_circle",
+      "subgraphic": {
+        "texture": "icon_button_b",
+        "scale": 4
+      },
       "position": [1153, 593],
-      "scale": 1.0,
+      "scale": 0.24,
       "color": null
     }
   ]

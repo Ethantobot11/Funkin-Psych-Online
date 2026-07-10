@@ -102,7 +102,7 @@ class Controls
 		var result:Bool = (FlxG.keys.anyJustPressed(keyboardBinds[key]) == true);
 		if(result) controllerMode = false;
 
-		return result || _myGamepadJustPressed(gamepadBinds[key]) == true #if FEATURE_TOUCH_CONTROLS || Main.mobileControls.checkState(key.toLowerCase(), "justPressed") == true #end;
+		return result || _myGamepadJustPressed(gamepadBinds[key]) == true #if FEATURE_TOUCH_CONTROLS || mobileCJustPressed(key.toLowerCase()) == true #end;
 	}
 
 	public function pressed(key:String)
@@ -115,7 +115,7 @@ class Controls
 		var result:Bool = (FlxG.keys.anyPressed(keyboardBinds[key]) == true);
 		if(result) controllerMode = false;
 
-		return result || _myGamepadPressed(gamepadBinds[key]) == true #if FEATURE_TOUCH_CONTROLS || Main.mobileControls.checkState(key.toLowerCase(), "pressed") == true #end;
+		return result || _myGamepadPressed(gamepadBinds[key]) == true #if FEATURE_TOUCH_CONTROLS || mobileCPressed(key.toLowerCase()) == true #end;
 	}
 
 	public function justReleased(key:String)
@@ -128,7 +128,7 @@ class Controls
 		var result:Bool = (FlxG.keys.anyJustReleased(keyboardBinds[key]) == true);
 		if(result) controllerMode = false;
 
-		return result || _myGamepadJustReleased(gamepadBinds[key]) == true #if FEATURE_TOUCH_CONTROLS || Main.mobileControls.checkState(key.toLowerCase(), "justReleased") == true #end;
+		return result || _myGamepadJustReleased(gamepadBinds[key]) == true #if FEATURE_TOUCH_CONTROLS || mobileCJustReleased(key.toLowerCase()) == true #end;
 	}
 
 	public var controllerMode:Bool = false;
@@ -176,6 +176,69 @@ class Controls
 			}
 		}
 		return false;
+	}
+
+	#if FEATURE_TOUCH_CONTROLS
+	public var isInSubstate:Bool = false; // don't worry about this it becomes true and false on it's own in MusicBeatSubstate
+	public function mobileCPressed(key:String):Bool
+	{
+		var localSubstate:MusicBeatSubstate = MusicBeatSubstate.instance;
+		var localState:MusicBeatState = MusicBeatState.instance;
+
+		if (isInSubstate && key != null && localSubstate?.mobileManager != null) {
+			if (localSubstate.mobileManager.checkState(key, "pressed"))
+				return true;
+		} else if (key != null && localState?.mobileManager != null) {
+			if (localState.mobileManager?.checkState(key, "pressed"))
+				return true;
+		}
+
+		return false;
+	}
+
+	public function mobileCJustPressed(key:String):Bool
+	{
+		var localSubstate:MusicBeatSubstate = MusicBeatSubstate.instance;
+		var localState:MusicBeatState = MusicBeatState.instance;
+
+		if (isInSubstate && key != null && localSubstate?.mobileManager != null) {
+			if (localSubstate.mobileManager.checkState(key, "justPressed"))
+				return true;
+		} else if (key != null && localState?.mobileManager != null) {
+			if (localState.mobileManager.checkState(key, "justPressed"))
+				return true;
+		}
+
+		return false;
+	}
+
+	public function mobileCJustReleased(key:String):Bool
+	{
+		var localSubstate:MusicBeatSubstate = MusicBeatSubstate.instance;
+		var localState:MusicBeatState = MusicBeatState.instance;
+
+		if (isInSubstate && key != null && localSubstate?.mobileManager != null) {
+			if (localSubstate.mobileManager.checkState(key, "justReleased"))
+				return true;
+		} else if (key != null && localState?.mobileManager != null) {
+			if (localState.mobileManager.checkState(key, "justReleased"))
+				return true;
+		}
+
+		return false;
+	}
+	#end
+
+	public var mobileControls(get, never):Bool;
+	@:noCompletion
+	private function get_mobileControls():Bool
+	{
+		#if FEATURE_TOUCH_CONTROLS
+		if (ClientPrefs.data.controlAlpha >= 0.1)
+			return true;
+		else
+		#end
+			return false;
 	}
 
 	public var moodyBlues:ReplayPlayer;

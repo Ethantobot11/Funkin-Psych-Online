@@ -72,7 +72,7 @@ class FindRoomState extends MusicBeatState {
 		emptyMessage.visible = false;
 		add(emptyMessage);
 
-		addControl(null, "FIND_ROOM");
+		addControl("UP_DOWN", "FIND_ROOM");
     }
 
     override function update(elapsed) {

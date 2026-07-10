@@ -1,0 +1,37 @@
+{
+  "buttons": [
+    {
+      "name": "buttonA",
+      "id": "a",
+      "texture": "button_circle",
+      "position": [1150, 600],
+      "scale": 0.2125,
+      "subgraphic": {
+        "texture": "icon_a",
+        "scale": 4
+      }
+    },
+    {
+      "name": "buttonB",
+      "id": "b",
+      "texture": "button_circle",
+      "position": [1045, 600],
+      "scale": 0.2125,
+      "subgraphic": {
+        "texture": "icon_b",
+        "scale": 4
+      }
+    },
+    {
+      "name": "buttonC",
+      "id": "c",
+      "texture": "button_circle",
+      "position": [940, 600],
+      "scale": 0.2125,
+      "subgraphic": {
+        "texture": "icon_c",
+        "scale": 4
+      }
+    }
+  ]
+}

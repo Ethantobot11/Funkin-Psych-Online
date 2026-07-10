@@ -35,9 +35,14 @@ import android.Settings as AndroidSettings;
 import android.Tools as AndroidTools;
 import android.os.Build.VERSION as AndroidVersion;
 import android.os.Build.VERSION_CODES as AndroidVersionCode;
+import mobile.KeyboardHelper;
 #end
 #if mobile
 import backend.StorageUtil;
+#end
+#if FEATURE_TOUCH_CONTROLS
+import mobile.flixel.controls.MobileControls;
+import mobile.flixel.screen.ScreenUtil;
 #end
 
 import backend.Paths;

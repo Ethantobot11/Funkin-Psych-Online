@@ -3,28 +3,37 @@
     {
       "name": "chat",
       "id": "chat",
-      "graphic": "button_circle",
-      "subgraphic": "icon_talk",
+      "texture": "button_circle",
+      "subgraphic": {
+        "texture": "icon_talk",
+        "scale": 4
+      },
       "position": [1032, 596],
-      "scale": 1.0,
+      "scale": 0.24,
       "color": null
     },
     {
       "name": "back",
       "id": "back",
-      "graphic": "button_circle",
-      "subgraphic": "icon_button_b",
+      "texture": "button_circle",
+      "subgraphic": {
+        "texture": "icon_button_b",
+        "scale": 4
+      },
       "position": [1156, 596],
-      "scale": 1.0,
+      "scale": 0.24,
       "color": null
     },
     {
       "name": "taunt",
       "id": "taunt",
-      "graphic": "button_circle",
-      "subgraphic": "icon_sprint",
+      "texture": "button_circle",
+      "subgraphic": {
+        "texture": "icon_sprint",
+        "scale": 4
+      },
       "position": [1156, 472],
-      "scale": 1.0,
+      "scale": 0.24,
       "color": null
     }
   ]

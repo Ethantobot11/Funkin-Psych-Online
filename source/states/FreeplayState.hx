@@ -864,6 +864,12 @@ class FreeplayState extends MusicBeatState
 	{
 		super.update(elapsed);
 
+		#if android
+		if (searchInputWait && KeyboardHelper.isKeyboardClosed()) {
+			tempDisableInput();
+		}
+		#end
+
 		Conductor.songPosition = FlxG.sound.music.time;
 
 		for (v in [vocals, opponentVocals]) {
@@ -919,12 +925,6 @@ class FreeplayState extends MusicBeatState
 			FlxG.stage.window.textInputEnabled = true;
 			searchString = searchString;
 		}
-
-		#if android
-		if (searchInputWait && FlxG.android.justPressed.BACK) {
-			tempDisableInput();
-		}
-		#end
 
 		var shiftMult:Int = 1;
 		if(FlxG.keys.pressed.SHIFT || checkControl("shift", "pressed")) shiftMult = 3;

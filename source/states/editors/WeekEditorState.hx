@@ -105,6 +105,8 @@ class WeekEditorState extends MusicBeatState
 
 		FlxG.mouse.visible = true;
 
+		addControl("UP_DOWN", "BACK");
+
 		super.create();
 	}
 
@@ -431,7 +433,7 @@ class WeekEditorState extends MusicBeatState
 
 		if(!blockInput) {
 			ClientPrefs.toggleVolumeKeys(true);
-			if(FlxG.keys.justPressed.ESCAPE) {
+			if(FlxG.keys.justPressed.ESCAPE || checkControl("back", "justPressed")) {
 				FlxG.switchState(() -> new MasterEditorMenu());
 				states.TitleState.playFreakyMusic();
 			}
@@ -612,6 +614,7 @@ class WeekEditorFreeplayState extends MusicBeatState
 
 		addEditorBox();
 		changeSelection();
+		addControl("UP_DOWN", "BACK");
 		super.create();
 	}
 	
@@ -790,7 +793,7 @@ class WeekEditorFreeplayState extends MusicBeatState
 			}
 		} else {
 			ClientPrefs.toggleVolumeKeys(true);
-			if(FlxG.keys.justPressed.ESCAPE) {
+			if(FlxG.keys.justPressed.ESCAPE || checkControl("back", "justPressed")) {
 				FlxG.switchState(() -> new MasterEditorMenu());
 				states.TitleState.playFreakyMusic();
 			}

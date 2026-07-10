@@ -20,7 +20,7 @@ class MobileSettingsSubState extends BaseOptionsMenu
 		addOption(option);
 		option.minValue = 0;
 		option.maxValue = 1;
-		option.onChange = function() { Main.mobileControls.alpha = ClientPrefs.data.controlAlpha; };
+		option.onChange = function() { mobileManager.alpha = ClientPrefs.data.controlAlpha; };
 
         var option:Option = new Option('Extra Control',
 			"Pretty self explanatory, isn't it?",

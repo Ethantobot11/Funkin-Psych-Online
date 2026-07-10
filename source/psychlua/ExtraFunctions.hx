@@ -336,7 +336,17 @@ class ExtraFunctions
 		}
 
 		#if FEATURE_TOUCH_CONTROLS
-		if (Main.mobileControls != null) return Main.mobileControls.checkState(key.toLowerCase(), type);
+		switch (type.toLowerCase()) {
+			case "justpressed":
+				if (Controls.instance.mobileCJustPressed(key.toLowerCase()) == true)
+					return true;
+			case "pressed":
+				if (Controls.instance.mobileCPressed(key.toLowerCase()) == true)
+					return true;
+			case "justreleased":
+				if (Controls.instance.mobileCJustReleased(key.toLowerCase()) == true)
+					return true;
+		}
 		#end
 		return false;
 	}

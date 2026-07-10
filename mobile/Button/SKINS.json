@@ -3,73 +3,97 @@
     {
       "name": "control",
       "id": "control",
-      "graphic": "button_circle",
-      "subgraphic": "icon_menu",
+      "texture": "button_circle",
+      "subgraphic": {
+        "texture": "icon_menu",
+        "scale": 4
+      },
       "position": [770, 465],
-      "scale": 1.0,
+      "scale": 0.24,
       "color": null
     },
     {
       "name": "shift",
       "id": "shift",
-      "graphic": "button_circle",
-      "subgraphic": "icon_music",
+      "texture": "button_circle",
+      "subgraphic": {
+        "texture": "icon_music",
+        "scale": 4
+      },
       "position": [896, 465],
-      "scale": 1.0,
+      "scale": 0.24,
       "color": null
     },
     {
       "name": "f1",
       "id": "f1",
-      "graphic": "button_circle",
-      "subgraphic": "icon_arrow_curved",
+      "texture": "button_circle",
+      "subgraphic": {
+        "texture": "icon_arrow_curved",
+        "scale": 4
+      },
       "position": [1022, 465],
-      "scale": 1.0,
+      "scale": 0.24,
       "color": null
     },
     {
       "name": "f2",
       "id": "f2",
-      "graphic": "button_circle",
-      "subgraphic": "icon_search",
+      "texture": "button_circle",
+      "subgraphic": {
+        "texture": "icon_search",
+        "scale": 4
+      },
       "position": [1148, 465],
-      "scale": 1.0,
+      "scale": 0.24,
       "color": null
     },
     {
       "name": "eight",
       "id": "eight",
-      "graphic": "button_circle",
-      "subgraphic": "icon_cog",
+      "texture": "button_circle",
+      "subgraphic": {
+        "texture": "icon_cog",
+        "scale": 4
+      },
       "position": [770, 585],
-      "scale": 1.0,
+      "scale": 0.24,
       "color": null
     },
     {
       "name": "tab",
       "id": "tab",
-      "graphic": "button_circle",
-      "subgraphic": "icon_arrow_rotate",
+      "texture": "button_circle",
+      "subgraphic": {
+        "texture": "icon_arrow_rotate",
+        "scale": 4
+      },
       "position": [896, 585],
-      "scale": 1.0,
+      "scale": 0.24,
       "color": null
     },
     {
       "name": "back",
       "id": "back",
-      "graphic": "button_circle",
-      "subgraphic": "icon_button_b",
+      "texture": "button_circle",
+      "subgraphic": {
+        "texture": "icon_button_b",
+        "scale": 4
+      },
       "position": [1022, 585],
-      "scale": 1.0,
+      "scale": 0.24,
       "color": null
     },
     {
       "name": "accept",
       "id": "accept",
-      "graphic": "button_circle",
-      "subgraphic": "icon_button_a",
+      "texture": "button_circle",
+      "subgraphic": {
+        "texture": "icon_button_a",
+        "scale": 4
+      },
       "position": [1148, 585],
-      "scale": 1.0,
+      "scale": 0.24,
       "color": null
     }
   ]

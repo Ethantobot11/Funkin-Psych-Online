@@ -3,9 +3,9 @@
     {
       "name": "dpad1",
       "id": ["ui_up", "ui_down", "ui_left", "ui_right"],
-      "graphic": "dpad_separate",
-      "clickposition": [[0, -83], [0, 83], [-83, 0], [83, 0]],
-      "clickbound": [[100, 100], [100, 100], [100, 100], [100, 100]],
+      "texture": "dpad_separate",
+      "offset": [[0, -83], [0, 83], [-83, 0], [83, 0]],
+      "hitbox": [[100, 100], [100, 100], [100, 100], [100, 100]],
       "showbounds": false,
       "position": [0, 467],
       "scale": 1.0,

@@ -293,7 +293,7 @@ class ResetAchievementSubstate extends MusicBeatSubstate
 		add(noText);
 		updateOptions();
 
-		addControl(null, "RESET");
+		addControl("LEFT_RIGHT", "RESET");
 	}
 
 	override function update(elapsed:Float)

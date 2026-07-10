@@ -21,7 +21,7 @@ class OnlineOptionsState extends MusicBeatState {
 	
 	public function new(?scrollToRegister:Bool = false) {
 		super();
-		addControl(null, "OPTIONS");
+		addControl("UP_DOWN", "OPTIONS");
 
 		this.scrollToRegister = scrollToRegister;
 	}

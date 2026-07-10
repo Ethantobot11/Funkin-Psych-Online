@@ -15,10 +15,6 @@ import objects.Note;
 import shaders.RGBPalette;
 import shaders.RGBPalette.RGBShaderReference;
 
-#if FEATURE_TOUCH_CONTROLS
-import mobile.openfl.screen.ScreenUtil;
-#end
-
 class NotesSubState extends MusicBeatSubstate
 {
 	public static var isOpened:Bool = false;
@@ -198,6 +194,7 @@ class NotesSubState extends MusicBeatSubstate
 			}
 			FlxG.sound.play(Paths.sound('cancelMenu'));
 			isOpened = false;
+			cannotBeNull = true;
 			close();
 			return;
 		}
@@ -514,8 +511,8 @@ class NotesSubState extends MusicBeatSubstate
 	function pointerOverlaps(obj:Dynamic)
 	{
 		#if FEATURE_TOUCH_CONTROLS
-		for (control in Main.mobileControls.controls) {
-			if (ScreenUtil.touch.overlaps(Main.mobileControls))
+		for (control in mobileManager.buttons) {
+			if (ScreenUtil.touch.overlaps(mobileManager))
 				return false;
 		}
 		#end

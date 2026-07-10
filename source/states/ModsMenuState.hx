@@ -463,7 +463,7 @@ class ModsMenuState extends MusicBeatState
 
 		super.create();
 
-		addControl(null, "MODS_MENU");
+		addControl("UP_DOWN", "MODS_MENU");
 	}
 
 	/*function getIntArray(max:Int):Array<Int>{

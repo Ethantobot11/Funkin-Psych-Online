@@ -23,11 +23,13 @@ class TopPlayerSubstate extends MusicBeatSubstate {
 		super.create();
 
 		blurFilter = new BlurFilter();
+		#if !mobile
 		for (cam in FlxG.cameras.list) {
 			if (cam.filters == null)
 				cam.filters = [];
 			cam.filters.push(blurFilter);
 		}
+		#end
 
 		coolCam = new FlxCamera();
 		coolCam.bgColor.alpha = 0;

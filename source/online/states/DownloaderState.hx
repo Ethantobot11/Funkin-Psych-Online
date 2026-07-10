@@ -128,7 +128,7 @@ class DownloaderState extends MusicBeatState {
 
 		loadNextPage(true);
 
-		addControl(null, "DOWNLOADER");
+		addControl("LEFT_RIGHT", "DOWNLOADER");
     }
 
 	var _newPage:Int = 0;

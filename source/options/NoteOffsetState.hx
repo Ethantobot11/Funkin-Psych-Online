@@ -670,7 +670,7 @@ class NoteOffsetState extends MusicBeatState
 			str2 = '(Press Start to Switch)';
 
 		#if FEATURE_TOUCH_CONTROLS
-		Main.mobileControls.resetAllInputs();
+		mobileManager.resetAllInputs();
 		#end
 		if(onComboMenu) {
 			addControl('NONE', 'ACCEPT_BACK_RESET');

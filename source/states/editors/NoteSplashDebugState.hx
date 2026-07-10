@@ -26,6 +26,7 @@ class NoteSplashDebugState extends MusicBeatState
 	var curAnimText:FlxText;
 	var savedText:FlxText;
 	var selecArr:Array<Float> = null;
+	var idk:Bool = (Controls.instance.mobileControls) ? true : false; // im lazy to remove and add alot so idk
 
 	override function create()
 	{
@@ -56,11 +57,10 @@ class NoteSplashDebugState extends MusicBeatState
 			splashes.add(splash);
 		}
 
-
 		//
 		var txtx = 60;
 		var txty = 640;
-		var animName:FlxText = new FlxText(txtx, txty, 'Animation name:', 16);
+		var animName:FlxText = new FlxText(txtx, txty, 'Animation Name:', 16);
 		add(animName);
 
 		nameInputText = new FlxInputText(txtx, txty + 20, 360, '', 16);
@@ -80,7 +80,7 @@ class NoteSplashDebugState extends MusicBeatState
 
 		};
 		add(nameInputText);
-		
+
 		add(new FlxText(txtx, txty - 84, 0, 'Min/Max Framerate:', 16));
 		stepperMinFps = new FlxUINumericStepper(txtx, txty - 60, 1, 22, 1, 60, 0);
 		stepperMinFps.name = 'min_fps';
@@ -107,11 +107,20 @@ class NoteSplashDebugState extends MusicBeatState
 		curAnimText.scrollFactor.set();
 		add(curAnimText);
 
-		var text:FlxText = new FlxText(0, 520, FlxG.width,
-			"Press SPACE to Reset animation\n
-			Press ENTER twice to save to the loaded Note Splash PNG's folder\n
-			A/D change selected note - Arrow Keys to change offset (Hold shift for 10x)\n
-			Ctrl + C/V - Copy & Paste", 16);
+		var sillyText:String;
+
+		if (controls.mobileControls)
+			sillyText = "Press Y to Reset animation\n
+                        Press A twice to save to the loaded Note Splash PNG's folder\n
+                        Press Top LEFT/RIGHT to change selected note - Arrow Buttons to change offset\n
+                        C/V - Copy & Paste";
+		else
+			sillyText = "Press SPACE to Reset animation\n
+                        Press ENTER twice to save to the loaded Note Splash PNG's folder\n
+                        A/D change selected note - Arrow Keys to change offset (Hold shift for 10x)\n
+                        Ctrl + C/V - Copy & Paste";
+
+		var text:FlxText = new FlxText(0, 520, FlxG.width, sillyText, 16);
 		text.setFormat(Paths.font("vcr.ttf"), 16, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		text.scrollFactor.set();
 		add(text);
@@ -124,6 +133,7 @@ class NoteSplashDebugState extends MusicBeatState
 		loadFrames();
 		changeSelection();
 		super.create();
+		addControl("NOTE_SPLASH_DEBUG", "NOTE_SPLASH_DEBUG");
 		FlxG.mouse.visible = true;
 	}
 
@@ -146,8 +156,8 @@ class NoteSplashDebugState extends MusicBeatState
 
 		if(!notTyping) return;
 		
-		if (FlxG.keys.justPressed.A) changeSelection(-1);
-		else if (FlxG.keys.justPressed.D) changeSelection(1);
+		if (FlxG.keys.justPressed.A || checkControl('UP', "justPressed")) changeSelection(-1);
+		else if (FlxG.keys.justPressed.D || checkControl('DOWN', "justPressed")) changeSelection(1);
 
 		if(maxAnims < 1) return;
 
@@ -155,13 +165,13 @@ class NoteSplashDebugState extends MusicBeatState
 		{
 			var movex = 0;
 			var movey = 0;
-			if(FlxG.keys.justPressed.LEFT) movex = -1;
-			else if(FlxG.keys.justPressed.RIGHT) movex = 1;
+			if(FlxG.keys.justPressed.LEFT || checkControl('LEFT2', "justPressed")) movex = -1;
+			else if(FlxG.keys.justPressed.RIGHT || checkControl('RIGHT2', "justPressed")) movex = 1;
 
-			if(FlxG.keys.justPressed.UP) movey = 1;
-			else if(FlxG.keys.justPressed.DOWN) movey = -1;
+			if(FlxG.keys.justPressed.UP || checkControl('UP2', "justPressed")) movey = 1;
+			else if(FlxG.keys.justPressed.DOWN || checkControl('DOWN2', "justPressed")) movey = -1;
 			
-			if(FlxG.keys.pressed.SHIFT)
+			if(FlxG.keys.pressed.SHIFT || checkControl('Z', "pressed"))
 			{
 				movex *= 10;
 				movey *= 10;
@@ -177,16 +187,16 @@ class NoteSplashDebugState extends MusicBeatState
 		}
 
 		// Copy & Paste
-		if(FlxG.keys.pressed.CONTROL)
+		if(FlxG.keys.pressed.CONTROL || idk)
 		{
-			if(FlxG.keys.justPressed.C)
+			if(FlxG.keys.justPressed.C || checkControl('C', "justPressed"))
 			{
 				var arr:Array<Float> = selectedArray();
 				if(copiedArray == null) copiedArray = [0, 0];
 				copiedArray[0] = arr[0];
 				copiedArray[1] = arr[1];
 			}
-			else if(FlxG.keys.justPressed.V && copiedArray != null)
+			else if((FlxG.keys.justPressed.V || checkControl('V', "justPressed")))
 			{
 				var offs:Array<Float> = selectedArray();
 				offs[0] = copiedArray[0];
@@ -205,9 +215,13 @@ class NoteSplashDebugState extends MusicBeatState
 				savedText.visible = false;
 		}
 
-		if(FlxG.keys.justPressed.ENTER)
+		if(FlxG.keys.justPressed.ENTER || checkControl('A', "justPressed"))
 		{
-			savedText.text = 'Press ENTER again to save.';
+			if (controls.mobileControls) {
+		        savedText.text = 'Press A again to save.';
+			} else {
+		        savedText.text = 'Press ENTER again to save.';
+			}
 			if(pressEnterToSave > 0) //save
 			{
 				saveFile();
@@ -224,15 +238,14 @@ class NoteSplashDebugState extends MusicBeatState
 		}
 
 		// Reset anim & change anim
-		if (FlxG.keys.justPressed.SPACE)
-			changeAnim();
-		else if (FlxG.keys.justPressed.S) changeAnim(-1);
-		else if (FlxG.keys.justPressed.W) changeAnim(1);
+		if (FlxG.keys.justPressed.SPACE || checkControl('Y', "justPressed")) changeAnim();
+		else if (FlxG.keys.justPressed.S || checkControl('LEFT', "justPressed")) changeAnim(-1);
+		else if (FlxG.keys.justPressed.W || checkControl('RIGHT', "justPressed")) changeAnim(1);
 
 		// Force frame
 		var updatedFrame:Bool = false;
-		if(updatedFrame = FlxG.keys.justPressed.Q) forceFrame--;
-		else if(updatedFrame = FlxG.keys.justPressed.E) forceFrame++;
+		if(updatedFrame = FlxG.keys.justPressed.Q || checkControl('X', "justPressed")) forceFrame--;
+		else if(updatedFrame = FlxG.keys.justPressed.E || checkControl('E', "justPressed")) forceFrame++;
 
 		if(updatedFrame)
 		{
@@ -361,9 +374,13 @@ class NoteSplashDebugState extends MusicBeatState
 			curAnim += change;
 			if(curAnim > maxAnims) curAnim = 1;
 			else if(curAnim < 1) curAnim = maxAnims;
-
+			if (controls.mobileControls) {
+			curAnimText.text = 'Current Animation: $curAnim / $maxAnims\n(Press Top UP/DOWN to change)';
+			curFrameText.text = 'Force Frame Disabled\n(Press X/E to change)';
+			} else {
 			curAnimText.text = 'Current Animation: $curAnim / $maxAnims\n(Press W/S to change)';
 			curFrameText.text = 'Force Frame Disabled\n(Press Q/E to change)';
+			}
 
 			for (i in 0...maxNotes)
 			{

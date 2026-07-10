@@ -15,6 +15,8 @@ import objects.AchievementPopup;
 import states.editors.MasterEditorMenu;
 import options.OptionsState;
 
+import mobile.flixel.controls.MobileControls;
+
 #if lumod
 @:build(lumod.LuaScriptClass.build())
 #end
@@ -387,19 +389,7 @@ class MainMenuState extends MusicBeatState
 					});
 				}
 			}
-			else if (checkControl("debug_1", "justPressed")) {
-				FlxG.sound.play(Paths.sound("warning"));
-				if (editorTryCount++ == 2) {
-					FlxTween.tween(editorWarning, {alpha: 1}, 0.4);
-				}
-				FlxTween.completeTweensOf(editorWarning);
-				FlxTween.color(editorWarning, 0.2, 0xFFFF0000, 0xFFFFFFFF);
-				FlxTween.shake(editorWarning, 0.005, 0.3);
-				editorWarning.y = FlxG.height - 125;
-				FlxTween.tween(editorWarning, {y: FlxG.height - 100}, 0.4);
-				FlxTween.tween(editorWarning, {alpha: 0}, 1.5);
-			}
-			else if (controls.justPressed('debug_1'))
+			else if (controls.justPressed('debug_1') || checkControl("debug_1", "justPressed"))
 			{
 				selectedSomethin = true;
 				FlxG.switchState(() -> new MasterEditorMenu());

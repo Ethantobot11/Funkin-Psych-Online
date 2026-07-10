@@ -3,19 +3,25 @@
     {
       "name": "pause",
       "id": "pause",
-      "graphic": "button_circle",
-      "subgraphic": "icon_pause",
+      "texture": "button_circle",
+      "subgraphic": {
+        "texture": "icon_pause",
+        "scale": 4
+      },
       "position": [1153, 0],
-      "scale": 1.0,
+      "scale": 0.24,
       "color": null
     },
     {
       "name": "taunt",
       "id": "taunt",
-      "graphic": "button_circle",
-      "subgraphic": "icon_sprint",
+      "texture": "button_circle",
+      "subgraphic": {
+        "texture": "icon_sprint",
+        "scale": 4
+      },
       "position": [1033, 0],
-      "scale": 1.0,
+      "scale": 0.24,
       "color": null
     }
   ]

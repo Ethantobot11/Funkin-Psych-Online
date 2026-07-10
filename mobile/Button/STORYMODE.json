@@ -3,37 +3,49 @@
     {
       "name": "accept",
       "id": "accept",
-      "graphic": "button_circle",
-      "subgraphic": "icon_button_a",
+      "texture": "button_circle",
+      "subgraphic": {
+        "texture": "icon_button_a",
+        "scale": 4
+      },
       "position": [1153, 593],
-      "scale": 1.0,
+      "scale": 0.24,
       "color": null
     },
     {
       "name": "back",
       "id": "back",
-      "graphic": "button_circle",
-      "subgraphic": "icon_button_b",
+      "texture": "button_circle",
+      "subgraphic": {
+        "texture": "icon_button_b",
+        "scale": 4
+      },
       "position": [1033, 593],
-      "scale": 1.0,
+      "scale": 0.24,
       "color": null
     },
     {
       "name": "control",
       "id": "control",
-      "graphic": "button_circle",
-      "subgraphic": "icon_menu",
+      "texture": "button_circle",
+      "subgraphic": {
+        "texture": "icon_menu",
+        "scale": 4
+      },
       "position": [913, 593],
-      "scale": 1.0,
+      "scale": 0.24,
       "color": null
     },
     {
       "name": "reset",
       "id": "reset",
-      "graphic": "button_circle",
-      "subgraphic": "icon_arrow_rotate",
+      "texture": "button_circle",
+      "subgraphic": {
+        "texture": "icon_arrow_rotate",
+        "scale": 4
+      },
       "position": [793, 593],
-      "scale": 1.0,
+      "scale": 0.24,
       "color": null
     }
   ]

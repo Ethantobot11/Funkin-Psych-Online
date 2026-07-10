@@ -74,9 +74,13 @@ class SetupModsState extends MusicBeatState {
 		items.screenCenter(Y);
 		add(items);
 
+		final accept:String = (controls.mobileControls) ? 'A' : 'ACCEPT, Paste links with CTRL + V';
+		final back:String = (controls.mobileControls) ? 'B' : 'BACK';
+		final shift:String = (controls.mobileControls) ? 'C' : 'SHIFT';
+
 		var title = new FlxText(0, 0, FlxG.width, 
-        "Before you play, it is recommended to set links for your mods!\nSelect mods with ACCEPT, Paste links with CTRL + V, Leave with BACK\nHold SHIFT while exiting to discard all changes"
-        );
+		"Before you play, it is recommended to set links for your mods!\nSelect mods with " + accept + ", Leave with " + back + "\nHold " + shift + " while exiting to discard all changes"
+		);
 		title.setFormat("VCR OSD Mono", 22, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		title.y = 50;
 		title.scrollFactor.set(0, 0);
@@ -95,26 +99,36 @@ class SetupModsState extends MusicBeatState {
 		FlxG.stage.addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown);
 
 		changeSelection(0);
-    }
 
-    override function update(elapsed:Float) {
-        super.update(elapsed);
+		addControl('UP_DOWN', 'A_B_C');
+	}
 
-        if (disableInput) return;
+	override function update(elapsed:Float) {
+		super.update(elapsed);
+
+		#if android
+		if (KeyboardHelper.isKeyboardClosed()) {
+			tempDisableInput();
+			inInput = FlxG.stage.window.textInputEnabled = false;
+			changeSelection(0);
+		}
+		#end
+
+		if (disableInput) return;
 
 		if (!inInput) {
-			if (controls.ACCEPT || FlxG.mouse.justPressed) {
-				inInput = true;
+			if (controls.ACCEPT || (!controls.mobileControls && FlxG.mouse.justPressed)) {
+				inInput = FlxG.stage.window.textInputEnabled = true;
 				changeSelection(0);
 			}
-            
+			
 			if (controls.UI_UP_P || FlxG.mouse.wheel == 1)
 				changeSelection(-1);
 			else if (controls.UI_DOWN_P || FlxG.mouse.wheel == -1)
 				changeSelection(1);
 
-			if (controls.BACK || FlxG.mouse.justPressedRight) {
-				if (!FlxG.keys.pressed.SHIFT) {
+			if (controls.BACK || (!controls.mobileControls && FlxG.mouse.justPressedRight)) {
+				if (!checkControl('C', "pressed") || !FlxG.keys.pressed.SHIFT) {
 					var i = 0;
 					for (mod in swagMods) {
 						OnlineMods.saveModURL(mod, modsInput[i]);
@@ -126,9 +140,9 @@ class SetupModsState extends MusicBeatState {
 				FlxG.sound.play(Paths.sound('cancelMenu'));
 				states.TitleState.playFreakyMusic();
 			}
-        }
+		}
 		else {
-			if (FlxG.mouse.justPressedRight) {
+			if ((!controls.mobileControls && FlxG.mouse.justPressedRight)) {
 				tempDisableInput();
 				inInput = false;
 				changeSelection(0);
@@ -194,7 +208,7 @@ class SetupModsState extends MusicBeatState {
 		}
 		else if (key == 13 || key == 27) { // enter or esc
 			tempDisableInput();
-			inInput = false;
+			inInput = FlxG.stage.window.textInputEnabled = false;
 			changeSelection(0);
 			return;
 		}

@@ -9,6 +9,10 @@ class MusicBeatState extends FlxUIState
 	/** stops time **/
 	private var theWorld:Bool = false;
 
+	#if FEATURE_TOUCH_CONTROLS
+	public var mobileManager:MobileControls;
+	#end
+
 	private var curSection:Int = 0;
 	private var stepsToDo:Int = 0;
 
@@ -30,10 +34,14 @@ class MusicBeatState extends FlxUIState
 	private var lastButton:String;
 	private var lastHitbox:String;
 	#end
+	public static var instance:MusicBeatState;
 	public function addControl(DPad:String, Button:String) {
 		#if FEATURE_TOUCH_CONTROLS
-		if (DPad != null && DPad != "") Main.mobileControls.addDPad(DPad);
-		if (Button != null && Button != "") Main.mobileControls.addButton(Button);
+		if (DPad != null && DPad != "") mobileManager.addDPad(DPad);
+		if (Button != null && Button != "") mobileManager.addButton(Button);
+		mobileManager.addDPadCamera();
+		mobileManager.addButtonCamera();
+		mobileManager.alpha = ClientPrefs.data.controlAlpha;
 		lastDPad = DPad;
 		lastButton = Button;
 		#end
@@ -41,37 +49,53 @@ class MusicBeatState extends FlxUIState
 
 	public function addHitbox(Hitbox:String) {
 		#if FEATURE_TOUCH_CONTROLS
-		if (Hitbox != null && Hitbox != "") Main.mobileControls.addHitbox(Hitbox);
+		if (Hitbox != null && Hitbox != "") mobileManager.addHitbox(Hitbox);
+		mobileManager.addHitboxCamera();
+		mobileManager.alpha = ClientPrefs.data.controlAlpha;
 		lastHitbox = Hitbox;
 		#end
 	}
 
 	public function checkControl(key:String, type:String) {
 		#if FEATURE_TOUCH_CONTROLS
-		return Main.mobileControls.checkState(key, type) == true;
+		return mobileManager.checkState(key, type) == true;
 		#else
 		return false;
+		#end
+	}
+
+	override public function openSubState(substate:flixel.FlxSubState) {
+		super.openSubState(substate);
+		#if FEATURE_TOUCH_CONTROLS
+		mobileManager.removeDPad();
+		mobileManager.removeButton();
 		#end
 	}
 
 	override public function closeSubState() {
 		super.closeSubState();
 		#if FEATURE_TOUCH_CONTROLS
-		Main.mobileControls.clearControls();
-		if (lastDPad != null && lastDPad != "") Main.mobileControls.addDPad(lastDPad);
-		if (lastButton != null && lastButton != "") Main.mobileControls.addButton(lastButton);
-		if (lastHitbox != null && lastHitbox != "") Main.mobileControls.addHitbox(lastHitbox);
+		controls.isInSubstate = false;
+		mobileManager.removeDPad();
+		mobileManager.removeButton();
+
+		mobileManager.addDPad(lastDPad);
+		mobileManager.addButton(lastButton);
+
+		mobileManager.addDPadCamera();
+		mobileManager.addButtonCamera();
 		#end
 	}
 
 	public function new() {
 		super();
 		#if FEATURE_TOUCH_CONTROLS
-		Main.mobileControls.clearControls();
+		mobileManager = new MobileControls();
 		#end
 	}
 
 	override function create() {
+		instance = this;
 		camBeat = FlxG.camera;
 		var skip:Bool = FlxTransitionableState.skipNextTransOut;
 		#if MODS_ALLOWED Mods.updatedOnState = false; #end
@@ -84,6 +108,10 @@ class MusicBeatState extends FlxUIState
 		FlxTransitionableState.skipNextTransOut = false;
 		timePassedOnState = 0;
 		if(FlxG.save.data != null) FlxG.save.data.fullscreen = FlxG.fullscreen;
+
+		#if FEATURE_TOUCH_CONTROLS
+		add(mobileManager);
+		#end
 	}
 
 	public static var timePassedOnState:Float = 0;
@@ -232,5 +260,10 @@ class MusicBeatState extends FlxUIState
 		var val:Null<Float> = 4;
 		if(PlayState.SONG != null && PlayState.SONG.notes[curSection] != null) val = PlayState.SONG.notes[curSection].sectionBeats;
 		return val == null ? 4 : val;
+	}
+
+	public override function destroy() {
+		super.destroy();
+		instance = null;
 	}
 }

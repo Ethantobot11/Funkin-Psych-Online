@@ -169,6 +169,13 @@
       "name": "tink_await",
       "type": "haxelib",
       "version": "0.6.0"
+    },
+    {
+      "name": "mobile-control",
+      "type": "git",
+      "dir": null,
+      "ref": "main",
+      "url": "https://github.com/ArkoseLabsOfficial/mobile-controls"
     }
   ]
 }

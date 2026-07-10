@@ -1,0 +1,103 @@
+{
+  "buttons": [
+    {
+      "name": "buttonA",
+      "id": "a",
+      "texture": "button_circle",
+      "position": [1150, 600],
+      "scale": 0.2125,
+      "subgraphic": {
+        "texture": "icon_a",
+        "scale": 4
+      }
+    },
+    {
+      "name": "buttonB",
+      "id": "b",
+      "texture": "button_circle",
+      "position": [1045, 600],
+      "scale": 0.2125,
+      "subgraphic": {
+        "texture": "icon_b",
+        "scale": 4
+      }
+    },
+    {
+      "name": "buttonC",
+      "id": "c",
+      "texture": "button_circle",
+      "position": [940, 600],
+      "scale": 0.2125,
+      "subgraphic": {
+        "texture": "icon_c",
+        "scale": 4
+      }
+    },
+    {
+      "name": "buttonD",
+      "id": "d",
+      "texture": "button_circle",
+      "position": [835, 600],
+      "scale": 0.2125,
+      "subgraphic": {
+        "texture": "icon_d",
+        "scale": 4
+      }
+    },
+    {
+      "name": "buttonX",
+      "id": "x",
+      "texture": "button_circle",
+      "position": [1150, 495],
+      "scale": 0.2125,
+      "subgraphic": {
+        "texture": "icon_x",
+        "scale": 4
+      }
+    },
+    {
+      "name": "buttonY",
+      "id": "y",
+      "texture": "button_circle",
+      "position": [1045, 495],
+      "scale": 0.2125,
+      "subgraphic": {
+        "texture": "icon_y",
+        "scale": 4
+      }
+    },
+    {
+      "name": "buttonZ",
+      "id": "z",
+      "texture": "button_circle",
+      "position": [940, 495],
+      "scale": 0.2125,
+      "subgraphic": {
+        "texture": "icon_z",
+        "scale": 4
+      }
+    },
+    {
+      "name": "buttonV",
+      "id": "v",
+      "texture": "button_circle",
+      "position": [835, 495],
+      "scale": 0.2125,
+      "subgraphic": {
+        "texture": "icon_v",
+        "scale": 4
+      }
+    },
+    {
+      "name": "buttonG",
+      "id": "g",
+      "texture": "button_circle",
+      "position": [1150, 390],
+      "scale": 0.2125,
+      "subgraphic": {
+        "texture": "icon_g",
+        "scale": 4
+      }
+    }
+  ]
+}
