@@ -1774,4 +1774,15 @@ class FunkinLua {
         DeprecatedFunctions.implement(this);
         online.backend.OnlineScriptFunctions.implement(this);
     }
+
+    public function quickGC() {
+        /* luajit stuff ig, also casues lag
+		CoolUtil.teleStamp(true);
+		if (lua != null) {
+			Lua.gc(lua, Lua.LUA_GCSTEP, 1);
+			Lua.gc(lua, Lua.LUA_GCSTOP, 0);
+		}
+		CoolUtil.teleStamp();
+        */
+	}
 }

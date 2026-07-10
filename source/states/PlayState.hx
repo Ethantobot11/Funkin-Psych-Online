@@ -366,6 +366,8 @@ class PlayState extends MusicBeatState
 
 	public var pointsPercent:Float = 0;
 
+	public var difficultyInfo:online.ChartAnalyzer.FunkinDiffInfo;
+
 	static var COLOR_SICK:FlxColor = 0x6CFD8E;
 	static var COLOR_GOOD:FlxColor = 0x68D5FD;
 	static var COLOR_BAD:FlxColor = 0xFCD768;
@@ -850,10 +852,8 @@ class PlayState extends MusicBeatState
 			add(stage3D);
 
 			@:privateAccess stage3D.view2.onDebug = (v) -> {
-				if (subState != null)
-					return;
-
 				forcePause = v;
+				FlxG.game.visible = !v;
 				if (v)
 					pause();
 				else
@@ -1174,7 +1174,7 @@ class PlayState extends MusicBeatState
 		preloadTasks.push(() -> {
 			Conductor.songPosition = -5000 / Conductor.songPosition;
 			showTime = (ClientPrefs.data.timeBarType != 'Disabled');
-			timeTxt = new FlxText(0, 10, FlxG.width, "", 32);
+			timeTxt = new OptimizedFlxText(0, 10, FlxG.width, "", 32);
 			timeTxt.setFormat(!isPixelStage ? Paths.font("vcr.ttf") : 'Pixel Arial 11 Bold', !isPixelStage ? 32 : 28, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 			timeTxt.scrollFactor.set();
 			timeTxt.alpha = 0;
@@ -1274,8 +1274,8 @@ class PlayState extends MusicBeatState
 
 		preloadTasks.push(() -> {
 			scoreTxtOriginY = ClientPrefs.data.downScroll ? 120 : 700;
-			
-			scoreTxt = new FlxText(0, healthBar.y + 40, FlxG.width, "", 20);
+
+			scoreTxt = new OptimizedFlxText(0, healthBar.y + 40, FlxG.width, "", 20);
 			scoreTxt.setFormat(!isPixelStage ? Paths.font("vcr.ttf") : 'Pixel Arial 11 Bold', !isPixelStage ? 20 : 18, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 			scoreTxt.scrollFactor.set();
 			scoreTxt.borderSize = 1.25;
@@ -1329,7 +1329,7 @@ class PlayState extends MusicBeatState
 		}
 
 		preloadTasks.push(() -> {
-			botplayTxt = new FlxText(0, timeBar.y + 55, 0, "BOTPLAY", 32);
+			botplayTxt = new OptimizedFlxText(0, timeBar.y + 55, 0, "BOTPLAY", 32);
 			botplayTxt.setFormat(Paths.font("vcr.ttf"), 32, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 			botplayTxt.scrollFactor.set();
 			botplayTxt.borderSize = 1.25;
@@ -1620,6 +1620,11 @@ class PlayState extends MusicBeatState
 					debugPoser.cameras = [camOther];
 					add(debugPoser);
 				}
+
+				#if cpp
+				cpp.vm.Gc.run(false);
+				cpp.vm.Gc.compact();
+				#end
 			}
 		}, 1);
 		loaderGroup.add(asyncLoop);
@@ -2421,7 +2426,7 @@ class PlayState extends MusicBeatState
 
 	function addFPToScoreTxt(scoreTextObject:FlxText) {
 		if (ClientPrefs.data.newFPPreview)
-			scoreTextObject.text += ' | FP: ' + songPoints + ' (V5: ${FlxMath.roundDecimal(online.FunkinPoints.devFP(ratingPercent, songMisses, songDensity, totalNotesHit, maxCombo), 2)})';
+			scoreTextObject.text += ' | FP: ' + songPoints + ' (V5: ${FlxMath.roundDecimal(online.FunkinPoints.devFP(ratingPercent, songMisses, songDensity, totalNotesHit, maxCombo, difficultyInfo), 2)})';
 		else
 			scoreTextObject.text += ' | FP: ' + songPoints + ' (${CoolUtil.floorDecimal(pointsPercent * 100, 1)}%)';
 	}
@@ -2833,12 +2838,11 @@ class PlayState extends MusicBeatState
 
 		songDensity = playingNoteCount == 0 ? 0 : playingNoteCount / (inst.length / playbackRate / 1000) / 2;
 		trace("note density score: " + songDensity + ' for total of ${playingNoteCount} notes');
-		trace("note density power: " + online.FunkinPoints.densityPower(songDensity) + 'DP');
 
 		var maxFP = online.FunkinPoints.calcFP(1, 0, songDensity, playingNoteCount, playingNoteCount);
 		trace("max points: ~" + maxFP + 'FP');
 		if (ClientPrefs.data.newFPPreview) {
-			var maxFP = online.FunkinPoints.devFP(1, 0, songDensity, playingNoteCount, playingNoteCount);
+			var maxFP = online.FunkinPoints.devFP(1, 0, songDensity, playingNoteCount, playingNoteCount, difficultyInfo);
 			trace("max points: ~" + maxFP + 'FP');
 		}
 
@@ -2853,6 +2857,8 @@ class PlayState extends MusicBeatState
 		unspawnNotes.sort(sortByTime);
 		generatedMusic = true;
  
+		difficultyInfo = online.ChartAnalyzer.calc(songData, playsAsBF());
+		trace(difficultyInfo);
 		prepareNetSong();
 	}
 
@@ -3015,7 +3021,7 @@ class PlayState extends MusicBeatState
 			}
 
 			var babyArrow:StrumNote = new StrumNote(strumLineX, strumLineY, i, player);
-			babyArrow.forceShow = ClientPrefs.data.opponentStrums && ClientPrefs.data.disableStrumMovement;
+			babyArrow.forceShow = (ClientPrefs.data.opponentStrums ? true : strumGroup == getPlayerStrums()) && ClientPrefs.data.disableStrumMovement;
 			babyArrow.downScroll = ClientPrefs.data.downScroll;
 			if (!isStoryMode && !skipArrowStartTween)
 			{
@@ -3705,6 +3711,11 @@ class PlayState extends MusicBeatState
 
 		if (Conductor.songPosition >= FlxG.sound.music.length) {
 			finishSong();
+		}
+
+		for (lua in luaArray) {
+			if (lua != null)
+				lua.quickGC();
 		}
 	}
 
@@ -7114,5 +7125,13 @@ class PlayStatePlayer {
 
 	function new(player:Player) {
 		this.player = player;
+	}
+}
+
+class OptimizedFlxText extends FlxText {
+	override function set_text(v) {
+		if (v == text)
+			return text;
+		return super.set_text(v);
 	}
 }

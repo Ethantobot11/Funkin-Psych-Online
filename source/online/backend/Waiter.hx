@@ -1,10 +1,7 @@
 package online.backend;
 
 import flixel.FlxBasic;
-
-class WaiterReservation {
-
-}
+import sys.thread.Mutex;
 
 //thread safe function handler
 class Waiter extends FlxBasic {
@@ -17,13 +14,25 @@ class Waiter extends FlxBasic {
     var _queueCall:Void->Void;
     var _queueCallPos:haxe.PosInfos;
 
+	static var queueMutex:Mutex = new Mutex();
+
 	public static function put(func:Void->Void, ?pos:haxe.PosInfos) {
+		queueMutex.acquire();
 		stateQueue.push([func, pos]);
+		queueMutex.release();
     }
 
 	public static function putPersist(func:Void->Void, ?pos:haxe.PosInfos) {
+		queueMutex.acquire();
 		persistQueue.push([func, pos]);
+		queueMutex.release();
     }
+
+	public static function clearStateQueue() {
+		queueMutex.acquire();
+		stateQueue = [];
+		queueMutex.release();
+	}
 
 	/**
 		prepares a task for this state, but when the state switches this task will be removed
@@ -37,7 +46,29 @@ class Waiter extends FlxBasic {
     static var _elapsedPing:Float = 0;
 
 	public static var waiterReports:String = '';
+
+	function _processQueue(queue:Array<Dynamic>):Void {
+		while (true) {
+			_queueRAW = _shiftQueue(queue);
+
+			if (_queueRAW == null)
+				break;
+				
+			_tryQueueCall();
+		}
+	}	
+
+	function _shiftQueue(queue:Array<Dynamic>):Dynamic {
+		queueMutex.acquire();
+		var value = queue.shift();
+		queueMutex.release();
+		return value;
+	}
+
 	function _tryQueueCall() {
+		if (_queueRAW == null)
+			return;
+
 		_queueCall = cast _queueRAW[0];
 		_queueCallPos = cast _queueRAW[1];
 
@@ -54,15 +85,8 @@ class Waiter extends FlxBasic {
     override function update(elapsed) {
         super.update(elapsed);
 
-		while (stateQueue.length > 0) {
-			_queueRAW = stateQueue.shift();
-			_tryQueueCall();
-        }
-
-		while (persistQueue.length > 0) {
-			_queueRAW = persistQueue.shift();
-			_tryQueueCall();
-		}
+		_processQueue(stateQueue);
+		_processQueue(persistQueue);
 
 		if (waiterReports.length > 0) {
 			waiterReports = '';
