@@ -17,7 +17,7 @@ import openfl.display.StageScaleMode;
 import lime.app.Application;
 import states.TitleState;
 
-#if (linux || ios || android)
+#if linux
 import lime.graphics.Image;
 #end
 
