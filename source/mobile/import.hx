@@ -18,8 +18,8 @@ import flixel.system.scaleModes.BaseScaleMode;
 #end
 
 /* Custom Storage System Used for handling FileSystem and Assets System Together. */
-import mobile.io.File;
-import mobile.io.FileSystem;
+import funk.PsychFile as File;
+import funk.PsychFileSystem as FileSystem;
 
 /* Datas */
 import mobile.ControlsData;
