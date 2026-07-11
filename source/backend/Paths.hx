@@ -331,40 +331,47 @@ class Paths
 		note: flxgraphic is not possible to obtain asynchronically, use bitmapToGraphic() in the main thread after fetching the bitmap
 	**/
 	static public function asyncBitmap(key:String, ?library:String = null, ?modDir:String):Null<Future<BitmapData>> {
-		var file:String = null;
+        var file:String = null;
 
-		#if MODS_ALLOWED
-		file = modsImages(key, modDir);
-		// return cached
-		if (currentTrackedAssets.exists(file))
-		{
-			localTrackedAssets.push(file);
-			return Future.withValue(currentTrackedAssets.get(file).bitmap);
-		}
-		// found in the mods files
-		else if (FileSystem.exists(file))
-			return BitmapData.loadFromFile(file);
-		// load from assets
-		else
-		#end
-		{
-			file = getPath('images/$key.png', IMAGE, library);
-			if (currentTrackedAssets.exists(file))
-			{
-				localTrackedAssets.push(file);
-				return Future.withValue(currentTrackedAssets.get(file).bitmap);
-			}
-			else if (OpenFlAssets.exists(file, IMAGE))
-				return OpenFlAssets.loadBitmapData(file);
-		}
+        #if MODS_ALLOWED
+        file = modsImages(key);
+        if (currentTrackedAssets.exists(file))
+        {
+            localTrackedAssets.push(file);
+            return Future.withValue(currentTrackedAssets.get(file).bitmap);
+        }
+        else if (FileSystem.exists(file))
+            return BitmapData.loadFromFile(file);
+        else
+        #end
+        {
+            file = getPath('images/$key.astc', BINARY, library);
+            if (currentTrackedAssets.exists(file))
+            {
+                localTrackedAssets.push(file);
+                return Future.withValue(currentTrackedAssets.get(file).bitmap);
+            }
+            else if (OpenFlAssets.exists(file, BINARY))
+                return OpenFlAssets.loadBitmapData(file);
+            else
+            {
+                file = getPath('images/$key.png', IMAGE, library);
+                if (currentTrackedAssets.exists(file))
+                {
+                    localTrackedAssets.push(file);
+                    return Future.withValue(currentTrackedAssets.get(file).bitmap);
+                }
+                else if (OpenFlAssets.exists(file, IMAGE))
+                    return OpenFlAssets.loadBitmapData(file);
+            }
+        }
 
-		//STOP FUCKING USING TRACE ITS CPU HEAVY
-		if (lastImageErrorFile != file && ClientPrefs.isDebug()) {
-			Sys.println('Paths.asyncBitmap(): oh no its returning null NOOOO ($file)');
-			lastImageErrorFile = file;
-		}
-		return null;
-	}
+        if (lastImageErrorFile != file && ClientPrefs.isDebug()) {
+            Sys.println('Paths.asyncBitmap(): Could not start async task for ($file)');
+            lastImageErrorFile = file;
+        }
+        return null;
+    }
 
 	static public function bitmapToGraphic(file:String, bitmap:BitmapData) {
 		localTrackedAssets.push(file);
