@@ -22,7 +22,7 @@ import lime.utils.Assets;
 import openfl.media.Sound;
 
 #if sys
-#if linux
+#if (linux || ios || android)
 import haxe.io.Path;
 #end
 #end
@@ -607,7 +607,7 @@ class Paths
 		return modFolders('achievements/' + key + '.json');
 	}*/
 
-	#if linux
+	#if (linux || ios || android)
 	// Function for fuzzy finding on Linux, fixes issues where modpack developers are stupid
 	// and are referring to files with the wrong case. Windows is lazy, but Unix is not so
 	// it causes issues.
@@ -638,7 +638,7 @@ class Paths
 
 		if(modDirectory != null && modDirectory.length > 0) {
 			var fileToCheck:String = mods(modDirectory + '/' + key);
-			#if linux
+			#if (linux || ios || android)
 			var actualFile = getFileLinux(fileToCheck);
 			if (actualFile != null && FileSystem.exists(actualFile))
 				return actualFile;
@@ -651,7 +651,7 @@ class Paths
 
 		for(mod in Mods.getGlobalMods()){
 			var fileToCheck:String = mods(mod + '/' + key);
-			#if linux
+			#if (linux || ios || android)
 			var actualFile = getFileLinux(fileToCheck);
 			if (actualFile != null && FileSystem.exists(actualFile))
 				return actualFile;

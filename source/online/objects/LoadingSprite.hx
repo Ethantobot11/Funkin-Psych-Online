@@ -36,7 +36,6 @@ public function new(?tasksLength:Float, ?camera:FlxCamera) {
 				}
 			}
 		} else {
-			// Absolute fallback if the asset 'funkay' isn't found at all
 			funkay.makeGraphic(FlxG.width, FlxG.height, FlxColor.BLACK);
 		}
 		
