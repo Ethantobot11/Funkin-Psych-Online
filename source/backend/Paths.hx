@@ -258,8 +258,6 @@ class Paths
 
 	static var lastImageErrorFile:String = null;
 
-	static var lastImageErrorFile:String = null;
-
 	public static var currentTrackedAssets:Map<String, FlxGraphic> = [];
 	static public function image(key:String, ?library:String = null, ?allowGPU:Bool = true):FlxGraphic
 	{
