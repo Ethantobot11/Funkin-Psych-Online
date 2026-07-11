@@ -246,6 +246,8 @@ class FreeplayState extends MusicBeatState
 
 		Mods.loadTopMod();
 
+		mobile.Config.init();
+
 		if (FlxG.sound.music == null || !FlxG.sound.music.playing)
 			playFreakyMusic();
 		

@@ -950,7 +950,10 @@ class PlayState extends MusicBeatState
 
 			Mods.currentModDirectory = oldModDir;
 		});
+
+		mobile.Config.init();
 		#end
+		
 
 		#if HSCRIPT_ALLOWED
 		preloadTasks.push(() -> {
@@ -2163,10 +2166,12 @@ class PlayState extends MusicBeatState
 		if (ClientPrefs.data.extraControl > 0)
 			extraKeyString = " EK " + ClientPrefs.data.extraControl;
 
-		var mode = ((Note.maniaKeys == 4) ? "Default" : "Mania " + Note.maniaKeys);
+		var mode = ((Note.maniaKeys == 4) ? "Default" : "Mania " + Note.maniaKeys) + extraKeyString;
+		if (!MobileConfig.Hitboxes.exists(mode))
+			mode = ((Note.maniaKeys == 4) ? "Default" : "Mania " + Note.maniaKeys);
 
 		if (replayData == null && !cpuControlled)
-			addHitbox(mode + extraKeyString);
+			addHitbox(mode);
 
 		addControl(null, (GameClient.isConnected() ? "PAUSE_CHAT_TAUNT" : "PAUSE_TAUNT"));
 		if (replayData == null && !cpuControlled) {
@@ -2176,8 +2181,8 @@ class PlayState extends MusicBeatState
 				}
 				hitbox.onButtonDown.add(onButtonPress);
 				hitbox.onButtonUp.add(onButtonRelease);
-				hitbox.onButtonDown.add((control:mobile.flixel.controls.InputHandler, id:String) -> replayRecorder?.recordKeyMobileC(Conductor?.songPosition, id, 0));
-				hitbox.onButtonUp.add((control:mobile.flixel.controls.InputHandler, id:String) -> replayRecorder?.recordKeyMobileC(Conductor?.songPosition, id, 1));
+				hitbox.onButtonDown.add((control:InputHandler, id:String) -> replayRecorder?.recordKeyMobileC(Conductor?.songPosition, id, 0));
+				hitbox.onButtonUp.add((control:InputHandler, id:String) -> replayRecorder?.recordKeyMobileC(Conductor?.songPosition, id, 1));
 			}
 		}
 		#end
@@ -3125,8 +3130,8 @@ class PlayState extends MusicBeatState
 					}
 					hitbox.onButtonDown.add(onButtonPress);
 					hitbox.onButtonUp.add(onButtonRelease);
-					hitbox.onButtonDown.add((control:mobile.flixel.controls.InputHandler, id:String) -> replayRecorder?.recordKeyMobileC(Conductor?.songPosition, id, 0));
-					hitbox.onButtonUp.add((control:mobile.flixel.controls.InputHandler, id:String) -> replayRecorder?.recordKeyMobileC(Conductor?.songPosition, id, 1));
+					hitbox.onButtonDown.add((control:InputHandler, id:String) -> replayRecorder?.recordKeyMobileC(Conductor?.songPosition, id, 0));
+					hitbox.onButtonUp.add((control:InputHandler, id:String) -> replayRecorder?.recordKeyMobileC(Conductor?.songPosition, id, 1));
 				}
 			}
 		}
@@ -5406,13 +5411,13 @@ class PlayState extends MusicBeatState
 	}
 
 	#if FEATURE_TOUCH_CONTROLS
-	private function onButtonPress(control:mobile.flixel.controls.InputHandler, id:String):Void
+	private function onButtonPress(control:InputHandler, id:String):Void
 	{
 		var noteID:String = id.toLowerCase();
 		//trace(noteID);
 		if (noteID != null)
 		{
-			var buttonCode:Int = 0;
+			var buttonCode:Int = -1;
 
 			if (noteID.startsWith("note_"))
 			{
@@ -5425,7 +5430,7 @@ class PlayState extends MusicBeatState
 				}
 
 				callOnScripts('onButtonPressPre', [buttonCode]);
-				keyPressed(buttonCode);
+				if (buttonCode > -1) keyPressed(buttonCode);
 				callOnScripts('onButtonPress', [buttonCode]);
 
 			}
@@ -5438,18 +5443,18 @@ class PlayState extends MusicBeatState
 				}
 
 				callOnScripts('onButtonPressPre', [buttonCode]);
-				keyPressed(buttonCode);
+				if (buttonCode > -1) keyPressed(buttonCode);
 				callOnScripts('onButtonPress', [buttonCode]);
 			}
 		}
 	}
 
-	private function onButtonRelease(control:mobile.flixel.controls.InputHandler, id:String):Void
+	private function onButtonRelease(control:InputHandler, id:String):Void
 	{
 		var noteID:String = id.toLowerCase();
 		if (noteID != null)
 		{
-			var buttonCode:Int = 0;
+			var buttonCode:Int = -1;
 			if (noteID.startsWith("note_")) 
 			{
 				switch (noteID) {
@@ -5460,7 +5465,7 @@ class PlayState extends MusicBeatState
 				}
 
 				callOnScripts('onButtonReleasePre', [buttonCode]);
-				keyReleased(buttonCode);
+				if (buttonCode > -1) keyReleased(buttonCode);
 				callOnScripts('onButtonRelease', [buttonCode]);
 			}
 			else if (noteID.contains("note_")) 
@@ -5472,7 +5477,7 @@ class PlayState extends MusicBeatState
 				}
 
 				callOnScripts('onButtonReleasePre', [buttonCode]);
-				keyReleased(buttonCode);
+				if (buttonCode > -1) keyReleased(buttonCode);
 				callOnScripts('onButtonRelease', [buttonCode]);
 			}
 		}

@@ -60,8 +60,6 @@
 
 	<!-- __________________________ Game Assets & Etc. __________________________ -->
 
-	<assets path="mobile" />
-
 	<!-- Preload Assets -->
 	<define name="PRELOAD_ALL" unless="web" />
 	<define name="NO_PRELOAD_ALL" unless="PRELOAD_ALL" />

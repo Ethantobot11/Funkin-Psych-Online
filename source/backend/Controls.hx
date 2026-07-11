@@ -180,8 +180,15 @@ class Controls
 
 	#if FEATURE_TOUCH_CONTROLS
 	public var isInSubstate:Bool = false; // don't worry about this it becomes true and false on it's own in MusicBeatSubstate
+	//some custom control stuffs taken from CNE ;)
+	public var controlPressedCallBack:Null<String -> Bool> = null;
+	public var controlJustPressedCallBack:Null<String -> Bool> = null;
+	public var controlJustReleasedCallBack:Null<String -> Bool> = null;
 	public function mobileCPressed(key:String):Bool
 	{
+		if (!mobileControls)
+			return false;
+
 		var localSubstate:MusicBeatSubstate = MusicBeatSubstate.instance;
 		var localState:MusicBeatState = MusicBeatState.instance;
 
@@ -192,12 +199,17 @@ class Controls
 			if (localState.mobileManager?.checkState(key, "pressed"))
 				return true;
 		}
+		if (controlPressedCallBack != null && controlPressedCallBack(key))
+			return true;
 
 		return false;
 	}
 
 	public function mobileCJustPressed(key:String):Bool
 	{
+		if (!mobileControls)
+			return false;
+
 		var localSubstate:MusicBeatSubstate = MusicBeatSubstate.instance;
 		var localState:MusicBeatState = MusicBeatState.instance;
 
@@ -208,12 +220,17 @@ class Controls
 			if (localState.mobileManager.checkState(key, "justPressed"))
 				return true;
 		}
+		if (controlJustPressedCallBack != null && controlJustPressedCallBack(key))
+			return true;
 
 		return false;
 	}
 
 	public function mobileCJustReleased(key:String):Bool
 	{
+		if (!mobileControls)
+			return false;
+
 		var localSubstate:MusicBeatSubstate = MusicBeatSubstate.instance;
 		var localState:MusicBeatState = MusicBeatState.instance;
 
@@ -224,6 +241,8 @@ class Controls
 			if (localState.mobileManager.checkState(key, "justReleased"))
 				return true;
 		}
+		if (controlJustReleasedCallBack != null && controlJustReleasedCallBack(key))
+			return true;
 
 		return false;
 	}

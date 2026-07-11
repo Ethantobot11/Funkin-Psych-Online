@@ -109,8 +109,8 @@ class SaveVariables {
 	public var noteUnderlayOpacity:Float = 0;
 	public var noteUnderlayType:String = 'All-In-One';
 	public var favsAsMenuTheme:Bool = false;
-	public var disableComboRating:Bool = false;
-	public var disableComboCounter:Bool = false;
+	public var disableComboRating:Bool = #if mobile true #else false #end;
+	public var disableComboCounter:Bool = #if mobile true #else false #end;
 	public var networkServerAddress:String = null;
 	public var hiddenTips:Array<String> = null;
 	public var nameplateFadeTime:Float = 10;

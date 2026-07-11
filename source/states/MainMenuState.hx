@@ -64,6 +64,8 @@ class MainMenuState extends MusicBeatState
 		#end
 		Mods.loadTopMod();
 
+		mobile.Config.init();
+
 		#if DISCORD_ALLOWED
 		// Updating Discord Rich Presence
 		DiscordClient.resetClientID();

@@ -41,8 +41,10 @@ import mobile.KeyboardHelper;
 import backend.StorageUtil;
 #end
 #if FEATURE_TOUCH_CONTROLS
+import mobile.flixel.controls.InputHandler;
 import mobile.flixel.controls.MobileControls;
 import mobile.flixel.screen.ScreenUtil;
+import mobile.Config as MobileConfig;
 #end
 
 import backend.Paths;
