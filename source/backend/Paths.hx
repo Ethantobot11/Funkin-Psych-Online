@@ -51,6 +51,8 @@ class Paths
 		'assets/shared/music/tea-time.$SOUND_EXT',
 		'assets/images/bf1.png',
 		'assets/images/bf2.png',
+		'assets/images/bf1.astc',
+		'assets/images/bf2.astc',
 	];
 	/// haya I love you for the base cache dump I took to the max
 	public static function clearUnusedMemory() {
