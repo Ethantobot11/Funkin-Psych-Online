@@ -78,13 +78,13 @@ jobs:
           haxelib git funkin.vis https://github.com/FunkinCrew/funkVis 1966f8fbbbc509ed90d4b520f3c49c084fc92fd6 --quiet
 
       - name: Install Libraries (NORMAL)
-        if: endsWith(inputs.name, 'NORMAL' || 'ASTC' || 'DDS')
+        if: ${{ endsWith(inputs.name, 'NORMAL') || endsWith(inputs.name, 'ASTC') || endsWith(inputs.name, 'DDS') }}
         run: |
           haxelib install hmm --quiet
           haxelib run hmm install --quiet
           haxelib remove funkin.vis --quiet
           haxelib git funkin.vis https://github.com/FunkinCrew/funkVis 1966f8fbbbc509ed90d4b520f3c49c084fc92fd6 --quiet
-
+          
       - name: Configure Android
         if: startsWith(inputs.name, 'Android')
         run: |
