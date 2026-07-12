@@ -8,6 +8,7 @@ class GAssets {
 
 		Paths.excludeAsset('assets/images/' + path + ".png") ;
 		Paths.excludeAsset('assets/images/' + path + ".astc") ;
+		Paths.excludeAsset('assets/images/' + path + ".dds") ;
 		return img.bitmap.clone();
 	}
 }

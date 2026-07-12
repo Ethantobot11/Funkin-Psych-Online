@@ -53,6 +53,8 @@ class Paths
 		'assets/images/bf2.png',
 		'assets/images/bf1.astc',
 		'assets/images/bf2.astc',
+		'assets/images/bf1.dds',
+		'assets/images/bf2.dds',
 	];
 	/// haya I love you for the base cache dump I took to the max
 	public static function clearUnusedMemory() {
@@ -278,11 +280,22 @@ class Paths
 		else
 		#end
 		{
-			file = getPath('images/$key.astc', BINARY, library);
+			file = getPath('images/$key.dds', BINARY, library);
 			if (currentTrackedAssets.exists(file))
 			{
 				localTrackedAssets.push(file);
 				return currentTrackedAssets.get(file);
+			}
+			else if (OpenFlAssets.exists(file, BINARY))
+				bitmap = OpenFlAssets.getBitmapData(file);
+			else
+			{
+				file = getPath('images/$key.astc', BINARY, library);
+				if (currentTrackedAssets.exists(file))
+				{
+					localTrackedAssets.push(file);
+					return currentTrackedAssets.get(file);
+				}
 			}
 			else if (OpenFlAssets.exists(file, BINARY))
 				bitmap = OpenFlAssets.getBitmapData(file);
@@ -351,6 +364,17 @@ class Paths
                 localTrackedAssets.push(file);
                 return Future.withValue(currentTrackedAssets.get(file).bitmap);
             }
+            else if (OpenFlAssets.exists(file, BINARY))
+                return OpenFlAssets.loadBitmapData(file);
+			else
+			{
+				file = getPath('images/$key.astc', BINARY, library);
+				if (currentTrackedAssets.exists(file))
+				{
+					localTrackedAssets.push(file);
+					return Future.withValue(currentTrackedAssets.get(file).bitmap);
+				}
+			}
             else if (OpenFlAssets.exists(file, BINARY))
                 return OpenFlAssets.loadBitmapData(file);
             else

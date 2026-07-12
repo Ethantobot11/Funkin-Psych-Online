@@ -34,6 +34,5 @@ assets/songs/ffmpeg.exe
 assets/songs/ffplay.exe
 assets/songs/ffprobe.exe
 ffmpeg.exe
-assets_mover.py
 astcenc.exe
 *.py

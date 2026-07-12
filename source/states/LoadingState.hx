@@ -47,7 +47,8 @@ class LoadingState extends MusicBeatState
 		add(bg);
 		var astcPath = Paths.getPath('images/funkay.astc', BINARY);
 		var pngPath = Paths.getPath('images/funkay.png', IMAGE);
-		funkay = new FlxSprite(0, 0).loadGraphic(FileSystem.exists(astcPath) ? astcPath : pngPath);
+		var ddsPath = Paths.getPath('images/funkay.dds', BINARY);
+		funkay = new FlxSprite(0, 0).loadGraphic(FileSystem.exists(astcPath) ? astcPath : (FileSystem.exists(ddsPath) ? ddsPath : pngPath));
 		funkay.setGraphicSize(0, FlxG.height);
 		funkay.updateHitbox();
 		add(funkay);

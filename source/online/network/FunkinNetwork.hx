@@ -314,7 +314,8 @@ class FunkinNetwork {
 		var randomNum = FlxG.random.int(1, 2);
 		var astcPath = 'assets/images/bf' + randomNum + '.astc';
 		var pngPath = 'assets/images/bf' + randomNum + '.png';
-		return Assets.exists(astcPath) ? Assets.getBitmapData(astcPath) : Assets.getBitmapData(pngPath);
+		var ddsPath = 'assets/images/bf' + randomNum + '.dds';
+		return Assets.exists(astcPath) ? Assets.getBitmapData(astcPath) : Assets.getBitmapData(pngPath) : Assets.getBitmapData(ddsPath);
 	}
 
 	public static function requestAPI(data:OneOf<HTTPRequest, String>, ?alertError:Bool = true):Null<HTTPResponse> {

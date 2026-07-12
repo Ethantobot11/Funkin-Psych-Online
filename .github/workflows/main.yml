@@ -15,6 +15,14 @@ jobs:
             buildArgs: "android -ONLY_ARM64"
             artifactName: androidBuild
             artifactPath: "export/release/android/bin/app/build/outputs/apk/release/*.apk"
+            doCache: "NO"
+
+          - name: Android-ASTC
+            os: ubuntu-latest
+            setupCommand: sh ./setup/unix-alter.sh
+            buildArgs: "android -ONLY_ARM64 -D COMPRESSED_BUILD"
+            artifactName: androidBuild
+            artifactPath: "export/release/android/bin/app/build/outputs/apk/release/*.apk"
             doCache: "YES"
 
           - name: Android-(ARMV7)-NORMAL
@@ -31,6 +39,14 @@ jobs:
             buildArgs: "windows -D officialBuild -final"
             artifactName: windowsBuild-x86_64
             artifactPath: export\release\windows\bin\*
+            doCache: "NO"
+
+          - name: Windows-DDS
+            os: windows-latest
+            setupCommand: .\"setup/windows.bat"
+            buildArgs: "windows -D officialBuild -final -D COMPRESSED_BUILD"
+            artifactName: windowsBuild-x86_64
+            artifactPath: export\release\windows\bin\*
             doCache: "YES"
             
           - name: iOS-NORMAL
@@ -39,7 +55,16 @@ jobs:
             buildArgs: "ios -final -nosign -D officialBuild"
             artifactName: iOSBuild
             artifactPath: "export/release/ios/build/Release-iphoneos/*.ipa"
+            doCache: "NO"
+
+          - name: iOS-ASTC
+            os: macos-15
+            setupCommand: sh ./setup/unix.sh
+            buildArgs: "ios -final -nosign -D officialBuild -D COMPRESSED_BUILD"
+            artifactName: iOSBuild
+            artifactPath: "export/release/ios/build/Release-iphoneos/*.ipa"
             doCache: "YES"
+
     uses: ./.github/workflows/build.yml
     with:
         name: ${{ matrix.name }}
