@@ -315,7 +315,7 @@ class FunkinNetwork {
 		var astcPath = 'assets/images/bf' + randomNum + '.astc';
 		var pngPath = 'assets/images/bf' + randomNum + '.png';
 		var ddsPath = 'assets/images/bf' + randomNum + '.dds';
-		return Assets.exists(astcPath) ? Assets.getBitmapData(astcPath) : Assets.getBitmapData(pngPath) : Assets.getBitmapData(ddsPath);
+		return Assets.exists(astcPath) ? Assets.getBitmapData(astcPath) : (Assets.exists(ddsPath) ? Assets.getBitmapData(ddsPath) : Assets.getBitmapData(pngPath));
 	}
 
 	public static function requestAPI(data:OneOf<HTTPRequest, String>, ?alertError:Bool = true):Null<HTTPResponse> {

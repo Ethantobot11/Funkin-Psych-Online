@@ -1,7 +1,5 @@
 package openfl.display3D.textures;
 
-package openfl.display3D.textures;
-
 #if !flash
 import haxe.io.Bytes;
 import openfl.utils._internal.UInt8Array;

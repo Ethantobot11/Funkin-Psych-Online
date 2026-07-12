@@ -422,7 +422,7 @@ class ModsMenuState extends MusicBeatState
 			var astcPath = Paths.mods(values[0] + '/pack.astc');
 			var ddsPath = Paths.mods(values[0] + '/pack.dds');
 			var pngPath = Paths.mods(values[0] + '/pack.png');
-			var iconToUse:String = FileSystem.exists(astcPath) ? astcPath : pngPath : ddsPath;
+			var iconToUse:String = FileSystem.exists(astcPath) ? astcPath : (FileSystem.exists(ddsPath) ? ddsPath : pngPath);
 			if(FileSystem.exists(iconToUse))
 			{
 				loadedIcon = BitmapData.fromFile(iconToUse);

@@ -286,30 +286,36 @@ class Paths
 				localTrackedAssets.push(file);
 				return currentTrackedAssets.get(file);
 			}
-			else if (OpenFlAssets.exists(file, BINARY))
+			else if (OpenFlAssets.exists(file, BINARY)) 
+			{
 				bitmap = OpenFlAssets.getBitmapData(file);
+			}
 			else
 			{
-				file = getPath('images/$key.astc', BINARY, library);
-				if (currentTrackedAssets.exists(file))
-				{
-					localTrackedAssets.push(file);
-					return currentTrackedAssets.get(file);
-				}
+			file = getPath('images/$key.astc', BINARY, library);
+			if (currentTrackedAssets.exists(file))
+			{
+				localTrackedAssets.push(file);
+				return currentTrackedAssets.get(file);
 			}
-			else if (OpenFlAssets.exists(file, BINARY))
+			else if (OpenFlAssets.exists(file, BINARY)) 
+			{
 				bitmap = OpenFlAssets.getBitmapData(file);
+			}
 			else
 			{
-				file = getPath('images/$key.png', IMAGE, library);
-				if (currentTrackedAssets.exists(file))
-				{
-					localTrackedAssets.push(file);
-					return currentTrackedAssets.get(file);
-				}
-				else if (OpenFlAssets.exists(file, IMAGE))
-					bitmap = OpenFlAssets.getBitmapData(file);
-			}
+            file = getPath('images/$key.png', IMAGE, library);
+            if (currentTrackedAssets.exists(file))
+            {
+                localTrackedAssets.push(file);
+                return currentTrackedAssets.get(file);
+            }
+            else if (OpenFlAssets.exists(file, IMAGE))
+            {
+                bitmap = OpenFlAssets.getBitmapData(file);
+            }
+        }
+    	}
 		}
 
 		if (bitmap != null)
@@ -345,27 +351,28 @@ class Paths
 	**/
 	static public function asyncBitmap(key:String, ?library:String = null, ?modDir:String):Null<Future<BitmapData>> {
         var file:String = null;
+		var bitmap:BitmapData = null;
 
-        #if MODS_ALLOWED
-        file = modsImages(key);
-        if (currentTrackedAssets.exists(file))
-        {
-            localTrackedAssets.push(file);
-            return Future.withValue(currentTrackedAssets.get(file).bitmap);
-        }
-        else if (FileSystem.exists(file))
-            return BitmapData.loadFromFile(file);
-        else
-        #end
-        {
-            file = getPath('images/$key.astc', BINARY, library);
-            if (currentTrackedAssets.exists(file))
-            {
-                localTrackedAssets.push(file);
-                return Future.withValue(currentTrackedAssets.get(file).bitmap);
-            }
-            else if (OpenFlAssets.exists(file, BINARY))
-                return OpenFlAssets.loadBitmapData(file);
+		#if MODS_ALLOWED
+		file = modsImages(key);
+		if (currentTrackedAssets.exists(file))
+		{
+			localTrackedAssets.push(file);
+			return Future.withValue(currentTrackedAssets.get(file).bitmap);
+		}
+		else if (FileSystem.exists(file))
+			return BitmapData.loadFromFile(file);
+		else
+		#end
+		{
+			file = getPath('images/$key.dds', BINARY, library);
+			if (currentTrackedAssets.exists(file))
+			{
+				localTrackedAssets.push(file);
+				return Future.withValue(currentTrackedAssets.get(file).bitmap);
+			}
+			else if (OpenFlAssets.exists(file, BINARY))
+				return OpenFlAssets.loadBitmapData(file);
 			else
 			{
 				file = getPath('images/$key.astc', BINARY, library);
@@ -374,21 +381,21 @@ class Paths
 					localTrackedAssets.push(file);
 					return Future.withValue(currentTrackedAssets.get(file).bitmap);
 				}
+				else if (OpenFlAssets.exists(file, BINARY))
+					return OpenFlAssets.loadBitmapData(file);
+				else
+				{
+					file = getPath('images/$key.png', IMAGE, library);
+					if (currentTrackedAssets.exists(file))
+					{
+						localTrackedAssets.push(file);
+						return Future.withValue(currentTrackedAssets.get(file).bitmap);
+					}
+					else if (OpenFlAssets.exists(file, IMAGE))
+						return OpenFlAssets.loadBitmapData(file);
+				}
 			}
-            else if (OpenFlAssets.exists(file, BINARY))
-                return OpenFlAssets.loadBitmapData(file);
-            else
-            {
-                file = getPath('images/$key.png', IMAGE, library);
-                if (currentTrackedAssets.exists(file))
-                {
-                    localTrackedAssets.push(file);
-                    return Future.withValue(currentTrackedAssets.get(file).bitmap);
-                }
-                else if (OpenFlAssets.exists(file, IMAGE))
-                    return OpenFlAssets.loadBitmapData(file);
-            }
-        }
+		}
 
         if (lastImageErrorFile != file && ClientPrefs.isDebug()) {
             Sys.println('Paths.asyncBitmap(): Could not start async task for ($file)');
