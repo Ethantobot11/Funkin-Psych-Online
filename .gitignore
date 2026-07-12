@@ -4,6 +4,9 @@ APIStuff.hx
 art/build_x32-officialrelease.bat
 art/build_x64-officialrelease.bat
 art/test_x64-debug-officialrelease.bat
+compressonatorcli/
+temp_premult/
+temp_dds/
 
 ### VS Code
 export/*
@@ -31,3 +34,6 @@ assets/songs/ffmpeg.exe
 assets/songs/ffplay.exe
 assets/songs/ffprobe.exe
 ffmpeg.exe
+assets_mover.py
+astcenc.exe
+*.py
