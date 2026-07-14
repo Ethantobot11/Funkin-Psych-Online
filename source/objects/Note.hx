@@ -439,7 +439,7 @@ class Note extends FlxSprite
 		var skinPostfix:String = getNoteSkinPostfix(mustPress);
 		var customSkin:String = skin + skinPostfix;
 		var path:String = PlayState.isPixelStage ? 'pixelUI/' : '';
-		if(customSkin == _lastValidChecked || Paths.fileExists('images/' + path + customSkin + '.png', IMAGE))
+		if(customSkin == _lastValidChecked || Paths.fileExists('images/' + path + customSkin + '.png', IMAGE) || Paths.fileExists('images/' + path + customSkin + '.astc', BINARY))
 		{
 			skin = customSkin;
 			_lastValidChecked = customSkin;

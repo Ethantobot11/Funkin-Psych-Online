@@ -51,6 +51,8 @@ class Paths
 		'assets/shared/music/tea-time.$SOUND_EXT',
 		'assets/images/bf1.png',
 		'assets/images/bf2.png',
+		'assets/images/bf1.astc',
+		'assets/images/bf2.astc',
 	];
 	/// haya I love you for the base cache dump I took to the max
 	public static function clearUnusedMemory() {
@@ -271,24 +273,34 @@ class Paths
 			localTrackedAssets.push(file);
 			return currentTrackedAssets.get(file);
 		}
-		else if (FileSystem.exists(file))
-			bitmap = BitmapData.fromFile(file);
+		else if (FileSystem.exists(file)) {
+			bitmap = BitmapData.fromBytes(File.getBytes(file));
+		}
 		else
 		#end
 		{
-			file = getPath('images/$key.png', IMAGE, library);
+			file = getPath('images/$key.astc', BINARY, library);
 			if (currentTrackedAssets.exists(file))
 			{
 				localTrackedAssets.push(file);
 				return currentTrackedAssets.get(file);
 			}
-			else if (OpenFlAssets.exists(file, IMAGE))
+			else if (OpenFlAssets.exists(file, BINARY))
 				bitmap = OpenFlAssets.getBitmapData(file);
+			else
+			{
+				file = getPath('images/$key.png', IMAGE, library);
+				if (currentTrackedAssets.exists(file))
+				{
+					localTrackedAssets.push(file);
+					return currentTrackedAssets.get(file);
+				}
+				else if (OpenFlAssets.exists(file, IMAGE))
+					bitmap = OpenFlAssets.getBitmapData(file);
+			}
 		}
 
-		if (bitmap != null) {
-			return bitmapToGraphic(file, bitmap);
-		}
+		return bitmapToGraphic(file, bitmap);
 
 		//STOP FUCKING USING TRACE ITS CPU HEAVY
 		if (lastImageErrorFile != file && ClientPrefs.isDebug()) {
@@ -314,31 +326,57 @@ class Paths
 			return Future.withValue(currentTrackedAssets.get(file).bitmap);
 		}
 		// found in the mods files
-		else if (FileSystem.exists(file))
+		else if (FileSystem.exists(file)) {
+			if (file.endsWith(".astc"))
+			{
+				return Future.withValue(BitmapData.fromBytes(File.getBytes(file)));
+			}
 			return BitmapData.loadFromFile(file);
+		}
 		// load from assets
 		else
 		#end
-		{
-			file = getPath('images/$key.png', IMAGE, library);
+        {
+	        file = getPath('images/$key.astc', BINARY, library);
 			if (currentTrackedAssets.exists(file))
 			{
 				localTrackedAssets.push(file);
 				return Future.withValue(currentTrackedAssets.get(file).bitmap);
 			}
-			else if (OpenFlAssets.exists(file, IMAGE))
+			else if (OpenFlAssets.exists(file, BINARY))
+			{
 				return OpenFlAssets.loadBitmapData(file);
+			}
+			else
+			{
+				file = getPath('images/$key.png', IMAGE, library);
+				if (currentTrackedAssets.exists(file))
+				{
+					localTrackedAssets.push(file);
+					return Future.withValue(currentTrackedAssets.get(file).bitmap);
+				}
+				else if (OpenFlAssets.exists(file, IMAGE))
+					return OpenFlAssets.loadBitmapData(file);
+			}
 		}
 
-		//STOP FUCKING USING TRACE ITS CPU HEAVY
-		if (lastImageErrorFile != file && ClientPrefs.isDebug()) {
-			Sys.println('Paths.asyncBitmap(): oh no its returning null NOOOO ($file)');
-			lastImageErrorFile = file;
-		}
-		return null;
-	}
+        if (lastImageErrorFile != file && ClientPrefs.isDebug()) {
+            Sys.println('Paths.asyncBitmap(): Could not start async task for ($file)');
+            lastImageErrorFile = file;
+        }
+        return null;
+    }
 
 	static public function bitmapToGraphic(file:String, bitmap:BitmapData) {
+		if (bitmap == null)
+		{
+			if (FileSystem.exists(file))
+				bitmap = BitmapData.fromBytes(File.getBytes(file));
+
+			if (bitmap == null)
+				return null;
+		}
+
 		localTrackedAssets.push(file);
 		// if (allowGPU /*&& ClientPrefs.data.cacheOnGPU*/)
 		// {
@@ -555,7 +593,10 @@ class Paths
 		return modFolders(path + '/' + key + '.' + SOUND_EXT);
 	}
 
-	inline static public function modsImages(key:String, ?mod:String) {
+	static public function modsImages(key:String, ?mod:String) {
+		var astc = modFolders('images/' + key + '.astc', mod);
+		if (FileSystem.exists(astc))
+			return astc;
 		return modFolders('images/' + key + '.png', mod);
 	}
 
@@ -621,7 +662,7 @@ class Paths
 				return fileToCheck;
 			}
 			#end
-		}
+			}
 
 		for(mod in Mods.getGlobalMods()){
 			var fileToCheck:String = mods(mod + '/' + key);
@@ -676,6 +717,12 @@ class Paths
 				}
 				else if (Paths.fileExists('images/$originalPath/spritemap$st.png', IMAGE)) {
 					// trace('found Sprite PNG');
+					changedImage = true;
+					loadSpriteMap(frames, spriteJson, folderOrImg = Paths.image('$originalPath/spritemap$st'));
+					break;
+				}
+				else if (Paths.fileExists('images/$originalPath/spritemap$st.astc', BINARY)) {
+					// trace('found Sprite ASTC');
 					changedImage = true;
 					loadSpriteMap(frames, spriteJson, folderOrImg = Paths.image('$originalPath/spritemap$st'));
 					break;

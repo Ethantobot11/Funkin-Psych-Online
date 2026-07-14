@@ -419,7 +419,9 @@ class ModsMenuState extends MusicBeatState
 			add(newMod.alphabet);
 			//Don't ever cache the icons, it's a waste of loaded memory
 			var loadedIcon:BitmapData = null;
-			var iconToUse:String = Paths.mods(values[0] + '/pack.png');
+			var astcPath = Paths.mods(values[0] + '/pack.astc');
+			var pngPath = Paths.mods(values[0] + '/pack.png');
+			var iconToUse:String = FileSystem.exists(astcPath) ? astcPath : pngPath;
 			if(FileSystem.exists(iconToUse))
 			{
 				loadedIcon = BitmapData.fromFile(iconToUse);
