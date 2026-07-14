@@ -13,15 +13,15 @@ jobs:
             os: ubuntu-latest
             setupCommand: sh ./setup/unix-alter.sh
             buildArgs: "android -ONLY_ARM64"
-            artifactName: androidBuild
+            artifactName: androidBuild-PNG
             artifactPath: "export/release/android/bin/app/build/outputs/apk/release/*.apk"
-            doCache: "YES"
+            doCache: "NO"
 
-          - name: Android-(ARMV7)-NORMAL
+          - name: Android-ASTC-NORMAL
             os: ubuntu-latest
             setupCommand: sh ./setup/unix-alter.sh
-            buildArgs: "android -ONLY_ARMV7"
-            artifactName: androidBuild-Armv7
+            buildArgs: "android -ONLY_ARM64 -D ASTC_BUILD"
+            artifactName: androidBuild-ASTC
             artifactPath: "export/release/android/bin/app/build/outputs/apk/release/*.apk"
             doCache: "NO"
             
@@ -31,15 +31,31 @@ jobs:
             buildArgs: "windows -D officialBuild -final"
             artifactName: windowsBuild-x86_64
             artifactPath: export\release\windows\bin\*
-            doCache: "YES"
+            doCache: "NO"
             
           - name: iOS-NORMAL
             os: macos-15
             setupCommand: sh ./setup/unix.sh
             buildArgs: "ios -final -nosign -D officialBuild"
-            artifactName: iOSBuild
+            artifactName: iOSBuild-PNG
             artifactPath: "export/release/ios/build/Release-iphoneos/*.ipa"
-            doCache: "YES"
+            doCache: "NO"
+
+          - name: iOS-ASTC-NORMAL
+            os: macos-15
+            setupCommand: sh ./setup/unix.sh
+            buildArgs: "ios -final -nosign -D officialBuild -D ASTC_BUILD"
+            artifactName: iOSBuild-ASTC
+            artifactPath: "export/release/ios/build/Release-iphoneos/*.ipa"
+            doCache: "NO"
+
+          - name: iOS-ASTC-SHARED-NORMAL
+            os: macos-15
+            setupCommand: sh ./setup/unix.sh
+            buildArgs: "ios -final -nosign -D officialBuild -D ASTC_BUILD -D SHARED_FOLDER"
+            artifactName: iOSBuild-ASTC-SHARED
+            artifactPath: "export/release/ios/build/Release-iphoneos/*.ipa"
+            doCache: "NO"
     uses: ./.github/workflows/build.yml
     with:
         name: ${{ matrix.name }}

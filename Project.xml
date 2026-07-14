@@ -319,6 +319,7 @@
 	<haxedef name="lime_disable_motion_sensors" />
 	<haxedef name="lime_use_old_deltatime" />
 
+	<haxedef name="SHARE_MOBILE_FILES" if="SHARED_FOLDER" />
 	<haxedef name="DISABLE_AUDIO_FOCUS" if="android" /> <!-- Disable the fucking audio focus -->>
 	
 	<icon path="art/icon16.png" size='16'/>
