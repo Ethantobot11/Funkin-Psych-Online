@@ -2177,7 +2177,8 @@ class PlayState extends MusicBeatState
 		if (replayData == null && !cpuControlled)
 			addHitbox(mode);
 
-		addControl(null, (GameClient.isConnected() ? "PAUSE_CHAT_TAUNT" : "PAUSE_TAUNT"));
+		addControl((replayData != null || cpuControlled) ? 'LEFT_RIGHT' : null,
+										(GameClient.isConnected()) ? 'P_C_T' : (replayData != null || cpuControlled) ? 'P_X_Y' : 'P_T');
 		if (replayData == null && !cpuControlled) {
 			for (hitbox in mobileManager.hitboxes) {
 				for (button in mobileManager.buttons) {
@@ -3326,7 +3327,7 @@ class PlayState extends MusicBeatState
 			// }
 
 			if (cpuControlled) {
-				var shiftMult = FlxG.keys.pressed.SHIFT ? 3 : 1;
+				var shiftMult = (checkControl('X', "pressed") || FlxG.keys.pressed.SHIFT) ? 3 : 1;
 				if (controls.UI_LEFT) {
 					if (playbackRate - elapsed * 0.25 * shiftMult > 0)
 						playbackRate -= elapsed * 0.25 * shiftMult;
@@ -3342,7 +3343,7 @@ class PlayState extends MusicBeatState
 					}
 					botplayTxt.text = "BOTPLAY\n" + '(${CoolUtil.floorDecimal(playbackRate, 2)}x)';
 				}
-				else if (controls.RESET) {
+				else if (checkControl('Y', "justPressed") || controls.RESET) {
 					playbackRate = 1;
 					botplayTxt.text = "BOTPLAY";
 				}
