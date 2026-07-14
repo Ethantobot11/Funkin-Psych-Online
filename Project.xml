@@ -137,6 +137,8 @@
 
 		<assets path="assets/week_assets/weekend1/images-astc" rename="assets/weekend1/images" library="week_assets" />
 		<assets path="assets/week_assets/weekend1" rename="assets/weekend1" library="week_assets" exclude="*.mp3|images|images-astc" />
+
+		<assets path="assets/preload/mobile" rename="assets/mobile" />
 	</section>
 
 	<section unless="ASTC_BUILD">
@@ -175,6 +177,8 @@
 		<assets path="assets/week_assets/weekend1/images" rename="assets/weekend1/images" library="week_assets" />
 		<assets path="assets/week_assets/weekend1" rename="assets/weekend1" library="week_assets" exclude="*.mp3|images|images-astc" unless="web" />
 		<assets path="assets/week_assets/weekend1" rename="assets/weekend1" library="week_assets" exclude="*.ogg|images|images-astc" if="web" />
+
+		<assets path="assets/preload/mobile" rename="assets/mobile" />
 	</section>
 	
 	<section if="MODS_ALLOWED">
