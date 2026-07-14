@@ -1,0 +1,40 @@
+{
+  "buttons": [
+    {
+      "name": "pause",
+      "id": "pause",
+      "texture": "button_circle",
+      "subgraphic": {
+        "texture": "icon_pause",
+        "scale": 4
+      },
+      "position": [1153, 0],
+      "scale": 0.24,
+      "color": null
+    },
+    {
+      "name": "buttonX",
+      "id": "X",
+      "texture": "button_circle",
+      "subgraphic": {
+        "texture": "icon_x",
+        "scale": 4
+      },
+      "position": [1153, 585],
+      "scale": 0.24,
+      "color": null
+    },
+    {
+      "name": "buttonY",
+      "id": "Y",
+      "texture": "button_circle",
+      "subgraphic": {
+        "texture": "icon_y",
+        "scale": 4
+      },
+      "position": [1033, 585],
+      "scale": 0.24,
+      "color": null
+    }
+  ]
+}

@@ -108,7 +108,7 @@ class Main extends Sprite
 		#end
         Sys.setCwd(StorageUtil.getStorageDirectory());
 
-		var modsPath:String = Path.join([#if android StorageUtil.getExternalStorageDirectory() #elseif mobile Sys.getCwd() #end, "mods"]);
+		var modsPath:String = Path.join([#if android StorageUtil.getExternalStorageDirectory() #elseif ios lime.system.System.documentsDirectory #end, "mods"]);
 		if (!FileSystem.exists(modsPath))
             FileSystem.createDirectory(modsPath);
 		#end

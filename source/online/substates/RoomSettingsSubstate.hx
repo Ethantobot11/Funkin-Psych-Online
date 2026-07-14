@@ -168,6 +168,7 @@ class RoomSettingsSubstate extends MusicBeatSubstate {
 		}, 0, 0, false, true));
 
 		items.add(modifers = new Option("Game Modifiers", "Set your Gameplay Modifiers here!", () -> {
+			cannotBeNull = true;
 			close();
 			FlxG.state.openSubState(new GameplayChangersSubstate());
 		}, null, 0, 0, false, true));
