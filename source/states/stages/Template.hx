@@ -102,19 +102,19 @@ class Template extends BaseStage
 				{
 					// If value 1 is "blah blah", it will preload these assets:
 					case 'blah blah':
-						//precacheImage('myImageOne') //preloads images/myImageOne.png
+						//precacheImage('myImageOne') //preloads images/myImageOne.png or .astc if mobile / .dds on pc
 						//precacheSound('mySoundOne') //preloads sounds/mySoundOne.ogg
 						//precacheMusic('myMusicOne') //preloads music/myMusicOne.ogg
 
 					// If value 1 is "coolswag", it will preload these assets:
 					case 'coolswag':
-						//precacheImage('myImageTwo') //preloads images/myImageTwo.png
+						//precacheImage('myImageTwo') //preloads images/myImageTwo.png or .astc if mobile / .dds on pc
 						//precacheSound('mySoundTwo') //preloads sounds/mySoundTwo.ogg
 						//precacheMusic('myMusicTwo') //preloads music/myMusicTwo.ogg
 					
 					// If value 1 is not "blah blah" or "coolswag", it will preload these assets:
 					default:
-						//precacheImage('myImageThree') //preloads images/myImageThree.png
+						//precacheImage('myImageThree') //preloads images/myImageThree.png or .astc if mobile / .dds on pc
 						//precacheSound('mySoundThree') //preloads sounds/mySoundThree.ogg
 						//precacheMusic('myMusicThree') //preloads music/myMusicThree.ogg
 				}

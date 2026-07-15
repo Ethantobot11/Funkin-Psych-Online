@@ -32,6 +32,14 @@ jobs:
             artifactName: windowsBuild-x86_64
             artifactPath: export\release\windows\bin\*
             doCache: "NO"
+
+          - name: Windows-DDS
+            os: windows-latest
+            setupCommand: .\"setup/windows.bat"
+            buildArgs: "windows -D officialBuild -final -D DDS_BUILD"
+            artifactName: windowsBuild-x86_64
+            artifactPath: export\release\windows\bin\*
+            doCache: "NO"
             
           - name: iOS-NORMAL
             os: macos-15

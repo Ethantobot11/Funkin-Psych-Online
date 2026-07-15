@@ -297,41 +297,63 @@ class OnlineMods {
 		}
 
 		if ((gbMod != null ? gbMod.rootCategory == "Skins" : false) && !FileSystem.exists(Paths.mods(modName + '/pack.json'))) {
-			var isLegacy = false;
-			if (FileSystem.exists(Paths.mods(modName + '/images/BOYFRIEND.png')) || FileSystem.exists(Paths.mods(modName + '/images/BOYFRIEND.astc'))) {
-				Sys.println("Legacy mod detected! (Converting)");
+            var isLegacy = false;
+            if (FileSystem.exists(Paths.mods(modName + '/images/BOYFRIEND.png')) || 
+                FileSystem.exists(Paths.mods(modName + '/images/BOYFRIEND.astc')) || 
+                FileSystem.exists(Paths.mods(modName + '/images/BOYFRIEND.dds'))) {
+                
+                Sys.println("Legacy mod detected! (Converting)");
 
-				FileSystem.createDirectory(Paths.mods(modName + '/images/characters/'));
-				
-				if (FileSystem.exists(Paths.mods(modName + '/images/BOYFRIEND.png'))) {
-					FileSystem.rename(Paths.mods(modName + '/images/BOYFRIEND.png'), Paths.mods(modName + '/images/characters/BOYFRIEND.png'));
-				}
-				if (FileSystem.exists(Paths.mods(modName + '/images/BOYFRIEND.astc'))) {
-					FileSystem.rename(Paths.mods(modName + '/images/BOYFRIEND.astc'), Paths.mods(modName + '/images/characters/BOYFRIEND.astc'));
-				}
-				
-				if (FileSystem.exists(Paths.mods(modName + '/images/BOYFRIEND.xml')))
-					FileSystem.rename(Paths.mods(modName + '/images/BOYFRIEND.xml'), Paths.mods(modName + '/images/characters/BOYFRIEND.xml'));
+                FileSystem.createDirectory(Paths.mods(modName + '/images/characters/'));
+                
+                if (FileSystem.exists(Paths.mods(modName + '/images/BOYFRIEND.png'))) {
+                    FileSystem.rename(Paths.mods(modName + '/images/BOYFRIEND.png'), Paths.mods(modName + '/images/characters/BOYFRIEND.png'));
+                }
+                if (FileSystem.exists(Paths.mods(modName + '/images/BOYFRIEND.astc'))) {
+                    FileSystem.rename(Paths.mods(modName + '/images/BOYFRIEND.astc'), Paths.mods(modName + '/images/characters/BOYFRIEND.astc'));
+                }
+                if (FileSystem.exists(Paths.mods(modName + '/images/BOYFRIEND.dds'))) {
+                    FileSystem.rename(Paths.mods(modName + '/images/BOYFRIEND.dds'), Paths.mods(modName + '/images/characters/BOYFRIEND.dds'));
+                }
+                
+                if (FileSystem.exists(Paths.mods(modName + '/images/BOYFRIEND.xml')))
+                    FileSystem.rename(Paths.mods(modName + '/images/BOYFRIEND.xml'), Paths.mods(modName + '/images/characters/BOYFRIEND.xml'));
 
-				var hasPngIcon = FileSystem.exists(Paths.mods(modName + '/images/icons/icon-bf.png'));
-				var hasAstcIcon = FileSystem.exists(Paths.mods(modName + '/images/icons/icon-bf.astc'));
-				var hasGridPng = FileSystem.exists(Paths.mods(modName + '/images/iconGrid.png'));
-				var hasGridAstc = FileSystem.exists(Paths.mods(modName + '/images/iconGrid.astc'));
+                var hasPngIcon = FileSystem.exists(Paths.mods(modName + '/images/icons/icon-bf.png'));
+                var hasAstcIcon = FileSystem.exists(Paths.mods(modName + '/images/icons/icon-bf.astc'));
+                var hasDdsIcon = FileSystem.exists(Paths.mods(modName + '/images/icons/icon-bf.dds'));
+                
+                var hasGridPng = FileSystem.exists(Paths.mods(modName + '/images/iconGrid.png'));
+                var hasGridAstc = FileSystem.exists(Paths.mods(modName + '/images/iconGrid.astc'));
+                var hasGridDds = FileSystem.exists(Paths.mods(modName + '/images/iconGrid.dds'));
 
-				if ((!hasPngIcon && hasGridPng) || (!hasAstcIcon && hasGridAstc)) {
-					FileSystem.createDirectory(Paths.mods(modName + '/images/icons/'));
-					
-					var gridPath = hasGridPng ? Paths.mods(modName + '/images/iconGrid.png') : Paths.mods(modName + '/images/iconGrid.astc');
-					var iconGrid = BitmapData.fromBytes(File.getBytes(gridPath));
-					var byteArray:ByteArray = new ByteArray();
-					iconGrid.encode(new Rectangle(0, 0, 300, 150), new PNGEncoderOptions(), byteArray);
-					
-					var savePath = hasGridPng ? Paths.mods(modName + '/images/icons/icon-bf.png') : Paths.mods(modName + '/images/icons/icon-bf.astc');
-					File.saveBytes(savePath, byteArray);
-				}
+                if ((!hasPngIcon && hasGridPng) || (!hasAstcIcon && hasGridAstc) || (!hasDdsIcon && hasGridDds)) {
+                    FileSystem.createDirectory(Paths.mods(modName + '/images/icons/'));
+                    
+                    var gridPath = "";
+                    var savePath = "";
+                    
+                    if (hasGridPng) {
+                        gridPath = Paths.mods(modName + '/images/iconGrid.png');
+                        savePath = Paths.mods(modName + '/images/icons/icon-bf.png');
+                    } else if (hasGridAstc) {
+                        gridPath = Paths.mods(modName + '/images/iconGrid.astc');
+                        savePath = Paths.mods(modName + '/images/icons/icon-bf.astc');
+                    } else if (hasGridDds) {
+                        gridPath = Paths.mods(modName + '/images/iconGrid.dds');
+                        savePath = Paths.mods(modName + '/images/icons/icon-bf.dds');
+                    }
+                    
+                    if (gridPath != "") {
+                        var iconGrid = BitmapData.fromBytes(File.getBytes(gridPath));
+                        var byteArray:ByteArray = new ByteArray();
+                        iconGrid.encode(new Rectangle(0, 0, 300, 150), new PNGEncoderOptions(), byteArray);
+                        File.saveBytes(savePath, byteArray);
+                    }
+                }
 
-				isLegacy = true;
-			}
+                isLegacy = true;
+            }
 
 			File.saveContent(Paths.mods(modName + '/pack.json'), Json.stringify({
 				name: (gbMod != null ? gbMod.name : modName),
@@ -374,12 +396,15 @@ class OnlineMods {
 
 			if (FileSystem.exists(Paths.mods(modName + "/images/alphabet.png")) 
 				|| FileSystem.exists(Paths.mods(modName + "/images/alphabet.astc"))
+				|| FileSystem.exists(Paths.mods(modName + "/images/alphabet.dds"))
 				|| FileSystem.exists(Paths.mods(modName + "/images/alphabet.xml"))) {
 				
 				if (FileSystem.exists(Paths.mods(modName + "/images/alphabet.png")))
 					FileSystem.deleteFile(Paths.mods(modName + "/images/alphabet.png"));
 				if (FileSystem.exists(Paths.mods(modName + "/images/alphabet.astc")))
 					FileSystem.deleteFile(Paths.mods(modName + "/images/alphabet.astc"));
+				if (FileSystem.exists(Paths.mods(modName + "/images/alphabet.dds")))
+					FileSystem.deleteFile(Paths.mods(modName + "/images/alphabet.dds"));
 				if (FileSystem.exists(Paths.mods(modName + "/images/alphabet.xml")))
 					FileSystem.deleteFile(Paths.mods(modName + "/images/alphabet.xml"));
 			}
@@ -390,12 +415,18 @@ class OnlineMods {
 			if (FileSystem.exists(Paths.mods(modName + "/images/healthBar.astc"))) {
 				FileSystem.deleteFile(Paths.mods(modName + "/images/healthBar.astc"));
 			}
+			if (FileSystem.exists(Paths.mods(modName + "/images/healthBar.dds"))) {
+				FileSystem.deleteFile(Paths.mods(modName + "/images/healthBar.dds"));
+			}
 
 			if (FileSystem.exists(Paths.mods(modName + "/images/timeBar.png"))) {
 				FileSystem.deleteFile(Paths.mods(modName + "/images/timeBar.png"));
 			}
 			if (FileSystem.exists(Paths.mods(modName + "/images/timeBar.astc"))) {
 				FileSystem.deleteFile(Paths.mods(modName + "/images/timeBar.astc"));
+			}
+			if (FileSystem.exists(Paths.mods(modName + "/images/timeBar.dds"))) {
+				FileSystem.deleteFile(Paths.mods(modName + "/images/timeBar.dds"));
 			}
 
 			//get yo ass outta here

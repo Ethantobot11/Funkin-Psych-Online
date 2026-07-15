@@ -69,28 +69,62 @@
 	<assets path="assets/videos" />
 
 	<section if="ASTC_BUILD">
-        <assets path="assets/preload" rename="assets" exclude="*.mp3|images|images-astc" />
-        <assets path="assets/exclude" rename="assets" exclude="*.mp3|images|images-astc" />
+		<assets path="assets/preload/images-astc" rename="assets/images" exclude="*.png"/>
+		<assets path="assets/exclude/images-astc" rename="assets/images" exclude="*.png"/>
 
-		<assets path="assets/preload/images-astc" rename="assets/images" />
-		<assets path="assets/exclude/images-astc" rename="assets/images" />
+        <assets path="assets/preload" rename="assets" exclude="*.mp3|images|images-astc|images-dds|**/*.png" />
+        <assets path="assets/exclude" rename="assets" exclude="*.mp3|images|images-astc|images-dds|**/*.png" />
         
         <section if="TITLE_SCREEN_EASTER_EGG">
-            <assets path="assets/secrets" rename="assets" exclude="*.mp3|images|images-astc" />
+			<assets path="assets/secrets" rename="assets" exclude="*.mp3|images/*|images-astc|images-dds" />
 			<assets path="assets/secrets/images-astc" rename="assets/images" />
         </section>
     </section>
 
-    <section unless="ASTC_BUILD">
-        <assets path="assets/preload" rename="assets" exclude="*.mp3|images-astc" unless="web" />
-        <assets path="assets/preload" rename="assets" exclude="*.ogg|images-astc" if="web" />
+	<section unless="DDS_BUILD">
+    <section if="ASTC_BUILD">
+		<assets path="assets/preload/images-astc" rename="assets/images" />
+		<assets path="assets/exclude/images-astc" rename="assets/images" />
 
-        <assets path="assets/exclude" rename="assets" exclude="*.mp3|images-astc" unless="web" />
-        <assets path="assets/exclude" rename="assets" exclude="*.ogg|images-astc" if="web" />
+		<assets path="assets/preload" rename="assets" exclude="*.mp3|images-png|images-astc|images-dds" />
+		<assets path="assets/exclude" rename="assets" exclude="*.mp3|images-png|images-astc|images-dds" />
+	</section>
+
+	<section unless="ASTC_BUILD">
+		<assets path="assets/preload/images-png" rename="assets/images" />
+		<assets path="assets/exclude/images-png" rename="assets/images" />
+
+		<assets path="assets/preload" rename="assets" exclude="*.mp3|images-png|images-astc|images-dds" unless="web" />
+	</section>
+	</section>
+
+	<section unless="ASTC_BUILD">
+	<section if="DDS_BUILD">
+		<assets path="assets/preload/images-dds" rename="assets/images" />
+		<assets path="assets/exclude/images-dds" rename="assets/images" />
+
+		<assets path="assets/preload" rename="assets" exclude="*.mp3|images-png|images-astc|images-dds" />
+		<assets path="assets/exclude" rename="assets" exclude="*.mp3|images-png|images-astc|images-dds" />
+	</section>
+
+	<section unless="DDS_BUILD">
+		<assets path="assets/preload/images-png" rename="assets/images" />
+		<assets path="assets/exclude/images-png" rename="assets/images" />
+
+		<assets path="assets/preload" rename="assets" exclude="*.mp3|images-png|images-astc|images-dds" unless="web" />
+	</section>
+	</section>
+
+    <section unless="DDS_BUILD">
+        <assets path="assets/preload" rename="assets" exclude="*.mp3|images-astc|images-dds" unless="web" />
+        <assets path="assets/preload" rename="assets" exclude="*.ogg|images-astc|images-dds" if="web" />
+
+        <assets path="assets/exclude" rename="assets" exclude="*.mp3|images-astc|images-dds" unless="web" />
+        <assets path="assets/exclude" rename="assets" exclude="*.ogg|images-astc|images-dds" if="web" />
         
         <section if="TITLE_SCREEN_EASTER_EGG">
-            <assets path="assets/secrets" rename="assets" exclude="*.mp3|images-astc" unless="web" />
-            <assets path="assets/secrets" rename="assets" exclude="*.ogg|images-astc" if="web" />
+            <assets path="assets/secrets" rename="assets" exclude="*.mp3|images-astc|images-dds" unless="web" />
+            <assets path="assets/secrets" rename="assets" exclude="*.ogg|images-astc|images-dds" if="web" />
         </section>
     </section>
 
@@ -112,71 +146,142 @@
 
 	<section if="ASTC_BUILD">
 		<assets path="assets/shared/images-astc" rename="assets/shared/images" library="shared" />
-		<assets path="assets/shared" library="shared" exclude="*.mp3|images|images-astc" />
+		<assets path="assets/shared" library="shared" exclude="*.mp3|images|images-astc|images-dds" />
 
 		<assets path="assets/week_assets/week1/images-astc" rename="assets/week1/images" library="week_assets" />
-		<assets path="assets/week_assets/week1"  rename="assets/week1" library="week_assets" exclude="*.mp3|images|images-astc" />
+		<assets path="assets/week_assets/week1"  rename="assets/week1" library="week_assets" exclude="*.mp3|images|images-astc|images-dds" />
 
 		<assets path="assets/week_assets/week2/images-astc" rename="assets/week2/images" library="week_assets" />
-		<assets path="assets/week_assets/week2" rename="assets/week2" library="week_assets" exclude="*.mp3|images|images-astc" />
+		<assets path="assets/week_assets/week2" rename="assets/week2" library="week_assets" exclude="*.mp3|images|images-astc|images-dds" />
 
 		<assets path="assets/week_assets/week3/images-astc" rename="assets/week3/images" library="week_assets" />
-		<assets path="assets/week_assets/week3" rename="assets/week3" library="week_assets" exclude="*.mp3|images|images-astc" />
+		<assets path="assets/week_assets/week3" rename="assets/week3" library="week_assets" exclude="*.mp3|images|images-astc|images-dds" />
 
 		<assets path="assets/week_assets/week4/images-astc" rename="assets/week4/images" library="week_assets" />
-		<assets path="assets/week_assets/week4" rename="assets/week4" library="week_assets" exclude="*.mp3|images|images-astc" />
+		<assets path="assets/week_assets/week4" rename="assets/week4" library="week_assets" exclude="*.mp3|images|images-astc|images-dds" />
 
 		<assets path="assets/week_assets/week5/images-astc" rename="assets/week5/images" library="week_assets" />
-		<assets path="assets/week_assets/week5" rename="assets/week5" library="week_assets" exclude="*.mp3|images|images-astc" />
+		<assets path="assets/week_assets/week5" rename="assets/week5" library="week_assets" exclude="*.mp3|images|images-astc|images-dds" />
 
 		<assets path="assets/week_assets/week6/images-astc" rename="assets/week6/images" library="week_assets" />
-		<assets path="assets/week_assets/week6" rename="assets/week6" library="week_assets" exclude="*.mp3|images|images-astc" />
+		<assets path="assets/week_assets/week6" rename="assets/week6" library="week_assets" exclude="*.mp3|images|images-astc|images-dds" />
 
 		<assets path="assets/week_assets/week7/images-astc" rename="assets/week7/images" library="week_assets" />
-		<assets path="assets/week_assets/week7" rename="assets/week7" library="week_assets" exclude="*.mp3|images|images-astc" />
+		<assets path="assets/week_assets/week7" rename="assets/week7" library="week_assets" exclude="*.mp3|images|images-astc|images-dds" />
 
 		<assets path="assets/week_assets/weekend1/images-astc" rename="assets/weekend1/images" library="week_assets" />
-		<assets path="assets/week_assets/weekend1" rename="assets/weekend1" library="week_assets" exclude="*.mp3|images|images-astc" />
+		<assets path="assets/week_assets/weekend1" rename="assets/weekend1" library="week_assets" exclude="*.mp3|images|images-astc|images-dds" />
 
 		<assets path="assets/preload/mobile" rename="assets/mobile" />
 	</section>
 
 	<section unless="ASTC_BUILD">
 		<assets path="assets/shared/images" rename="assets/shared/images" library="shared" />
-		<assets path="assets/shared" library="shared" exclude="*.mp3|images|images-astc" unless="web" />
-		<assets path="assets/shared" library="shared" exclude="*.ogg|images|images-astc" if="web" />
+		<assets path="assets/shared" library="shared" exclude="*.mp3|images|images-astc|images-dds" unless="web" />
+		<assets path="assets/shared" library="shared" exclude="*.ogg|images|images-astc|images-dds" if="web" />
 
 		<assets path="assets/week_assets/week1/images" rename="assets/week1/images" library="week_assets" />
-		<assets path="assets/week_assets/week1" rename="assets/week1" library="week_assets" exclude="*.mp3|images|images-astc" unless="web" />
-		<assets path="assets/week_assets/week1" rename="assets/week1" library="week_assets" exclude="*.ogg|images|images-astc" if="web" />
+		<assets path="assets/week_assets/week1" rename="assets/week1" library="week_assets" exclude="*.mp3|images|images-astc|images-dds" unless="web" />
+		<assets path="assets/week_assets/week1" rename="assets/week1" library="week_assets" exclude="*.ogg|images|images-astc|images-dds" if="web" />
 
 		<assets path="assets/week_assets/week2/images" rename="assets/week2/images" library="week_assets" />
-		<assets path="assets/week_assets/week2" rename="assets/week2" library="week_assets" exclude="*.mp3|images|images-astc" unless="web" />
-		<assets path="assets/week_assets/week2" rename="assets/week2" library="week_assets" exclude="*.ogg|images|images-astc" if="web" />
+		<assets path="assets/week_assets/week2" rename="assets/week2" library="week_assets" exclude="*.mp3|images|images-astc|images-dds" unless="web" />
+		<assets path="assets/week_assets/week2" rename="assets/week2" library="week_assets" exclude="*.ogg|images|images-astc|images-dds" if="web" />
 
 		<assets path="assets/week_assets/week3/images" rename="assets/week3/images" library="week_assets" />
-		<assets path="assets/week_assets/week3" rename="assets/week3" library="week_assets" exclude="*.mp3|images|images-astc" unless="web" />
-		<assets path="assets/week_assets/week3" rename="assets/week3" library="week_assets" exclude="*.ogg|images|images-astc" if="web" />
+		<assets path="assets/week_assets/week3" rename="assets/week3" library="week_assets" exclude="*.mp3|images|images-astc|images-dds" unless="web" />
+		<assets path="assets/week_assets/week3" rename="assets/week3" library="week_assets" exclude="*.ogg|images|images-astc|images-dds" if="web" />
 
 		<assets path="assets/week_assets/week4/images" rename="assets/week4/images" library="week_assets" />
-		<assets path="assets/week_assets/week4" rename="assets/week4" library="week_assets" exclude="*.mp3|images|images-astc" unless="web" />
-		<assets path="assets/week_assets/week4" rename="assets/week4" library="week_assets" exclude="*.ogg|images|images-astc" if="web" />
+		<assets path="assets/week_assets/week4" rename="assets/week4" library="week_assets" exclude="*.mp3|images|images-astc|images-dds" unless="web" />
+		<assets path="assets/week_assets/week4" rename="assets/week4" library="week_assets" exclude="*.ogg|images|images-astc|images-dds" if="web" />
 
 		<assets path="assets/week_assets/week5/images" rename="assets/week5/images" library="week_assets" />
-		<assets path="assets/week_assets/week5" rename="assets/week5" library="week_assets" exclude="*.mp3|images|images-astc" unless="web" />
-		<assets path="assets/week_assets/week5" rename="assets/week5" library="week_assets" exclude="*.ogg|images|images-astc" if="web" />
+		<assets path="assets/week_assets/week5" rename="assets/week5" library="week_assets" exclude="*.mp3|images|images-astc|images-dds" unless="web" />
+		<assets path="assets/week_assets/week5" rename="assets/week5" library="week_assets" exclude="*.ogg|images|images-astc|images-dds" if="web" />
 
 		<assets path="assets/week_assets/week6/images" rename="assets/week6/images" library="week_assets" />
-		<assets path="assets/week_assets/week6" rename="assets/week6" library="week_assets" exclude="*.mp3|images|images-astc" unless="web" />
-		<assets path="assets/week_assets/week6" rename="assets/week6" library="week_assets" exclude="*.ogg|images|images-astc" if="web" />
+		<assets path="assets/week_assets/week6" rename="assets/week6" library="week_assets" exclude="*.mp3|images|images-astc|images-dds" unless="web" />
+		<assets path="assets/week_assets/week6" rename="assets/week6" library="week_assets" exclude="*.ogg|images|images-astc|images-dds" if="web" />
 
 		<assets path="assets/week_assets/week7/images" rename="assets/week7/images" library="week_assets" />
-		<assets path="assets/week_assets/week7" rename="assets/week7" library="week_assets" exclude="*.mp3|images|images-astc" unless="web" />
-		<assets path="assets/week_assets/week7" rename="assets/week7" library="week_assets" exclude="*.ogg|images|images-astc" if="web" />
+		<assets path="assets/week_assets/week7" rename="assets/week7" library="week_assets" exclude="*.mp3|images|images-astc|images-dds" unless="web" />
+		<assets path="assets/week_assets/week7" rename="assets/week7" library="week_assets" exclude="*.ogg|images|images-astc|images-dds" if="web" />
 
 		<assets path="assets/week_assets/weekend1/images" rename="assets/weekend1/images" library="week_assets" />
-		<assets path="assets/week_assets/weekend1" rename="assets/weekend1" library="week_assets" exclude="*.mp3|images|images-astc" unless="web" />
-		<assets path="assets/week_assets/weekend1" rename="assets/weekend1" library="week_assets" exclude="*.ogg|images|images-astc" if="web" />
+		<assets path="assets/week_assets/weekend1" rename="assets/weekend1" library="week_assets" exclude="*.mp3|images|images-astc|images-dds" unless="web" />
+		<assets path="assets/week_assets/weekend1" rename="assets/weekend1" library="week_assets" exclude="*.ogg|images|images-astc|images-dds" if="web" />
+
+		<assets path="assets/preload/mobile" rename="assets/mobile" />
+	</section>
+
+	<section if="DDS_BUILD">
+		<assets path="assets/shared/images-dds" rename="assets/shared/images" library="shared" />
+		<assets path="assets/shared" library="shared" exclude="*.mp3|images|images-astc|images-dds" />
+
+		<assets path="assets/week_assets/week1/images-dds" rename="assets/week1/images" library="week_assets" />
+		<assets path="assets/week_assets/week1"  rename="assets/week1" library="week_assets" exclude="*.mp3|images|images-astc|images-dds" />
+
+		<assets path="assets/week_assets/week2/images-dds" rename="assets/week2/images" library="week_assets" />
+		<assets path="assets/week_assets/week2" rename="assets/week2" library="week_assets" exclude="*.mp3|images|images-astc|images-dds" />
+
+		<assets path="assets/week_assets/week3/images-dds" rename="assets/week3/images" library="week_assets" />
+		<assets path="assets/week_assets/week3" rename="assets/week3" library="week_assets" exclude="*.mp3|images|images-astc|images-dds" />
+
+		<assets path="assets/week_assets/week4/images-dds" rename="assets/week4/images" library="week_assets" />
+		<assets path="assets/week_assets/week4" rename="assets/week4" library="week_assets" exclude="*.mp3|images|images-astc|images-dds" />
+
+		<assets path="assets/week_assets/week5/images-dds" rename="assets/week5/images" library="week_assets" />
+		<assets path="assets/week_assets/week5" rename="assets/week5" library="week_assets" exclude="*.mp3|images|images-astc|images-dds" />
+
+		<assets path="assets/week_assets/week6/images-dds" rename="assets/week6/images" library="week_assets" />
+		<assets path="assets/week_assets/week6" rename="assets/week6" library="week_assets" exclude="*.mp3|images|images-astc|images-dds" />
+
+		<assets path="assets/week_assets/week7/images-dds" rename="assets/week7/images" library="week_assets" />
+		<assets path="assets/week_assets/week7" rename="assets/week7" library="week_assets" exclude="*.mp3|images|images-astc|images-dds" />
+
+		<assets path="assets/week_assets/weekend1/images-dds" rename="assets/weekend1/images" library="week_assets" />
+		<assets path="assets/week_assets/weekend1" rename="assets/weekend1" library="week_assets" exclude="*.mp3|images|images-astc|images-dds" />
+
+		<assets path="assets/preload/mobile" rename="assets/mobile" />
+	</section>
+
+	<section unless="DDS_BUILD">
+		<assets path="assets/shared/images" rename="assets/shared/images" library="shared" />
+		<assets path="assets/shared" library="shared" exclude="*.mp3|images|images-astc|images-dds" unless="web" />
+		<assets path="assets/shared" library="shared" exclude="*.ogg|images|images-astc|images-dds" if="web" />
+
+		<assets path="assets/week_assets/week1/images" rename="assets/week1/images" library="week_assets" />
+		<assets path="assets/week_assets/week1" rename="assets/week1" library="week_assets" exclude="*.mp3|images|images-astc|images-dds" unless="web" />
+		<assets path="assets/week_assets/week1" rename="assets/week1" library="week_assets" exclude="*.ogg|images|images-astc|images-dds" if="web" />
+
+		<assets path="assets/week_assets/week2/images" rename="assets/week2/images" library="week_assets" />
+		<assets path="assets/week_assets/week2" rename="assets/week2" library="week_assets" exclude="*.mp3|images|images-astc|images-dds" unless="web" />
+		<assets path="assets/week_assets/week2" rename="assets/week2" library="week_assets" exclude="*.ogg|images|images-astc|images-dds" if="web" />
+
+		<assets path="assets/week_assets/week3/images" rename="assets/week3/images" library="week_assets" />
+		<assets path="assets/week_assets/week3" rename="assets/week3" library="week_assets" exclude="*.mp3|images|images-astc|images-dds" unless="web" />
+		<assets path="assets/week_assets/week3" rename="assets/week3" library="week_assets" exclude="*.ogg|images|images-astc|images-dds" if="web" />
+
+		<assets path="assets/week_assets/week4/images" rename="assets/week4/images" library="week_assets" />
+		<assets path="assets/week_assets/week4" rename="assets/week4" library="week_assets" exclude="*.mp3|images|images-astc|images-dds" unless="web" />
+		<assets path="assets/week_assets/week4" rename="assets/week4" library="week_assets" exclude="*.ogg|images|images-astc|images-dds" if="web" />
+
+		<assets path="assets/week_assets/week5/images" rename="assets/week5/images" library="week_assets" />
+		<assets path="assets/week_assets/week5" rename="assets/week5" library="week_assets" exclude="*.mp3|images|images-astc|images-dds" unless="web" />
+		<assets path="assets/week_assets/week5" rename="assets/week5" library="week_assets" exclude="*.ogg|images|images-astc|images-dds" if="web" />
+
+		<assets path="assets/week_assets/week6/images" rename="assets/week6/images" library="week_assets" />
+		<assets path="assets/week_assets/week6" rename="assets/week6" library="week_assets" exclude="*.mp3|images|images-astc|images-dds" unless="web" />
+		<assets path="assets/week_assets/week6" rename="assets/week6" library="week_assets" exclude="*.ogg|images|images-astc|images-dds" if="web" />
+
+		<assets path="assets/week_assets/week7/images" rename="assets/week7/images" library="week_assets" />
+		<assets path="assets/week_assets/week7" rename="assets/week7" library="week_assets" exclude="*.mp3|images|images-astc|images-dds" unless="web" />
+		<assets path="assets/week_assets/week7" rename="assets/week7" library="week_assets" exclude="*.ogg|images|images-astc|images-dds" if="web" />
+
+		<assets path="assets/week_assets/weekend1/images" rename="assets/weekend1/images" library="week_assets" />
+		<assets path="assets/week_assets/weekend1" rename="assets/weekend1" library="week_assets" exclude="*.mp3|images|images-astc|images-dds" unless="web" />
+		<assets path="assets/week_assets/weekend1" rename="assets/weekend1" library="week_assets" exclude="*.ogg|images|images-astc|images-dds" if="web" />
 
 		<assets path="assets/preload/mobile" rename="assets/mobile" />
 	</section>

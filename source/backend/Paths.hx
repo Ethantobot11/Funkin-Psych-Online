@@ -53,6 +53,8 @@ class Paths
 		'assets/images/bf2.png',
 		'assets/images/bf1.astc',
 		'assets/images/bf2.astc',
+		'assets/images/bf1.dds',
+		'assets/images/bf2.dds',
 	];
 	/// haya I love you for the base cache dump I took to the max
 	public static function clearUnusedMemory() {
@@ -273,31 +275,47 @@ class Paths
 			localTrackedAssets.push(file);
 			return currentTrackedAssets.get(file);
 		}
-		else if (FileSystem.exists(file)) {
-			bitmap = BitmapData.fromBytes(File.getBytes(file));
-		}
+		else if (FileSystem.exists(file))
+			bitmap = BitmapData.fromFile(file);
 		else
 		#end
 		{
+			file = getPath('images/$key.dds', BINARY, library);
+			if (currentTrackedAssets.exists(file))
+			{
+				localTrackedAssets.push(file);
+				return currentTrackedAssets.get(file);
+			}
+			else if (OpenFlAssets.exists(file, BINARY)) 
+			{
+				bitmap = OpenFlAssets.getBitmapData(file);
+			}
+			else
+			{
 			file = getPath('images/$key.astc', BINARY, library);
 			if (currentTrackedAssets.exists(file))
 			{
 				localTrackedAssets.push(file);
 				return currentTrackedAssets.get(file);
 			}
-			else if (OpenFlAssets.exists(file, BINARY))
+			else if (OpenFlAssets.exists(file, BINARY)) 
+			{
 				bitmap = OpenFlAssets.getBitmapData(file);
+			}
 			else
 			{
-				file = getPath('images/$key.png', IMAGE, library);
-				if (currentTrackedAssets.exists(file))
-				{
-					localTrackedAssets.push(file);
-					return currentTrackedAssets.get(file);
-				}
-				else if (OpenFlAssets.exists(file, IMAGE))
-					bitmap = OpenFlAssets.getBitmapData(file);
-			}
+            file = getPath('images/$key.png', IMAGE, library);
+            if (currentTrackedAssets.exists(file))
+            {
+                localTrackedAssets.push(file);
+                return currentTrackedAssets.get(file);
+            }
+            else if (OpenFlAssets.exists(file, IMAGE))
+            {
+                bitmap = OpenFlAssets.getBitmapData(file);
+            }
+        }
+    	}
 		}
 
 		return bitmapToGraphic(file, bitmap);
@@ -316,47 +334,49 @@ class Paths
 	**/
 	static public function asyncBitmap(key:String, ?library:String = null, ?modDir:String):Null<Future<BitmapData>> {
 		var file:String = null;
+		var bitmap:BitmapData = null;
 
 		#if MODS_ALLOWED
-		file = modsImages(key, modDir);
-		// return cached
+		file = modsImages(key);
 		if (currentTrackedAssets.exists(file))
 		{
 			localTrackedAssets.push(file);
 			return Future.withValue(currentTrackedAssets.get(file).bitmap);
 		}
-		// found in the mods files
-		else if (FileSystem.exists(file)) {
-			if (file.endsWith(".astc"))
-			{
-				return Future.withValue(BitmapData.fromBytes(File.getBytes(file)));
-			}
+		else if (FileSystem.exists(file))
 			return BitmapData.loadFromFile(file);
-		}
-		// load from assets
 		else
 		#end
-        {
-	        file = getPath('images/$key.astc', BINARY, library);
+		{
+			file = getPath('images/$key.dds', BINARY, library);
 			if (currentTrackedAssets.exists(file))
 			{
 				localTrackedAssets.push(file);
 				return Future.withValue(currentTrackedAssets.get(file).bitmap);
 			}
 			else if (OpenFlAssets.exists(file, BINARY))
-			{
 				return OpenFlAssets.loadBitmapData(file);
-			}
 			else
 			{
-				file = getPath('images/$key.png', IMAGE, library);
+				file = getPath('images/$key.astc', BINARY, library);
 				if (currentTrackedAssets.exists(file))
 				{
 					localTrackedAssets.push(file);
 					return Future.withValue(currentTrackedAssets.get(file).bitmap);
 				}
-				else if (OpenFlAssets.exists(file, IMAGE))
+				else if (OpenFlAssets.exists(file, BINARY))
 					return OpenFlAssets.loadBitmapData(file);
+				else
+				{
+					file = getPath('images/$key.png', IMAGE, library);
+					if (currentTrackedAssets.exists(file))
+					{
+						localTrackedAssets.push(file);
+						return Future.withValue(currentTrackedAssets.get(file).bitmap);
+					}
+					else if (OpenFlAssets.exists(file, IMAGE))
+						return OpenFlAssets.loadBitmapData(file);
+				}
 			}
 		}
 
@@ -443,6 +463,10 @@ class Paths
 			for(mod in Mods.getGlobalMods())
 				if (FileSystem.exists(mods('$mod/$key')))
 					return true;
+				#if (android || ios)
+				else if (FileSystem.exists(findFile('$mod/$key')))
+					return true;
+				#end
 
 			if (FileSystem.exists(mods(Mods.currentModDirectory + '/' + key)) || FileSystem.exists(mods(key)))
 				return true;
@@ -451,6 +475,11 @@ class Paths
 
 		if(OpenFlAssets.exists(getPath(key, type, library, false))) {
 			return true;
+		#if (android || ios)
+		}
+		else if (OpenFlAssets.exists(findFile(key))) {
+			return true;
+		#end
 		}
 		return false;
 	}
@@ -595,8 +624,11 @@ class Paths
 
 	static public function modsImages(key:String, ?mod:String) {
 		var astc = modFolders('images/' + key + '.astc', mod);
+		var dds = modFolders('images/' + key + '.dds', mod);
 		if (FileSystem.exists(astc))
 			return astc;
+		else if (FileSystem.exists(dds))
+			return dds;
 		return modFolders('images/' + key + '.png', mod);
 	}
 
@@ -661,8 +693,16 @@ class Paths
 			if(FileSystem.exists(fileToCheck)) {
 				return fileToCheck;
 			}
+			#if (android || ios)
+			else
+			{
+			var newPath:String = findFile(key);
+			if (newPath != null)
+				return newPath;
+			}
 			#end
 			}
+			#end
 
 		for(mod in Mods.getGlobalMods()){
 			var fileToCheck:String = mods(mod + '/' + key);
@@ -674,10 +714,69 @@ class Paths
 			if(FileSystem.exists(fileToCheck)) {
 				return fileToCheck;
 			}
+			#if (android || linux || ios)
+			else
+			{
+				var newPath:String = findFile(key);
+				if (newPath != null)
+					return newPath;
+			}
+			#end
 			#end
 		}
 		return #if android StorageUtil.getExternalStorageDirectory() + #elseif mobile Sys.getCwd() + #end 'mods/' + key;
 	}
+
+	#if (android || linux || ios)
+	static function findFile(key:String):String {
+		var targetParts:Array<String> = key.replace('\\', '/').split('/');
+		if (targetParts.length == 0) return null;
+
+		var baseDir:String = targetParts.shift();
+		var searchDirs:Array<String> = [
+			mods(Mods.currentModDirectory + '/' + baseDir),
+			mods(baseDir)
+		];
+
+		for (part in targetParts) {
+			if (part == '') continue;
+
+			var nextDir:String = findNodeInDirs(searchDirs, part);
+			if (nextDir == null) {
+				return null;
+			}
+
+			searchDirs = [nextDir];
+		}
+
+		return searchDirs[0];
+	}
+
+	static function findNodeInDirs(dirs:Array<String>, key:String):String {
+		for (dir in dirs) {
+			var node:String = findNode(dir, key);
+			if (node != null) {
+				return dir + '/' + node;
+			}
+		}
+		return null;
+	}
+
+	static function findNode(dir:String, key:String):String {
+		try {
+			var allFiles:Array<String> = Paths.readDirectory(dir);
+			var fileMap:Map<String, String> = new Map();
+
+			for (file in allFiles) {
+				fileMap.set(file.toLowerCase(), file);
+			}
+
+			return fileMap.get(key.toLowerCase());
+		} catch (e:Dynamic) {
+			return null;
+		}
+	}
+	#end
 	#end
 
 	public static function loadAnimateAtlas(spr:FlxAnimate, folderOrImg:Dynamic, spriteJson:Dynamic = null, animationJson:Dynamic = null) {
@@ -723,6 +822,12 @@ class Paths
 				}
 				else if (Paths.fileExists('images/$originalPath/spritemap$st.astc', BINARY)) {
 					// trace('found Sprite ASTC');
+					changedImage = true;
+					loadSpriteMap(frames, spriteJson, folderOrImg = Paths.image('$originalPath/spritemap$st'));
+					break;
+				}
+				else if (Paths.fileExists('images/$originalPath/spritemap$st.dds', BINARY)) {
+					// trace('found Sprite DDS');
 					changedImage = true;
 					loadSpriteMap(frames, spriteJson, folderOrImg = Paths.image('$originalPath/spritemap$st'));
 					break;

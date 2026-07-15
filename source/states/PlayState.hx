@@ -1454,6 +1454,7 @@ class PlayState extends MusicBeatState
 				final ext = switch (type) {
 					case binary:
 						'.astc';
+						'.dds';
 					case 'image':
 						'.png';
 					case 'sound':

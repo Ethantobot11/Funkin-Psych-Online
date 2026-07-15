@@ -16,12 +16,17 @@ public function new(?tasksLength:Float, ?camera:FlxCamera) {
 		var _funkayGraphic = Paths.image('funkay', null, false);
 		
 		if (_funkayGraphic != null) {
-			var astcPath = Paths.getPath('images/funkay.astc', BINARY);
-			var astc = FileSystem.exists(astcPath);
+			var astc = FileSystem.exists(Paths.getPath('images/funkay.dds', BINARY));
+			var dds = FileSystem.exists(Paths.getPath('images/funkay.astc', BINARY));
 
 			if (astc) {
 				funkay.loadGraphic(_funkayGraphic);
-				funkay.scale.set(FlxG.width, FlxG.height);
+				funkay.setGraphicSize(0, FlxG.height);
+				funkay.updateHitbox();
+				funkay.screenCenter(X);
+			} else if (dds) {
+				funkay.loadGraphic(_funkayGraphic);
+				funkay.setGraphicSize(0, FlxG.height);
 				funkay.updateHitbox();
 				funkay.screenCenter(X);
 			} else {

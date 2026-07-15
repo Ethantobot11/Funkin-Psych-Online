@@ -60,7 +60,7 @@ class AchievementsMenuState extends MusicBeatState
 			{
 				#if MODS_ALLOWED Mods.currentModDirectory = option.mod; #end
 				var image:String = 'achievements/' + option.name;
-				if(Paths.fileExists('images/$image-pixel.png', IMAGE) || Paths.fileExists('images/$image-pixel.astc', BINARY))
+				if(Paths.fileExists('images/$image-pixel.png', IMAGE) || Paths.fileExists('images/$image-pixel.astc', BINARY) || Paths.fileExists('images/$image-pixel.dds', BINARY))
 				{
 					graphic = Paths.image('$image-pixel');
 					hasAntialias = false;
