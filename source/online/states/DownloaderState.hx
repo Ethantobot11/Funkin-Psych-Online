@@ -131,7 +131,7 @@ class DownloaderState extends MusicBeatState {
 
 		loadNextPage(true);
 
-		addMobilePad('LEFT_RIGHT', 'B');
+		mobileManager.addMobilePad('LEFT_RIGHT', 'B');
 	}
 
 	function loadNextPage(?value:Int = 0, ?newSearch:Bool = false) {
@@ -305,10 +305,10 @@ class DownloaderState extends MusicBeatState {
 			}
 
 			if (!LoadingScreen.loading) {
-				if (FlxG.mouse.wheel == 1 || (mobilePad.buttonLeft.justPressed || FlxG.keys.justPressed.Q)) {
+				if (FlxG.mouse.wheel == 1 || (mobileButtonJustPressed('LEFT') || FlxG.keys.justPressed.Q)) {
 					loadNextPage(-1);
 				}
-				if (FlxG.mouse.wheel == -1 || (mobilePad.buttonRight.justPressed || FlxG.keys.justPressed.E)) {
+				if (FlxG.mouse.wheel == -1 || (mobileButtonJustPressed('RIGHT') || FlxG.keys.justPressed.E)) {
 					loadNextPage(1);
 				}
 				
@@ -335,6 +335,7 @@ class DownloaderState extends MusicBeatState {
 
 					if (FlxG.mouse.overlaps(searchBg)) {
 						curSelected = -1;
+						FlxG.stage.window.textInputEnabled = true;
 					}
 				}
 			}

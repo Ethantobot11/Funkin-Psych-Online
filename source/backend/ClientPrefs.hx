@@ -20,32 +20,21 @@ import states.TitleState;
 
 	/* Mobile Controls */
 	/* Bool Options */
-	public var hitboxhint:Bool = false;
-	public var VSliceControl:Bool = false; //There we go
+	public var disableOnlineShaders:Bool = false;
+	public var hitboxHint:Bool = false;
+	public var ogGameControls:Bool = false; //There we go
+	public var showTweakMenu:Bool = false;
 
 	/* Int/Float Options */
 	public var extraKeys:Int = 2;
-	public var hitboxalpha:Float = #if mobile 0.7 #else 0 #end;
+	public var hitboxAlpha:Float = #if mobile 0.7 #else 0 #end;
 	public var mobilePadAlpha:Float = #if mobile 0.6 #else 0 #end;
 
 	/* String Options */
-	public var hitboxtype:String = 'Gradient';
+	public var hitboxType:String = 'Gradient';
 	public var hitboxLocation:String = 'Bottom';
-	public var hitboxmode:String = 'Normal (New)';
-
-	public var extraKeyReturn1:String = 'SHIFT';
-	public var extraKeyReturn2:String = 'SPACE';
-	public var extraKeyReturn3:String = 'Q';
-	public var extraKeyReturn4:String = 'E';
-	public var extraKeyReturn5:String = 'W';
-	public var extraKeyReturn6:String = 'A';
-	public var extraKeyReturn7:String = 'S';
-	public var extraKeyReturn8:String = 'D';
-
-	// Mobile Releated
-	public var screensaver:Bool = false;
-	public var vsync:Bool = false;
-	public var disableOnlineShaders:Bool = false;
+	public var hitboxMode:String = 'Normal (New)';
+	public var mobileExtraKeyReturns:Array<String> = ['SHIFT', 'SPACE', 'Q', 'E'];
 
 	public var downScroll:Bool = false;
 	public var middleScroll:Bool = false;
@@ -143,6 +132,7 @@ import states.TitleState;
 	public var verticalRatingPos:Bool = false;
 	public var midSongCommentsOpacity:Float = 0.5;
 	public var friendOnlineNotification:Bool = false;
+	public var newFPPreview:Bool = false;
 
 	public function new()
 	{
@@ -282,150 +272,161 @@ class ClientPrefs {
 		'fav'			=> [Y]
 	];
 	//This is only way to make work controls on new psych versions
-	public static var mobileBinds:Map<String, Array<MobileInputID>> = [
-		'1k_note_1'		=> [NOTE_1],
+	public static var mobileBinds:Map<String, Array<String>> = [
+		// 1K
+		'1k_note_1'		=> ['1K_NOTE_1'],
 
-		'2k_note_1'		=> [NOTE_1],
-		'2k_note_2'		=> [NOTE_2],
+		// 2K
+		'2k_note_1'		=> ['2K_NOTE_1'],
+		'2k_note_2'		=> ['2K_NOTE_2'],
 
-		'3k_note_1'		=> [NOTE_1],
-		'3k_note_2'		=> [NOTE_2],
-		'3k_note_3'		=> [NOTE_3],
+		// 3K
+		'3k_note_1'		=> ['3K_NOTE_1'],
+		'3k_note_2'		=> ['3K_NOTE_2'],
+		'3k_note_3'		=> ['3K_NOTE_3'],
 
-		'note_left'		=> [NOTE_1],
-		'note_down'	=> [NOTE_2],
-		'note_up'		=> [NOTE_3],
-		'note_right'		=> [NOTE_4],
+		// 4K
+		'note_left'		=> ['NOTE_LEFT'],
+		'note_down'	=> ['NOTE_DOWN'],
+		'note_up'		=> ['NOTE_UP'],
+		'note_right'		=> ['NOTE_RIGHT'],
+		
+		// 5K
+		'5k_note_1'		=> ['5K_NOTE_1'],
+		'5k_note_2'		=> ['5K_NOTE_2'],
+		'5k_note_3'		=> ['5K_NOTE_3'],
+		'5k_note_4'		=> ['5K_NOTE_4'],
+		'5k_note_5'		=> ['5K_NOTE_5'],
+		
+		// 6K
+		'6k_note_1'		=> ['6K_NOTE_1'],
+		'6k_note_2'		=> ['6K_NOTE_2'],
+		'6k_note_3'		=> ['6K_NOTE_3'],
+		'6k_note_4'		=> ['6K_NOTE_4'],
+		'6k_note_5'		=> ['6K_NOTE_5'],
+		'6k_note_6'		=> ['6K_NOTE_6'],
+		
+		// 7K
+		'7k_note_1'		=> ['7K_NOTE_1'],
+		'7k_note_2'		=> ['7K_NOTE_2'],
+		'7k_note_3'		=> ['7K_NOTE_3'],
+		'7k_note_4'		=> ['7K_NOTE_4'],
+		'7k_note_5'		=> ['7K_NOTE_5'],
+		'7k_note_6'		=> ['7K_NOTE_6'],
+		'7k_note_7'		=> ['7K_NOTE_7'],
+		
+		// 8K
+		'8k_note_1'		=> ['8K_NOTE_1'],
+		'8k_note_2'		=> ['8K_NOTE_2'],
+		'8k_note_3'		=> ['8K_NOTE_3'],
+		'8k_note_4'		=> ['8K_NOTE_4'],
+		'8k_note_5'		=> ['8K_NOTE_5'],
+		'8k_note_6'		=> ['8K_NOTE_6'],
+		'8k_note_7'		=> ['8K_NOTE_7'],
+		'8k_note_8'		=> ['8K_NOTE_8'],
+		
+		// 9K
+		'9k_note_1'		=> ['9K_NOTE_1'],
+		'9k_note_2'		=> ['9K_NOTE_2'],
+		'9k_note_3'		=> ['9K_NOTE_3'],
+		'9k_note_4'		=> ['9K_NOTE_4'],
+		'9k_note_5'		=> ['9K_NOTE_5'],
+		'9k_note_6'		=> ['9K_NOTE_6'],
+		'9k_note_7'		=> ['9K_NOTE_7'],
+		'9k_note_8'		=> ['9K_NOTE_8'],
+		'9k_note_9'		=> ['9K_NOTE_9'],
+		
+		// 20K
+		'20k_note_1'	=> ['20K_NOTE_1'],
+		'20k_note_2'	=> ['20K_NOTE_2'],
+		'20k_note_3'	=> ['20K_NOTE_3'],
+		'20k_note_4'	=> ['20K_NOTE_4'],
+		'20k_note_5'	=> ['20K_NOTE_5'],
+		'20k_note_6'	=> ['20K_NOTE_6'],
+		'20k_note_7'	=> ['20K_NOTE_7'],
+		'20k_note_8'	=> ['20K_NOTE_8'],
+		'20k_note_9'	=> ['20K_NOTE_9'],
+		'20k_note_10'	=> ['20K_EXTRA_10'],
+		'20k_note_11'	=> ['20K_EXTRA_11'],
+		'20k_note_12'	=> ['20K_EXTRA_12'],
+		'20k_note_13'	=> ['20K_EXTRA_13'],
+		'20k_note_14'	=> ['20K_EXTRA_14'],
+		'20k_note_15'	=> ['20K_EXTRA_15'],
+		'20k_note_16'	=> ['20K_EXTRA_16'],
+		'20k_note_17'	=> ['20K_EXTRA_17'],
+		'20k_note_18'	=> ['20K_EXTRA_18'],
+		'20k_note_19'	=> ['20K_EXTRA_19'],
+		'20k_note_20'	=> ['20K_EXTRA_20'],
+		
+		// 55K
+		'55k_note_1'	=> ['55K_NOTE_1'],
+		'55k_note_2'	=> ['55K_NOTE_2'],
+		'55k_note_3'	=> ['55K_NOTE_3'],
+		'55k_note_4'	=> ['55K_NOTE_4'],
+		'55k_note_5'	=> ['55K_NOTE_5'],
+		'55k_note_6'	=> ['55K_NOTE_6'],
+		'55k_note_7'	=> ['55K_NOTE_7'],
+		'55k_note_8'	=> ['55K_NOTE_8'],
+		'55k_note_9'	=> ['55K_NOTE_9'],
+		'55k_note_10'	=> ['55K_EXTRA_10'],
+		'55k_note_11'	=> ['55K_EXTRA_11'],
+		'55k_note_12'	=> ['55K_EXTRA_12'],
+		'55k_note_13'	=> ['55K_EXTRA_13'],
+		'55k_note_14'	=> ['55K_EXTRA_14'],
+		'55k_note_15'	=> ['55K_EXTRA_15'],
+		'55k_note_16'	=> ['55K_EXTRA_16'],
+		'55k_note_17'	=> ['55K_EXTRA_17'],
+		'55k_note_18'	=> ['55K_EXTRA_18'],
+		'55k_note_19'	=> ['55K_EXTRA_19'],
+		'55k_note_20'	=> ['55K_EXTRA_20'],
+		'55k_note_21'	=> ['55K_EXTRA_21'],
+		'55k_note_22'	=> ['55K_EXTRA_22'],
+		'55k_note_23'	=> ['55K_EXTRA_23'],
+		'55k_note_24'	=> ['55K_EXTRA_24'],
+		'55k_note_25'	=> ['55K_EXTRA_25'],
+		'55k_note_26'	=> ['55K_EXTRA_26'],
+		'55k_note_27'	=> ['55K_EXTRA_27'],
+		'55k_note_28'	=> ['55K_EXTRA_28'],
+		'55k_note_29'	=> ['55K_EXTRA_29'],
+		'55k_note_30'	=> ['55K_EXTRA_30'],
+		'55k_note_31'	=> ['55K_EXTRA_31'],
+		'55k_note_32'	=> ['55K_EXTRA_32'],
+		'55k_note_33'	=> ['55K_EXTRA_33'],
+		'55k_note_34'	=> ['55K_EXTRA_34'],
+		'55k_note_35'	=> ['55K_EXTRA_35'],
+		'55k_note_36'	=> ['55K_EXTRA_36'],
+		'55k_note_37'	=> ['55K_EXTRA_37'],
+		'55k_note_38'	=> ['55K_EXTRA_38'],
+		'55k_note_39'	=> ['55K_EXTRA_39'],
+		'55k_note_40'	=> ['55K_EXTRA_40'],
+		'55k_note_41'	=> ['55K_EXTRA_41'],
+		'55k_note_42'	=> ['55K_EXTRA_42'],
+		'55k_note_43'	=> ['55K_EXTRA_43'],
+		'55k_note_44'	=> ['55K_EXTRA_44'],
+		'55k_note_45'	=> ['55K_EXTRA_45'],
+		'55k_note_46'	=> ['55K_EXTRA_46'],
+		'55k_note_47'	=> ['55K_EXTRA_47'],
+		'55k_note_48'	=> ['55K_EXTRA_48'],
+		'55k_note_49'	=> ['55K_EXTRA_49'],
+		'55k_note_50'	=> ['55K_EXTRA_50'],
+		'55k_note_51'	=> ['55K_EXTRA_51'],
+		'55k_note_52'	=> ['55K_EXTRA_52'],
+		'55k_note_53'	=> ['55K_EXTRA_53'],
+		'55k_note_54'	=> ['55K_EXTRA_54'],
+		'55k_note_55'	=> ['55K_EXTRA_55'],
 
-		'5k_note_1'		=> [NOTE_1],
-		'5k_note_2'		=> [NOTE_2],
-		'5k_note_3'		=> [NOTE_3],
-		'5k_note_4'		=> [NOTE_4],
-		'5k_note_5'		=> [NOTE_5],
-	
-		'6k_note_1'		=> [NOTE_1],
-		'6k_note_2'		=> [NOTE_2],
-		'6k_note_3'		=> [NOTE_3],
-		'6k_note_4'		=> [NOTE_4],
-		'6k_note_5'		=> [NOTE_5],
-		'6k_note_6'		=> [NOTE_6],
-	
-		'7k_note_1'		=> [NOTE_1],
-		'7k_note_2'		=> [NOTE_2],
-		'7k_note_3'		=> [NOTE_3],
-		'7k_note_4'		=> [NOTE_4],
-		'7k_note_5'		=> [NOTE_5],
-		'7k_note_6'		=> [NOTE_6],
-		'7k_note_7'		=> [NOTE_7],
-	
-		'8k_note_1'		=> [NOTE_1],
-		'8k_note_2'		=> [NOTE_2],
-		'8k_note_3'		=> [NOTE_3],
-		'8k_note_4'		=> [NOTE_4],
-		'8k_note_5'		=> [NOTE_5],
-		'8k_note_6'		=> [NOTE_6],
-		'8k_note_7'		=> [NOTE_7],
-		'8k_note_8'		=> [NOTE_8],
+		'ui_up'			=> ['UP'],
+		'ui_left'			=> ['LEFT'],
+		'ui_down'		=> ['DOWN'],
+		'ui_right'		=> ['RIGHT'],
 
-		'9k_note_1'		=> [NOTE_1],
-		'9k_note_2'		=> [NOTE_2],
-		'9k_note_3'		=> [NOTE_3],
-		'9k_note_4'		=> [NOTE_4],
-		'9k_note_5'		=> [NOTE_5],
-		'9k_note_6'		=> [NOTE_6],
-		'9k_note_7'		=> [NOTE_7],
-		'9k_note_8'		=> [NOTE_8],
-		'9k_note_9'		=> [NOTE_9],
-
-		'20k_note_1'	=> [NOTE_1],
-		'20k_note_2'	=> [NOTE_2],
-		'20k_note_3'	=> [NOTE_3],
-		'20k_note_4'	=> [NOTE_4],
-		'20k_note_5'	=> [NOTE_5],
-		'20k_note_6'	=> [NOTE_6],
-		'20k_note_7'	=> [NOTE_7],
-		'20k_note_8'	=> [NOTE_8],
-		'20k_note_9'	=> [NOTE_9],
-		'20k_note_10'	=> [EXTRA_10],
-		'20k_note_11'	=> [EXTRA_11],
-		'20k_note_12'	=> [EXTRA_12],
-		'20k_note_13'	=> [EXTRA_13],
-		'20k_note_14'	=> [EXTRA_14],
-		'20k_note_15'	=> [EXTRA_15],
-		'20k_note_16'	=> [EXTRA_16],
-		'20k_note_17'	=> [EXTRA_17],
-		'20k_note_18'	=> [EXTRA_18],
-		'20k_note_19'	=> [EXTRA_19],
-		'20k_note_20'	=> [EXTRA_20],
-
-		'55k_note_1'		=> [NOTE_1],
-		'55k_note_2'		=> [NOTE_2],
-		'55k_note_3'		=> [NOTE_3],
-		'55k_note_4'		=> [NOTE_4],
-		'55k_note_5'		=> [NOTE_5],
-		'55k_note_6'		=> [NOTE_6],
-		'55k_note_7'		=> [NOTE_7],
-		'55k_note_8'		=> [NOTE_8],
-		'55k_note_9'		=> [NOTE_9],
-		'55k_note_10'		=> [EXTRA_10],
-		'55k_note_11'		=> [EXTRA_11],
-		'55k_note_12'		=> [EXTRA_12],
-		'55k_note_13'		=> [EXTRA_13],
-		'55k_note_14'		=> [EXTRA_14],
-		'55k_note_15'		=> [EXTRA_15],
-		'55k_note_16'		=> [EXTRA_16],
-		'55k_note_17'		=> [EXTRA_17],
-		'55k_note_18'		=> [EXTRA_18],
-		'55k_note_19'		=> [EXTRA_19],
-		'55k_note_20'		=> [EXTRA_20],
-		'55k_note_21'		=> [EXTRA_21],
-		'55k_note_22'		=> [EXTRA_22],
-		'55k_note_23'		=> [EXTRA_23],
-		'55k_note_24'		=> [EXTRA_24],
-		'55k_note_25'		=> [EXTRA_25],
-		'55k_note_26'		=> [EXTRA_26],
-		'55k_note_27'		=> [EXTRA_27],
-		'55k_note_28'		=> [EXTRA_28],
-		'55k_note_29'		=> [EXTRA_29],
-		'55k_note_30'		=> [EXTRA_30],
-		'55k_note_31'		=> [EXTRA_31],
-		'55k_note_32'		=> [EXTRA_32],
-		'55k_note_33'		=> [EXTRA_33],
-		'55k_note_34'		=> [EXTRA_34],
-		'55k_note_35'		=> [EXTRA_35],
-		'55k_note_36'		=> [EXTRA_36],
-		'55k_note_37'		=> [EXTRA_37],
-		'55k_note_38'		=> [EXTRA_38],
-		'55k_note_39'		=> [EXTRA_39],
-		'55k_note_40'		=> [EXTRA_40],
-		'55k_note_41'		=> [EXTRA_41],
-		'55k_note_42'		=> [EXTRA_42],
-		'55k_note_43'		=> [EXTRA_43],
-		'55k_note_44'		=> [EXTRA_44],
-		'55k_note_45'		=> [EXTRA_45],
-		'55k_note_46'		=> [EXTRA_46],
-		'55k_note_47'		=> [EXTRA_47],
-		'55k_note_48'		=> [EXTRA_48],
-		'55k_note_49'		=> [EXTRA_49],
-		'55k_note_50'		=> [EXTRA_50],
-		'55k_note_51'		=> [EXTRA_51],
-		'55k_note_52'		=> [EXTRA_52],
-		'55k_note_53'		=> [EXTRA_53],
-		'55k_note_54'		=> [EXTRA_54],
-		'55k_note_55'		=> [EXTRA_55],
-
-		'ui_up'			=> [UP],
-		'ui_left'		=> [LEFT],
-		'ui_down'		=> [DOWN],
-		'ui_right'		=> [RIGHT],
-
-		'accept'		=> [A],
-		'back'			=> [B],
-		'pause'			=> [P],
-		'reset'			=> [NONE],
-		'taunt'			=> [T]
+		'accept'		=> ['A'],
+		'back'			=> ['B'],
+		'pause'			=> ['P'],
+		'reset'			=> ['NONE'],
+		'taunt'			=> ['T']
 	];
-	public static var defaultMobileBinds:Map<String, Array<MobileInputID>> = null;
+	public static var defaultMobileBinds:Map<String, Array<String>> = null;
 	public static var defaultKeys:Map<String, Array<FlxKey>> = null;
 	public static var defaultButtons:Map<String, Array<FlxGamepadInputID>> = null;
 
@@ -452,7 +453,7 @@ class ClientPrefs {
 	public static function clearInvalidKeys(key:String) {
 		var keyBind:Array<FlxKey> = keyBinds.get(key);
 		var gamepadBind:Array<FlxGamepadInputID> = gamepadBinds.get(key);
-		var mobileBind:Array<MobileInputID> = mobileBinds.get(key);
+		var mobileBind:Array<String> = mobileBinds.get(key);
 		while(keyBind != null && keyBind.contains(NONE)) keyBind.remove(NONE);
 		while(gamepadBind != null && gamepadBind.contains(NONE)) gamepadBind.remove(NONE);
 		while(mobileBind != null && mobileBind.contains(NONE)) mobileBind.remove(NONE);
@@ -559,7 +560,7 @@ class ClientPrefs {
 				}
 			}
 			if(save.data.mobile != null) {
-				var loadedControls:Map<String, Array<MobileInputID>> = save.data.mobile;
+				var loadedControls:Map<String, Array<String>> = save.data.mobile;
 				for (control => keys in loadedControls)
 					/*if(mobileBinds.exists(control))*/ mobileBinds.set(control, keys);
 			}

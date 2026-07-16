@@ -1,6 +1,17 @@
-name: Build Psych Online + Release
-run-name: Psych Online 0.13.2 Mobile Port
-on: workflow_dispatch
+name: Build Psych Online Mobile + Release
+on:
+  workflow_dispatch:
+    inputs:
+      name:
+        description: "Release name (e.g. `many fixes`)"
+        required: true
+      tag_name:
+        description: "Release tag (e.g. `v0.13.3 or bugfix`)"
+        required: true
+      prerelease:
+        description: "Is this a prerelease?"
+        required: true
+        type: boolean
 
 permissions:
   contents: write
@@ -8,6 +19,8 @@ permissions:
 
 env:
   PROJECT_NAME: PsychOnline
+  TAG_NAME: ${{ github.event.inputs.tag_name }}
+  NAME: ${{ github.event.inputs.name }}
 
 jobs:
   build:
@@ -60,9 +73,9 @@ jobs:
       - name: Publish The Release
         uses: softprops/action-gh-release@v2
         with:
-          name: "PsychOnline 0.13.2 Mobile Bugfix"
-          tag_name: "0.13.2-bugfix-mobile"
-          prerelease: false
+          name: ${{ env.NAME }}
+          tag_name: ${{ env.TAG_NAME }}
+          prerelease: ${{ github.event.inputs.prerelease == 'true' }}
           files: |
             /home/runner/*.apk
             /home/runner/*.ipa

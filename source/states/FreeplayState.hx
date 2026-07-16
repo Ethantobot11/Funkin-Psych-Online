@@ -625,8 +625,8 @@ class FreeplayState extends MusicBeatState
 		updateTexts();
 		searchString = searchString;
 
-		addMobilePad('FULL', (GameClient.isConnected()) ? 'FREEPLAY_ONLINE' : 'FREEPLAY');
-		addMobilePadCamera();
+		mobileManager.addMobilePad('FULL', (GameClient.isConnected()) ? 'FREEPLAY_ONLINE' : 'FREEPLAY');
+		mobileManager.addMobilePadCamera();
 
 		super.create();
 
@@ -713,10 +713,9 @@ class FreeplayState extends MusicBeatState
 		#end
 
 		for (i => directory in directories) {
-			if (FileSystem.exists(directory)) {
-				for (file in FileSystem.readDirectory(directory)) {
-					var path = haxe.io.Path.join([directory, file]);
-					if (!sys.FileSystem.isDirectory(path) && file.endsWith('.json')) {
+			if (FunkinFileSystem.exists(directory)) {
+				for (file in FunkinFileSystem.readDirectory(directory)) {
+					if (file.endsWith('.json')) {
 						var charToCheck:String = file.substr(0, file.length - 5);
 						if (!charsWeeksLoaded.exists(charToCheck)) {
 							charsWeeksLoaded.set(charToCheck, directoryMods[i]);
@@ -757,6 +756,8 @@ class FreeplayState extends MusicBeatState
 	override function closeSubState() {
 		curPage = 0;
 		changeSelection(0, false);
+		if (selected)
+			changeDiff();
 		if (_substateIsModifiers) {
 			leaderboardTimer = 0;
 			
@@ -770,10 +771,10 @@ class FreeplayState extends MusicBeatState
 		}
 
 		super.closeSubState();
-		mobilePad.visible = true;
-		removeMobilePad();
-		addMobilePad('FULL', (GameClient.isConnected()) ? 'FREEPLAY_ONLINE' : 'FREEPLAY');
-		addMobilePadCamera();
+		mobileManager.mobilePad.visible = true;
+		mobileManager.removeMobilePad();
+		mobileManager.addMobilePad('FULL', (GameClient.isConnected()) ? 'FREEPLAY_ONLINE' : 'FREEPLAY');
+		mobileManager.addMobilePadCamera();
 	}
 
 	function setDiffVisibility(value:Bool) {
@@ -874,7 +875,7 @@ class FreeplayState extends MusicBeatState
 			return;
 		}
 
-		if (!searchInputWait && (mobilePad.buttonS.justPressed || FlxG.keys.justPressed.F)) {
+		if (!searchInputWait && (mobileButtonJustPressed('S') || FlxG.keys.justPressed.F)) {
 			FlxG.stage.window.textInputEnabled = true;
 			searchInputWait = true;
 			searchString = searchString;
@@ -887,7 +888,7 @@ class FreeplayState extends MusicBeatState
 		#end
 
 		var shiftMult:Int = 1;
-		if(mobilePad.buttonZ.pressed || FlxG.keys.pressed.SHIFT) shiftMult = 3;
+		if(mobileButtonPressed('Z') || FlxG.keys.pressed.SHIFT) shiftMult = 3;
 
 		if (!selected) {
 			if(songs.length > 0)
@@ -915,7 +916,7 @@ class FreeplayState extends MusicBeatState
 					holdTime = 0;
 				}
 
-				if ((mobilePad.buttonF.justPressed || controls.FAV) && curSelected != -1) {
+				if ((mobileButtonJustPressed('F') || controls.FAV) && curSelected != -1) {
 					var songId = songs[curSelected].songName + '-' + songs[curSelected].folder;
 					if (ClientPrefs.data.favSongs.contains(songId)) {
 						ClientPrefs.data.favSongs.remove(songId);
@@ -933,7 +934,7 @@ class FreeplayState extends MusicBeatState
 					search();
 				}
 
-				if (((mobilePad.buttonR.justReleased && resetTotalHeld <= 3.5) || controls.RESET) && curSelected != -1 && !FlxG.keys.pressed.ALT) {
+				if (((mobileButtonJustReleased('R') && resetTotalHeld <= 3.5) || controls.RESET) && curSelected != -1 && !FlxG.keys.pressed.ALT) {
 					var songId = songs[curSelected].songName + '-' + songs[curSelected].folder;
 					if (ClientPrefs.data.hiddenSongs.contains(songId)) {
 						ClientPrefs.data.hiddenSongs.remove(songId);
@@ -974,15 +975,15 @@ class FreeplayState extends MusicBeatState
 				}
 			}
 
-			if (mobilePad.buttonR.pressed && resetTotalHeld <= 3.5)
+			if (mobileButtonPressed('R') && resetTotalHeld <= 3.5)
 			{
 				resetTotalHeld += elapsed;
 				if (resetTotalHeld >= 3.5)
 					doSongReset = true;
-			} else if (mobilePad.buttonR.released)
+			} else if (mobileButtonReleased('R'))
 				resetTotalHeld = 0;
 
-			if ((mobilePad.buttonR.pressed && doSongReset) || (controls.RESET && FlxG.keys.pressed.ALT)) {
+			if ((mobileButtonPressed('R') && doSongReset) || (controls.RESET && FlxG.keys.pressed.ALT)) {
 				doSongReset = false;
 				ClientPrefs.data.hiddenSongs = [];
 				ClientPrefs.saveSettings();
@@ -1001,13 +1002,13 @@ class FreeplayState extends MusicBeatState
 					updateGroupTitle();
 				}
 
-				if (mobilePad.buttonG.justPressed || FlxG.keys.justPressed.CONTROL) {
+				if (mobileButtonJustPressed('G') || FlxG.keys.justPressed.CONTROL) {
 					persistentUpdate = false;
 					var daCopy = searchGroupVList.copy();
 					for (i => item in daCopy)
 						daCopy[i] = formatGroupItem(item);
 
-					mobilePad.visible = false;
+					mobileManager.mobilePad.visible = false;
 					var selState = new online.substates.SoFunkinSubstate(daCopy, searchGroupValue, i -> {
 						searchGroupValue = i;
 						search();
@@ -1070,7 +1071,7 @@ class FreeplayState extends MusicBeatState
 				}
 			}
 
-			if(mobilePad.buttonX.justPressed || FlxG.keys.justPressed.SPACE)
+			if(mobileButtonJustPressed('X') || FlxG.keys.justPressed.SPACE)
 			{
 				if (curSelected == -1) {
 					var newSel = FlxG.random.int(0, songs.length - 1);
@@ -1103,7 +1104,7 @@ class FreeplayState extends MusicBeatState
 				leaderboardTimer = 0;
 			}
 
-			if (chatBox == null && mobilePad.buttonY.justPressed || FlxG.keys.justPressed.TAB) {
+			if (chatBox == null && mobileButtonJustPressed('Y') || FlxG.keys.justPressed.TAB) {
 				persistentUpdate = false;
 				FlxG.switchState(() -> new online.states.SkinsState());
 			}
@@ -1157,15 +1158,31 @@ class FreeplayState extends MusicBeatState
 						}
 					case 1:
 						if (!GameClient.isConnected()) {
-							persistentUpdate = false;
-							_substateIsModifiers = true;
-							mobilePad.visible = false;
-							loadSong();
-							openSubState(new GameplayChangersSubstate());
+							try {
+								loadSong();
+								persistentUpdate = false;
+								_substateIsModifiers = true;
+								mobileManager.mobilePad.visible = false;
+								openSubState(new GameplayChangersSubstate());
+							}
+							catch (e:Dynamic) {
+								trace('ERROR! $e');
+
+								var errorStr:String = e.toString();
+								if (errorStr.startsWith('[file_contents,assets/data/'))
+									errorStr = 'Missing file: ' + errorStr.substring(27, errorStr.length - 1); // Missing chart
+								missingText.text = 'ERROR WHILE LOADING CHART:\n$errorStr';
+								missingText.screenCenter(Y);
+								missingText.visible = true;
+								missingTextBG.visible = true;
+								FlxG.sound.play(Paths.sound('cancelMenu'));
+
+								updateTexts(elapsed);
+							}
 						}
 					case 2:
 						if (!GameClient.isConnected()) {
-							if (!FileSystem.exists("replays/"))
+							if (!FunkinFileSystem.exists("replays/"))
 								FileSystem.createDirectory("replays/");
 
 							var fileDialog = new FileDialog();
@@ -1192,7 +1209,7 @@ class FreeplayState extends MusicBeatState
 							));
 						}
 						else if (!GameClient.isConnected()) {
-							if (top[selectedScore] != null)
+							if (top != null && top[selectedScore] != null)
 								playReplay(Leaderboard.fetchReplay(top[selectedScore].id), top[selectedScore].id);
 						}
 				}
@@ -1286,7 +1303,7 @@ class FreeplayState extends MusicBeatState
 		}
 
 		updateTexts(elapsed);
-		if (mobilePad.buttonZ.pressed || FlxG.keys.pressed.SHIFT && !selected) {
+		if (mobileButtonPressed('Z') || FlxG.keys.pressed.SHIFT && !selected) {
 			itemsCameraZoom = FlxMath.lerp(itemsCameraZoom, 0.65, elapsed * 10);
 			itemsCameraScrollX = FlxMath.lerp(itemsCameraScrollX, 150, elapsed * 10);
 		}
@@ -1360,6 +1377,10 @@ class FreeplayState extends MusicBeatState
 		}
 		_ledSong = formatSong;
 
+		updateManiaKeys();
+	}
+
+	function updateManiaKeys() {
 		Song.updateManiaKeys(PlayState.SONG);
 		if (Note.maniaKeysStringList.contains(ClientPrefs.getGameplaySetting('mania'))) {
 			Note.maniaKeys = Std.parseInt(ClientPrefs.getGameplaySetting('mania').split('k')[0]);
@@ -1686,9 +1707,11 @@ class FreeplayState extends MusicBeatState
 		if (songs[curSelected] == null)
 			return;
 
+		updateManiaKeys();
+
 		#if !switch
-		intendedScore = Highscore.getScore(getSongName(), curDifficulty);
-		intendedRating = Highscore.getRating(getSongName(), curDifficulty);
+		intendedScore = Highscore.getScore(getSongName() + '${Note.maniaKeys == 4 ? '' : '$' + Note.maniaKeys + 'k'}', curDifficulty);
+		intendedRating = Highscore.getRating(getSongName() + '${Note.maniaKeys == 4 ? '' : '$' + Note.maniaKeys + 'k'}', curDifficulty);
 		#end
 
 		lastDifficultyName = Difficulty.getString(curDifficulty);

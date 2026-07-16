@@ -318,6 +318,7 @@ class ChartingState extends MusicBeatState
 
 		camPos = new FlxObject(0, 0, 1, 1);
 		camPos.setPosition(strumLine.x + CAM_OFFSET, strumLine.y);
+		updateCamPos();
 
 		dummyArrow = new FlxSprite().makeGraphic(GRID_SIZE, GRID_SIZE);
 		dummyArrow.antialiasing = ClientPrefs.data.antialiasing;
@@ -414,7 +415,7 @@ class ChartingState extends MusicBeatState
 
 		updateGrid();
 
-		addMobilePad("CHART_EDITOR", "CHART_EDITOR");
+		mobileManager.addMobilePad("CHART_EDITOR", "CHART_EDITOR");
 
 		super.create();
 	}
@@ -474,7 +475,7 @@ class ChartingState extends MusicBeatState
 			var songName:String = Paths.formatToSongPath(_song.song);
 			var file:String = Paths.json(songName + '/events' + trackSuffix);
 			#if sys
-			if (#if MODS_ALLOWED FileSystem.exists(Paths.modsJson(songName + '/events' + trackSuffix)) || #end FileSystem.exists(file))
+			if (#if MODS_ALLOWED FunkinFileSystem.exists(Paths.modsJson(songName + '/events' + trackSuffix)) || #end FunkinFileSystem.exists(file))
 			#else
 			if (OpenFlAssets.exists(file))
 			#end
@@ -541,13 +542,11 @@ class ChartingState extends MusicBeatState
 				tempArray.push(character);
 		}
 
-		#if MODS_ALLOWED
 		for (i in 0...directories.length) {
 			var directory:String = directories[i];
-			if(FileSystem.exists(directory)) {
-				for (file in FileSystem.readDirectory(directory)) {
-					var path = haxe.io.Path.join([directory, file]);
-					if (!FileSystem.isDirectory(path) && file.endsWith('.json')) {
+			if(FunkinFileSystem.exists(directory)) {
+				for (file in FunkinFileSystem.readDirectory(directory)) {
+					if (file.endsWith('.json')) {
 						var charToCheck:String = file.substr(0, file.length - 5);
 						if(charToCheck.trim().length > 0 && !charToCheck.endsWith('-dead') && !tempArray.contains(charToCheck)) {
 							tempArray.push(charToCheck);
@@ -557,7 +556,6 @@ class ChartingState extends MusicBeatState
 				}
 			}
 		}
-		#end
 		tempArray = [];
 
 		var player1DropDown = new FlxScrollableDropDownMenu(10, stepperSpeed.y + 45, FlxScrollableDropDownMenu.makeStrIdLabelArray(characters, true), function(character:String)
@@ -934,7 +932,7 @@ class ChartingState extends MusicBeatState
 		#if sys
 		var foldersToCheck:Array<String> = Mods.directoriesWithFile(Paths.getPreloadPath(), 'custom_notetypes/');
 		for (folder in foldersToCheck)
-			for (file in FileSystem.readDirectory(folder))
+			for (file in FunkinFileSystem.readDirectory(folder))
 			{
 				var fileName:String = file.toLowerCase().trim();
 				var wordLen:Int = 4; //length of word ".lua" and ".txt";
@@ -999,14 +997,14 @@ class ChartingState extends MusicBeatState
 
 		for (i in 0...directories.length) {
 			var directory:String =  directories[i];
-			if(FileSystem.exists(directory)) {
-				for (file in FileSystem.readDirectory(directory)) {
+			if(FunkinFileSystem.exists(directory)) {
+				for (file in FunkinFileSystem.readDirectory(directory)) {
 					var path = haxe.io.Path.join([directory, file]);
-					if (!FileSystem.isDirectory(path) && file != 'readme.txt' && file.endsWith('.txt')) {
+					if (file != 'readme.txt' && file.endsWith('.txt')) {
 						var fileToCheck:String = file.substr(0, file.length - 4);
 						if(!eventPushedMap.exists(fileToCheck)) {
 							eventPushedMap.set(fileToCheck, true);
-							eventStuff.push([fileToCheck, File.getContent(path)]);
+							eventStuff.push([fileToCheck, FunkinFileSystem.getText(path)]);
 						}
 					}
 				}
@@ -1475,7 +1473,7 @@ class ChartingState extends MusicBeatState
 			DiscordClient.changePresence("Chart Editor", StringTools.replace(_song.song, '-', ' '));
 			#end
 		}
-		mobilePad.active = mobilePad.visible = true;
+		mobileManager.mobilePad.active = mobileManager.mobilePad.visible = true;
 		super.closeSubState();
 	}
 
@@ -1659,6 +1657,15 @@ class ChartingState extends MusicBeatState
 		return daPos;
 	}
 
+	function updateCamPos() {
+		if (camPos.x > strumLine.x + CAM_OFFSET) {
+			camPos.x = strumLine.x + CAM_OFFSET;
+		}
+		if (camPos.x < strumLine.x - 400 + FlxG.camera.width / 2) {
+			camPos.x = strumLine.x - 400 + FlxG.camera.width / 2;
+		}
+	}
+
 	var lastConductorPos:Float;
 	var colorSine:Float = 0;
 	var mousePressTime:Float = -1;
@@ -1828,11 +1835,13 @@ class ChartingState extends MusicBeatState
 			mouseAction = NONE;
 			if (mousePressTime >= 0) {
 				if (FlxG.mouse.pressed) {
-					mouseAction = PRESSING;
+					if ((Math.abs(FlxG.mouse.screenX - mouseActionOriginPos[0]) >= GRID_SIZE || Math.abs(FlxG.mouse.screenY - mouseActionOriginPos[1]) >= GRID_SIZE) || mousePressTime >= 0.1) {
+						mouseAction = PRESSING;
+					}
 					mousePressTime += elapsed;
 				}
 				else {
-					if (Math.abs(FlxG.mouse.screenX - mouseActionOriginPos[0]) < 10 && Math.abs(FlxG.mouse.screenY - mouseActionOriginPos[1]) < 10 && mousePressTime < 0.2) {
+					if (Math.abs(FlxG.mouse.screenX - mouseActionOriginPos[0]) < GRID_SIZE && Math.abs(FlxG.mouse.screenY - mouseActionOriginPos[1]) < GRID_SIZE && mousePressTime < 0.2) {
 						mouseAction = CLICK;
 					}
 					mousePressTime = -1;
@@ -1942,6 +1951,60 @@ class ChartingState extends MusicBeatState
 			}else{
 				dummyArrow.visible = false;
 			}
+
+			var selectedNote = curSelectedNote;
+
+			if (mouseAction != NONE) {
+				if (FlxG.mouse.overlaps(curRenderedNotes)) {
+					curRenderedNotes.forEachAlive(function(note:Note) {
+						if (FlxG.mouse.overlaps(note)) {
+							if (mouseAction == RIGHT_JUST_PRESS || mouseAction == CLICK)
+								selectNote(note);
+
+							if (mouseAction == CLICK) {
+								if (FlxG.keys.pressed.ALT) {
+									curSelectedNote[3] = curNoteTypes[currentType];
+									updateGrid();
+								}
+								else if (selectedNote != null && curSelectedNote[0] == selectedNote[0] && curSelectedNote[1] == selectedNote[1]) {
+									deleteNote(note);
+								}
+							}
+						}
+					});
+				}
+				else {
+					if (mouseAction == CLICK) {
+						if (FlxG.mouse.x > gridBG.x
+							&& FlxG.mouse.x < gridBG.x + gridBG.width
+							&& FlxG.mouse.y > gridBG.y
+							&& FlxG.mouse.y < gridBG.y + (GRID_SIZE * getSectionBeats() * 4) * zoomList[curZoom]) {
+							FlxG.log.add('added note');
+							addNote();
+						}
+					}
+				}
+				
+				if (mouseAction == RIGHT_PRESSING && curSelectedNote != null && curSelectedNote[1] > -1) {
+					var mouseSus = getStrumTime(FlxG.mouse.y * zoomList[curZoom]) + sectionStartTime() - curSelectedNote[0] - Conductor.stepCrochet;
+					var newMouseSus = mouseSus - (!FlxG.keys.pressed.SHIFT ? mouseSus % Conductor.stepCrochet : 0);
+					if (newMouseSus != curSelectedNote[2])
+						changeNoteSustain(newMouseSus, true);
+				}
+
+				if (mouseAction == PRESSING) {
+					// if (Note.maniaKeys > 9)
+					camPos.x -= FlxG.mouse.deltaScreenX;
+					FlxG.sound.music.pause();
+					for (v in [vocals, opponentVocals]) {
+						if (v == null) continue;
+						v.pause();
+						v.time = FlxG.sound.music.time;
+					}
+					FlxG.sound.music.time -= getStrumTime(FlxG.mouse.deltaScreenY * zoomList[curZoom]);
+					updateCamPos();
+				}
+			}
 		}
 
 		var blockInput:Bool = false;
@@ -1977,8 +2040,7 @@ class ChartingState extends MusicBeatState
 
 		if (!blockInput)
 		{
-			if ((FlxG.keys.justPressed.ESCAPE || mobilePad.buttonC.justPressed) && false)
-			if (FlxG.keys.justPressed.ESCAPE && false)
+			if ((FlxG.keys.justPressed.ESCAPE || mobileButtonJustPressed('C')) && false)
 			{
 				FlxG.sound.music.pause();
 				for (v in [vocals, opponentVocals]) {
@@ -1990,10 +2052,10 @@ class ChartingState extends MusicBeatState
 				playtesting = true;
 				playtestingTime = Conductor.songPosition;
 				playtestingOnComplete = FlxG.sound.music.onComplete;
-				mobilePad.active = mobilePad.visible = false;
+				mobileManager.mobilePad.active = mobileManager.mobilePad.visible = false;
 				openSubState(new states.editors.EditorPlayState(playbackSpeed));
 			}
-			if (FlxG.keys.justPressed.ENTER || mobilePad.buttonA.justPressed)
+			if (FlxG.keys.justPressed.ENTER || mobileButtonJustPressed('A'))
 			{
 				autosaveSong();
 				FlxG.mouse.visible = false;
@@ -2010,18 +2072,18 @@ class ChartingState extends MusicBeatState
 			}
 
 			if(curSelectedNote != null && curSelectedNote[1] > -1) {
-				if (mobilePad.buttonDown2.justPressed || FlxG.keys.justPressed.E)
+				if (mobileButtonJustPressed('DOWN2') || FlxG.keys.justPressed.E)
 				{
 					changeNoteSustain(Conductor.stepCrochet);
 				}
-				if (mobilePad.buttonUp2.justPressed || FlxG.keys.justPressed.Q)
+				if (mobileButtonJustPressed('UP2') || FlxG.keys.justPressed.Q)
 				{
 					changeNoteSustain(-Conductor.stepCrochet);
 				}
 			}
 
 
-			if (FlxG.keys.justPressed.BACKSPACE || mobilePad.buttonB.justPressed) {
+			if (FlxG.keys.justPressed.BACKSPACE || mobileButtonJustPressed('B')) {
 				// Protect against lost data when quickly leaving the chart editor.
 				autosaveSong();
 				PlayState.chartingMode = false;
@@ -2031,15 +2093,15 @@ class ChartingState extends MusicBeatState
 				return;
 			}
 
-			if(mobilePad.buttonV.justPressed || FlxG.keys.justPressed.Z && FlxG.keys.pressed.CONTROL) {
+			if(mobileButtonJustPressed('Z') || FlxG.keys.justPressed.Z && FlxG.keys.pressed.CONTROL) {
 				undo();
 			}
 
-			if(FlxG.keys.justPressed.Z || mobilePad.buttonZ.justPressed && curZoom > 0 && !FlxG.keys.pressed.CONTROL) {
+			if(FlxG.keys.justPressed.Z || mobileButtonJustPressed('V') && curZoom > 0 && !FlxG.keys.pressed.CONTROL) {
 				--curZoom;
 				updateZoom();
 			}
-			if(FlxG.keys.justPressed.X || mobilePad.buttonD.justPressed && curZoom < zoomList.length-1) {
+			if(FlxG.keys.justPressed.X || mobileButtonJustPressed('D') && curZoom < zoomList.length-1) {
 				curZoom++;
 				updateZoom();
 			}
@@ -2060,7 +2122,7 @@ class ChartingState extends MusicBeatState
 				}
 			}
 
-			if (FlxG.keys.justPressed.SPACE || mobilePad.buttonX.justPressed)
+			if (FlxG.keys.justPressed.SPACE || mobileButtonJustPressed('X'))
 			{
 				if (FlxG.sound.music.playing)
 				{
@@ -2124,17 +2186,17 @@ class ChartingState extends MusicBeatState
 
 
 
-			if ((FlxG.keys.pressed.W || FlxG.keys.pressed.S) || (mobilePad.buttonUp.pressed || mobilePad.buttonDown.pressed))
+			if ((FlxG.keys.pressed.W || FlxG.keys.pressed.S) || (mobileButtonPressed('UP') || mobileButtonPressed('DOWN')))
 			{
 				FlxG.sound.music.pause();
 
 				var holdingShift:Float = 1;
 				if (FlxG.keys.pressed.CONTROL) holdingShift = 0.25;
-				else if (FlxG.keys.pressed.SHIFT || mobilePad.buttonY.pressed) holdingShift = 4;
+				else if (FlxG.keys.pressed.SHIFT || mobileButtonPressed('Y')) holdingShift = 4;
 
 				var daTime:Float = 700 * FlxG.elapsed * holdingShift;
 
-				if (FlxG.keys.pressed.W || mobilePad.buttonUp.pressed)
+				if (FlxG.keys.pressed.W || mobileButtonPressed('UP'))
 				{
 					FlxG.sound.music.time -= daTime;
 				}
@@ -2170,7 +2232,7 @@ class ChartingState extends MusicBeatState
 
 			var style = currentType;
 
-			if (FlxG.keys.pressed.SHIFT || mobilePad.buttonY.pressed){
+			if (FlxG.keys.pressed.SHIFT || mobileButtonPressed('Y')){
 				style = 3;
 			}
 
@@ -2266,12 +2328,12 @@ class ChartingState extends MusicBeatState
 				}
 			}
 			var shiftThing:Int = 1;
-			if (FlxG.keys.pressed.SHIFT || mobilePad.buttonY.pressed)
+			if (FlxG.keys.pressed.SHIFT || mobileButtonPressed('Y'))
 				shiftThing = 4;
 
-			if (FlxG.keys.justPressed.D || mobilePad.buttonRight.justPressed)
+			if (FlxG.keys.justPressed.D || mobileButtonJustPressed('RIGHT'))
 				changeSection(curSec + shiftThing);
-			if (FlxG.keys.justPressed.A || mobilePad.buttonLeft.justPressed) {
+			if (FlxG.keys.justPressed.A || mobileButtonJustPressed('LEFT')) {
 				if(curSec <= 0) {
 					changeSection(_song.notes.length-1);
 				} else {
@@ -2316,7 +2378,7 @@ class ChartingState extends MusicBeatState
 			playbackSpeed -= 0.01;
 		if (!holdingShift && pressedRB || holdingShift && holdingRB)
 			playbackSpeed += 0.01;
-		if (mobilePad.buttonG.justPressed || (FlxG.keys.pressed.ALT && (pressedLB || pressedRB || holdingLB || holdingRB)))
+		if (mobileButtonJustPressed('G') || (FlxG.keys.pressed.ALT && (pressedLB || pressedRB || holdingLB || holdingRB)))
 			playbackSpeed = 1;
 		//
 
@@ -2415,7 +2477,7 @@ class ChartingState extends MusicBeatState
 		}
 		audioBuffers[0] = null;
 		#if MODS_ALLOWED
-		if(FileSystem.exists(Paths.modFolders('songs/' + currentSongName + '/Inst.ogg'))) {
+		if(FunkinFileSystem.exists(Paths.modFolders('songs/' + currentSongName + '/Inst.ogg'))) {
 			audioBuffers[0] = AudioBuffer.fromFile(Paths.modFolders('songs/' + currentSongName + '/Inst.ogg'));
 			//trace('Custom vocals found');
 		}
@@ -2434,7 +2496,7 @@ class ChartingState extends MusicBeatState
 		}
 		audioBuffers[1] = null;
 		#if MODS_ALLOWED
-		if(FileSystem.exists(Paths.modFolders('songs/' + currentSongName + '/Voices.ogg'))) {
+		if(FunkinFileSystem.exists(Paths.modFolders('songs/' + currentSongName + '/Voices.ogg'))) {
 			audioBuffers[1] = AudioBuffer.fromFile(Paths.modFolders('songs/' + currentSongName + '/Voices.ogg'));
 			//trace('Custom vocals found');
 		} else { #end
@@ -2885,11 +2947,11 @@ class ChartingState extends MusicBeatState
 		var characterPath:String = 'characters/' + char + '.json';
 		#if MODS_ALLOWED
 		var path:String = Paths.modFolders(characterPath);
-		if (!FileSystem.exists(path)) {
+		if (!FunkinFileSystem.exists(path)) {
 			path = Paths.getPreloadPath(characterPath);
 		}
 
-		if (!FileSystem.exists(path))
+		if (!FunkinFileSystem.exists(path))
 		#else
 		var path:String = Paths.getPreloadPath(characterPath);
 		if (!OpenFlAssets.exists(path))
@@ -2899,7 +2961,7 @@ class ChartingState extends MusicBeatState
 		}
 
 		#if MODS_ALLOWED
-		var rawJson = File.getContent(path);
+		var rawJson = FunkinFileSystem.getText(path);
 		#else
 		var rawJson = OpenFlAssets.getText(path);
 		#end

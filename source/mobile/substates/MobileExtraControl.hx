@@ -37,6 +37,8 @@ class MobileExtraControl extends MusicBeatSubstate
 	var optionWidth:Int = 80;
 	var optionHeight:Int = 30;
 
+	var optionCount:Int = 4;
+
 	override function create()
 	{
 		cameras = [FlxG.cameras.list[FlxG.cameras.list.length - 1]];
@@ -49,10 +51,10 @@ class MobileExtraControl extends MusicBeatSubstate
 		titleTeam = new FlxTypedGroup<ChooseButton>();
 		add(titleTeam);
 
-		for (i in 1...9){
+		for (i in 1...optionCount+1){
 			var bro = i;
 			if (bro > 4) bro -= 4;
-			var data:String = Reflect.field(ClientPrefs.data, "extraKeyReturn" + i);
+			var data:String = ClientPrefs.data.mobileExtraKeyReturns[i-1];
 			var _x = FlxG.width / 2 + 25 + (titleWidth + 50) * ((bro-1) - 4 / 2);
 			var _y = 150;
 			if (i > 4) _y = 300;
@@ -67,15 +69,17 @@ class MobileExtraControl extends MusicBeatSubstate
 			var _length:Int = returnArray[type].length;
 			for (number in 0..._length){
 				var _x = FlxG.width / 2 + optionWidth * (number - _length / 2);
-				var titleObject = new ChooseButton(_x, 450 + (optionHeight + 20) * type, optionWidth, optionHeight, displayArray[type][number]);
+				var mainYShit:Int = 300;
+				if (optionCount > 4) mainYShit = 450;
+				var titleObject = new ChooseButton(_x, mainYShit + (optionHeight + 20) * type, optionWidth, optionHeight, displayArray[type][number]);
 				optionTeam.add(titleObject);
 			}
 		}
 
 		updateTitle(titleNum + 1, true, 0);
 
-		addMobilePad("UP_DOWN", "OptionsC");
-		addMobilePadCamera();
+		mobileManager.addMobilePad("UP_DOWN", "OptionsC");
+		mobileManager.addMobilePadCamera();
 
 		super.create();
 	}
@@ -91,7 +95,7 @@ class MobileExtraControl extends MusicBeatSubstate
 		var up = controls.UI_UP_P;
 		var down = controls.UI_DOWN_P;
 		var back = controls.BACK;
-		var reset = controls.RESET || (mobilePad != null && mobilePad.buttonC.justPressed);
+		var reset = controls.RESET || (mobileManager.mobilePad != null && mobileButtonJustPressed('C'));
 
 		if (left || right){
 			if (isMain){
@@ -101,9 +105,9 @@ class MobileExtraControl extends MusicBeatSubstate
 				if (titleNum < 0 && !isDown)
 					titleNum = 3;
 
-				if (titleNum > 7 && isDown)
+				if (titleNum > 7 && isDown && optionCount > 4)
 					titleNum = 4;
-				if (titleNum < 4 && isDown)
+				if (titleNum < 4 && isDown && optionCount > 4)
 					titleNum = 7;
 				updateTitle(titleNum + 1, true, 1);
 			} else {
@@ -117,7 +121,7 @@ class MobileExtraControl extends MusicBeatSubstate
 		}
 
 		if (up || down){
-			if (isMain){
+			if (isMain && optionCount > 4) {
 				if (up && isDown) titleNum += -4;
 				if (down && !isDown) titleNum += 4;
 				if (down && !isDown) isDown = true;
@@ -142,21 +146,13 @@ class MobileExtraControl extends MusicBeatSubstate
 			} else {
 				switch(titleNum + 1){
 					case 1:
-						ClientPrefs.data.extraKeyReturn1 = returnArray[typeNum][chooseNum];
+						ClientPrefs.data.mobileExtraKeyReturns[0] = returnArray[typeNum][chooseNum];
 					case 2:
-						ClientPrefs.data.extraKeyReturn2 = returnArray[typeNum][chooseNum];
+						ClientPrefs.data.mobileExtraKeyReturns[1] = returnArray[typeNum][chooseNum];
 					case 3:
-						ClientPrefs.data.extraKeyReturn3 = returnArray[typeNum][chooseNum];
+						ClientPrefs.data.mobileExtraKeyReturns[2] = returnArray[typeNum][chooseNum];
 					case 4:
-						ClientPrefs.data.extraKeyReturn4 = returnArray[typeNum][chooseNum];
-					case 5:
-						ClientPrefs.data.extraKeyReturn5 = returnArray[typeNum][chooseNum];
-					case 6:
-						ClientPrefs.data.extraKeyReturn6 = returnArray[typeNum][chooseNum];
-					case 7:
-						ClientPrefs.data.extraKeyReturn7 = returnArray[typeNum][chooseNum];
-					case 8:
-						ClientPrefs.data.extraKeyReturn8 = returnArray[typeNum][chooseNum];
+						ClientPrefs.data.mobileExtraKeyReturns[3] = returnArray[typeNum][chooseNum];
 				}
 				ClientPrefs.saveSettings();
 				updateTitle(titleNum + 1, false, 2, true);
@@ -178,14 +174,10 @@ class MobileExtraControl extends MusicBeatSubstate
 		}
 		if (reset){
 			FlxG.sound.play(Paths.sound('cancelMenu'));
-			ClientPrefs.data.extraKeyReturn1 = ClientPrefs.defaultData.extraKeyReturn1;
-			ClientPrefs.data.extraKeyReturn2 = ClientPrefs.defaultData.extraKeyReturn2;
-			ClientPrefs.data.extraKeyReturn3 = ClientPrefs.defaultData.extraKeyReturn3;
-			ClientPrefs.data.extraKeyReturn4 = ClientPrefs.defaultData.extraKeyReturn4;
-			ClientPrefs.data.extraKeyReturn5 = ClientPrefs.defaultData.extraKeyReturn5;
-			ClientPrefs.data.extraKeyReturn6 = ClientPrefs.defaultData.extraKeyReturn6;
-			ClientPrefs.data.extraKeyReturn7 = ClientPrefs.defaultData.extraKeyReturn7;
-			ClientPrefs.data.extraKeyReturn8 = ClientPrefs.defaultData.extraKeyReturn8;
+			ClientPrefs.data.mobileExtraKeyReturns[0] = ClientPrefs.defaultData.mobileExtraKeyReturns[0];
+			ClientPrefs.data.mobileExtraKeyReturns[1] = ClientPrefs.defaultData.mobileExtraKeyReturns[1];
+			ClientPrefs.data.mobileExtraKeyReturns[2] = ClientPrefs.defaultData.mobileExtraKeyReturns[2];
+			ClientPrefs.data.mobileExtraKeyReturns[3] = ClientPrefs.defaultData.mobileExtraKeyReturns[3];
 			resetTitle();
 		}
 	}
@@ -226,7 +218,7 @@ class MobileExtraControl extends MusicBeatSubstate
 			var title:ChooseButton = titleTeam.members[i];
 
 			if (i == titleNum){
-				title.changeExtraText(Reflect.field(ClientPrefs.data, "extraKeyReturn" + number));
+				title.changeExtraText(ClientPrefs.data.mobileExtraKeyReturns[number-1]);
 				if (needFlicker) FlxFlicker.flicker(title, 0.6, 0.075, true, true);
 				if (changeBG) title.changeColor(FlxColor.WHITE);
 			} else {
@@ -240,7 +232,7 @@ class MobileExtraControl extends MusicBeatSubstate
 		{
 			var title:ChooseButton = titleTeam.members[i];
 			var number = i + 1;
-			title.changeExtraText(Reflect.field(ClientPrefs.data, "extraKeyReturn" + number));
+			title.changeExtraText(ClientPrefs.data.mobileExtraKeyReturns[number-1]);
 		}
 	}
 }

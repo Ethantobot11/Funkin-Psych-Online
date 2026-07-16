@@ -164,8 +164,8 @@ class DialogueCharacterEditorState extends MusicBeatState
 		FlxG.mouse.visible = true;
 		updateCharTypeBox();
 		
-		addMobilePad("DIALOGUE_PORTRAIT", "DIALOGUE_PORTRAIT");
-		addMobilePadCamera();
+		mobileManager.addMobilePad("DIALOGUE_PORTRAIT", "DIALOGUE_PORTRAIT");
+		mobileManager.addMobilePadCamera();
 		
 		super.create();
 	}
@@ -530,7 +530,7 @@ class DialogueCharacterEditorState extends MusicBeatState
 
 		if(!blockInput && !animationDropDown.dropPanel.visible) {
 			ClientPrefs.toggleVolumeKeys(true);
-			if(FlxG.keys.justPressed.SPACE || mobilePad.buttonA.justPressed && UI_mainbox.selected_tab_id == 'Character') {
+			if(FlxG.keys.justPressed.SPACE || mobileButtonJustPressed('A') && UI_mainbox.selected_tab_id == 'Character') {
 				character.playAnim(character.jsonFile.animations[curAnim].anim);
 				daText.resetDialogue();
 				updateTextBox();
@@ -539,7 +539,7 @@ class DialogueCharacterEditorState extends MusicBeatState
 			//lots of Ifs lol get trolled
 			var offsetAdd:Int = 1;
 			var speed:Float = 300;
-			if(FlxG.keys.pressed.SHIFT || mobilePad.buttonZ.pressed) {
+			if(FlxG.keys.pressed.SHIFT || mobileButtonPressed('Z')) {
 				speed = 1200;
 				offsetAdd = 10;
 			}
@@ -559,8 +559,8 @@ class DialogueCharacterEditorState extends MusicBeatState
 			if(UI_mainbox.selected_tab_id == 'Animations' && curSelectedAnim != null && character.dialogueAnimations.exists(curSelectedAnim)) {
 				var moved:Bool = false;
 				var animShit:DialogueAnimArray = character.dialogueAnimations.get(curSelectedAnim);
-				var controlArrayLoop:Array<Bool> = [FlxG.keys.justPressed.A || mobilePad.buttonLeft2.justPressed, FlxG.keys.justPressed.W || mobilePad.buttonUp2.justPressed, FlxG.keys.justPressed.D || mobilePad.buttonRight2.justPressed, FlxG.keys.justPressed.S || mobilePad.buttonDown2.justPressed];
-				var controlArrayIdle:Array<Bool> = [FlxG.keys.justPressed.LEFT || mobilePad.buttonLeft.justPressed, FlxG.keys.justPressed.UP || mobilePad.buttonUp.justPressed, FlxG.keys.justPressed.RIGHT || mobilePad.buttonRight.justPressed, FlxG.keys.justPressed.DOWN || mobilePad.buttonDown.justPressed];
+				var controlArrayLoop:Array<Bool> = [FlxG.keys.justPressed.A || mobileButtonJustPressed('LEFT2'), FlxG.keys.justPressed.W || mobileButtonJustPressed('UP2'), FlxG.keys.justPressed.D || mobileButtonJustPressed('RIGHT2'), FlxG.keys.justPressed.S || mobileButtonJustPressed('DOWN2')];
+				var controlArrayIdle:Array<Bool> = [FlxG.keys.justPressed.LEFT || mobileButtonJustPressed('LEFT'), FlxG.keys.justPressed.UP || mobileButtonJustPressed('UP'), FlxG.keys.justPressed.RIGHT || mobileButtonJustPressed('RIGHT'), FlxG.keys.justPressed.DOWN || mobileButtonJustPressed('DOWN')];
 				for (i in 0...controlArrayLoop.length) {
 					if(controlArrayLoop[i]) {
 						if(i % 2 == 1) {
@@ -598,7 +598,7 @@ class DialogueCharacterEditorState extends MusicBeatState
 				camGame.zoom += elapsed * camGame.zoom;
 				if(camGame.zoom > 1) camGame.zoom = 1;
 			}
-			if(FlxG.keys.justPressed.H || mobilePad.buttonY.justPressed) {
+			if(FlxG.keys.justPressed.H || mobileButtonJustPressed('Y')) {
 				if(UI_mainbox.selected_tab_id == 'Animations') {
 					currentGhosts++;
 					if(currentGhosts > 2) currentGhosts = 0;
@@ -611,7 +611,7 @@ class DialogueCharacterEditorState extends MusicBeatState
 					hudGroup.visible = !hudGroup.visible;
 				}
 			}
-			if(FlxG.keys.justPressed.R || mobilePad.buttonX.justPressed) {
+			if(FlxG.keys.justPressed.R || mobileButtonJustPressed('X')) {
 				camGame.zoom = 1;
 				mainGroup.setPosition(0, 0);
 				hudGroup.visible = true;
@@ -673,7 +673,7 @@ class DialogueCharacterEditorState extends MusicBeatState
 				}
 			}
 
-			if(FlxG.keys.justPressed.ESCAPE #if android || FlxG.android.justPressed.BACK #end || mobilePad.buttonB.justPressed) {
+			if(FlxG.keys.justPressed.ESCAPE #if android || FlxG.android.justPressed.BACK #end || mobileButtonJustPressed('B')) {
 				FlxG.switchState(() -> new states.editors.MasterEditorMenu());
 				states.TitleState.playFreakyMusic();
 				transitioning = true;
@@ -709,7 +709,7 @@ class DialogueCharacterEditorState extends MusicBeatState
 		if(_file.__path != null) fullPath = _file.__path;
 
 		if(fullPath != null) {
-			var rawJson:String = File.getContent(fullPath);
+			var rawJson:String = FunkinFileSystem.getText(fullPath);
 			if(rawJson != null) {
 				var loadedChar:DialogueCharacterFile = cast Json.parse(rawJson);
 				if(loadedChar.dialogue_pos != null) //Make sure it's really a dialogue character

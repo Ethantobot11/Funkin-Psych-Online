@@ -24,76 +24,28 @@ class MusicBeatState extends FlxUIState
 		return Controls.instance;
 	}
 
-	public var mobilePad:MobilePad;
-	public var mobilePadCam:FlxCamera;
-	public var hitbox:Hitbox;
-	public var hitboxCam:FlxCamera;
-
-	public function addMobilePad(DPad:String, Action:String)
-	{
-		mobilePad = new MobilePad(DPad, Action);
-		add(mobilePad);
+	public var mobileManager:MobileControlManager;
+	//makes code less messy & easier to write
+	public inline function mobileButtonJustPressed(buttons:Dynamic):Bool {
+		return mobileManager.mobilePad.justPressed(buttons);
 	}
-
-	public function removeMobilePad()
-	{
-		if (mobilePad != null)
-		{
-			remove(mobilePad);
-			mobilePad = FlxDestroyUtil.destroy(mobilePad);
-		}
-
-		if(mobilePadCam != null)
-		{
-			FlxG.cameras.remove(mobilePadCam);
-			mobilePadCam = FlxDestroyUtil.destroy(mobilePadCam);
-		}
+	public inline function mobileButtonPressed(buttons:Dynamic):Bool {
+		return mobileManager.mobilePad.pressed(buttons);
 	}
-
-	public function addMobileControls(?mode:String, defaultDrawTarget:Bool = false) {
-		if (mode != null || mode != "NONE") hitbox = new Hitbox(mode);
-		else hitbox = new Hitbox();
-
-		hitboxCam = new FlxCamera();
-		hitboxCam.bgColor.alpha = 0;
-		FlxG.cameras.add(hitboxCam, defaultDrawTarget);
-		hitbox.cameras = [hitboxCam];
-
-		add(hitbox);
+	public inline function mobileButtonJustReleased(buttons:Dynamic):Bool {
+		return mobileManager.mobilePad.justReleased(buttons);
 	}
-
-	public function removeMobileControls()
-	{
-		if (hitbox != null)
-		{
-			remove(hitbox);
-			hitbox = FlxDestroyUtil.destroy(hitbox);
-			hitbox = null;
-		}
-
-		if (hitboxCam != null)
-		{
-			FlxG.cameras.remove(hitboxCam);
-			hitboxCam = FlxDestroyUtil.destroy(hitboxCam);
-		}
+	public inline function mobileButtonReleased(buttons:Dynamic):Bool {
+		return mobileManager.mobilePad.released(buttons);
 	}
-
-	public function addMobilePadCamera(defaultDrawTarget:Bool = false):Void
-	{
-		if (mobilePad != null)
-		{
-			mobilePadCam = new FlxCamera();
-			mobilePadCam.bgColor.alpha = 0;
-			FlxG.cameras.add(mobilePadCam, defaultDrawTarget);
-			mobilePad.cameras = [mobilePadCam];
-		}
+	public function new() {
+		super();
+		mobileManager = new MobileControlManager(this);
 	}
 
 	override function destroy()
 	{
-		removeMobilePad();
-		removeMobileControls();
-		
+		if (mobileManager != null) mobileManager.destroy();
 		super.destroy();
 	}
 

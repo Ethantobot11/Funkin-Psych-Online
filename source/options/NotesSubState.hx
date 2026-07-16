@@ -57,6 +57,7 @@ class NotesSubState extends MusicBeatSubstate
 		ClientPrefs.reloadKeyColors();
 
 		isOpened = true;
+		onPixel = PlayState.isPixelStage;
 		
 		var bg:FlxSprite = new FlxSprite().loadGraphic(Paths.image('menuDesat'));
 		bg.color = 0xFFEA71FD;
@@ -179,11 +180,11 @@ class NotesSubState extends MusicBeatSubstate
 		controllerPointer.visible = controls.controllerMode;
 		_lastControllerMode = controls.controllerMode;
 
-		addMobilePad('NONE', 'B_C');
+		mobileManager.addMobilePad('NONE', 'B_C');
 		controls.isInSubstate = true;
-		mobilePad.buttonB.x = FlxG.width - 132;
-		mobilePad.buttonC.x = 0;
-		mobilePad.buttonC.y = FlxG.height - 135;
+		mobileManager.mobilePad.getButton('buttonB').x = FlxG.width - 132;
+		mobileManager.mobilePad.getButton('buttonC').x = 0;
+		mobileManager.mobilePad.getButton('buttonC').y = FlxG.height - 135;
 	}
 
 	function updateTip()
@@ -201,18 +202,18 @@ class NotesSubState extends MusicBeatSubstate
 		NUMPADSEVEN => '7', NUMPADEIGHT => '8', NUMPADNINE => '9', A => 'A', B => 'B', C => 'C', D => 'D', E => 'E', F => 'F'];
 
 	override function closeSubState() {
-		removeMobilePad();
+		mobileManager.removeMobilePad();
 		super.closeSubState();
-		addMobilePad('NONE', 'B_C');
-		addMobilePadCamera();
+		mobileManager.addMobilePad('NONE', 'B_C');
+		mobileManager.addMobilePadCamera();
 		controls.isInSubstate = true;
-		mobilePad.buttonB.x = FlxG.width - 132;
-		mobilePad.buttonC.x = 0;
-		mobilePad.buttonC.y = FlxG.height - 135;
+		mobileManager.mobilePad.getButton('buttonB').x = FlxG.width - 132;
+		mobileManager.mobilePad.getButton('buttonC').x = 0;
+		mobileManager.mobilePad.getButton('buttonC').y = FlxG.height - 135;
 	}
 
 	override function update(elapsed:Float) {
-		if (controls.BACK || mobilePad?.buttonB?.justPressed) {
+		if (controls.BACK || mobileButtonJustPressed('B')) {
 			if (GameClient.isConnected()) {
 				GameClient.send('updateArrColors', ClientPrefs.getArrowRGBCompleteMaps());
 			}
@@ -498,7 +499,7 @@ class NotesSubState extends MusicBeatSubstate
 				}
 			} 
 		}
-		else if(mobilePad.buttonC.justPressed || controls.RESET && hexTypeNum < 0)
+		else if(mobileButtonJustPressed('C') || controls.RESET && hexTypeNum < 0)
 		{
 			if(FlxG.keys.pressed.SHIFT || FlxG.gamepads.anyJustPressed(LEFT_SHOULDER))
 			{
@@ -737,7 +738,7 @@ class NotesSubState extends MusicBeatSubstate
 			var newAnim:String = curSelectedNote == note.ID ? 'confirm' : 'pressed';
 			note.alpha = (curSelectedNote == note.ID) ? 1 : 0.6;
 			if(note.animation.curAnim == null || note.animation.curAnim.name != newAnim) note.playAnim(newAnim, true);
-			if(instant) note.animation.curAnim.finish();
+			if(note.animation.curAnim != null && instant) note.animation.curAnim.finish();
 		}
 		bigNote.animation.play('note$curSelectedNote', true);
 		updateColors();

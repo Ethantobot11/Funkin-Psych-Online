@@ -216,25 +216,20 @@ class ExtraFunctions
 
 		// File management
 		Lua_helper.add_callback(lua, "checkFileExists", function(filename:String, ?absolute:Bool = false) {
-			#if MODS_ALLOWED
 			if(absolute)
 			{
-				return FileSystem.exists(filename);
+				return FunkinFileSystem.exists(filename);
 			}
 
+			#if MODS_ALLOWED
 			var path:String = Paths.modFolders(filename);
-			if(FileSystem.exists(path))
+			if(FunkinFileSystem.exists(path))
 			{
 				return true;
 			}
-			return FileSystem.exists(Paths.getPath('assets/$filename', TEXT));
-			#else
-			if(absolute)
-			{
-				return Assets.exists(filename);
-			}
-			return Assets.exists(Paths.getPath('assets/$filename', TEXT));
 			#end
+
+			return FunkinFileSystem.exists(Paths.getPath('assets/$filename', TEXT));
 		});
 		Lua_helper.add_callback(lua, "saveFile", function(path:String, content:String, ?absolute:Bool = false)
 		{
@@ -344,28 +339,46 @@ class ExtraFunctions
 		}
 
 		//Custom return thing
-		for (num in 1...31) {
-			if (MusicBeatState.getState().hitbox != null) {
-				var hitbox:Dynamic = Reflect.getProperty(MusicBeatState.getState().hitbox, 'buttonExtra' + num);
-				if (key.toUpperCase() == Reflect.field(hitbox, 'returnedButton')) {
-					if (Reflect.getProperty(hitbox, type)) {
-						return true;
-					}
-				}
-			}
+		if (MusicBeatState.getState().mobileManager.hitbox != null)
+		{
+			var hitbox:FunkinHitbox = MusicBeatState.getState().mobileManager.hitbox;
+			for (num in 0...hitbox.hints.length+1) if (checkHitboxPress(hitbox.hints[num], key, type)) return true;
 		}
 
-		//For mobilePad, this is useful if you're using the V-Slice Mobile Control (Not Added Yet)
-		for (num in 1...31) {
-			if (MusicBeatState.getState().mobilePad != null) {
-				var hitbox:Dynamic = Reflect.getProperty(MusicBeatState.getState().mobilePad, 'buttonExtra' + num);
-				if (key.toUpperCase() == Reflect.field(hitbox, 'returnedButton')) {
-					if (Reflect.getProperty(hitbox, type)) {
-						return true;
-					}
+		if (MusicBeatState.getState().mobileManager.mobilePad != null) {
+			var mobilePadDPad = MusicBeatState.getState().mobileManager.mobilePad.buttons[0];
+			var mobilePadAction = MusicBeatState.getState().mobileManager.mobilePad.buttons[1];
+			for (num in 0...mobilePadDPad.length+1) if (checkMobilePadPress(mobilePadDPad[num], key, type)) return true;
+			for (num in 0...mobilePadAction.length+1) if (checkMobilePadPress(mobilePadAction[num], key, type)) return true;
+		}
+		if (PlayState.instance.customManagers != null && PlayState.instance.customManagers.keys().hasNext()) {
+			for (managerArray in PlayState.instance.customManagers) {
+				var manager:MobileControlManager = managerArray[0];
+				if (managerArray[1] == false) continue;
+
+				if (manager.hitbox != null)
+					for (num in 0...manager.hitbox.hints.length+1) if (checkHitboxPress(manager.hitbox.hints[num], key, type)) return true;
+
+				if (manager.mobilePad != null) {
+					var mobilePadDPad = manager.mobilePad.buttons[0];
+					var mobilePadAction = manager.mobilePad.buttons[1];
+					for (num in 0...mobilePadDPad.length+1) if (checkMobilePadPress(mobilePadDPad[num], key, type)) return true;
+					for (num in 0...mobilePadAction.length+1) if (checkMobilePadPress(mobilePadAction[num], key, type)) return true;
 				}
 			}
 		}
+		return false;
+	}
+	public static function checkMobilePadPress(mobilePad:MobileButton, key:String, type:String) {
+		if (key.toUpperCase() == Reflect.field(mobilePad, 'returnedKey'))
+			if (Reflect.getProperty(mobilePad, type))
+				return true;
+		return false;
+	}
+	public static function checkHitboxPress(hitbox:MobileButton, key:String, type:String) {
+		if (key.toUpperCase() == Reflect.field(hitbox, 'returnedKey'))
+			if (Reflect.getProperty(hitbox, type))
+				return true;
 		return false;
 	}
 }

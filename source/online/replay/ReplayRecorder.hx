@@ -3,7 +3,6 @@ package online.replay;
 import psychlua.FunkinLua;
 import objects.Note;
 import states.FreeplayState;
-import mobile.input.MobileInputID;
 import flixel.input.gamepad.FlxGamepad;
 import online.network.Leaderboard;
 import haxe.crypto.Md5;
@@ -56,7 +55,7 @@ class ReplayRecorder extends FlxBasic {
 		misses: 0,
 		points: 0,
 		score: 0,
-        inputs: [],
+		inputs: [],
 		note_offset: 0,
 		gameplay_modifiers: [],
 		ghost_tapping: true,
@@ -65,9 +64,9 @@ class ReplayRecorder extends FlxBasic {
 		version: 4,
 		mod_url: '',
 		keys: 4
-    };
+	};
 
-    var state:PlayState;
+	var state:PlayState;
 
 	var keyboardIds:Map<FlxKey, Array<String>> = [];
 	var controllerIds:Map<FlxGamepadInputID, Array<String>> = [];
@@ -138,7 +137,7 @@ class ReplayRecorder extends FlxBasic {
 		// nvm
 		// @:privateAccess FlxG.gamepads.getFirstActiveGamepad()._device.__gamepad.onButtonDown.add(onPadDown);
 		// @:privateAccess FlxG.gamepads.getFirstActiveGamepad()._device.__gamepad.onButtonUp.add(onPadUp);
-    }
+	}
 
 	override function destroy() {
 		super.destroy();
@@ -149,38 +148,15 @@ class ReplayRecorder extends FlxBasic {
 
 	function onKeyDown(e:KeyboardEvent) {
 		recordKey(Conductor.songPosition, keyboardIds.get(e.keyCode), e.keyCode, 0, true);
-    }
+	}
 
 	function onKeyUp(e:KeyboardEvent) {
 		recordKey(Conductor.songPosition, keyboardIds.get(e.keyCode), e.keyCode, 1, true);
 	}
 
 	var _gamepad:FlxGamepad;
-	var isHitboxNull:Bool = true;
-	var isMobilePadNull:Bool = true;
 	override function update(elapsed:Float) {
 		super.update(elapsed);
-
-		//get Variables on update bc I wanna check them
-		var hitbox:Hitbox = state.hitbox;
-		var mobilePad:MobilePad = state.mobilePad;
-
-		//Null Check
-		if (hitbox == null)
-			isHitboxNull = true;
-		if (mobilePad == null)
-			isMobilePadNull = true;
-
-		if(hitbox != null && isHitboxNull)
-		{
-			isHitboxNull = false;
-			hitbox.onButtonDown.add((button:MobileButton, ids:Array<MobileInputID>) -> recordKeyMobileC(Conductor.songPosition, ids, 0));
-			hitbox.onButtonUp.add((button:MobileButton, ids:Array<MobileInputID>) -> recordKeyMobileC(Conductor.songPosition, ids, 1));
-		}
-		else
-		{
-			trace("Tried to init replay recorder for mobile controls but failed.");
-		}
 
 		if (FlxG.gamepads.numActiveGamepads > 0) {
 			if (_gamepad == null || !_gamepad.connected)
@@ -213,7 +189,7 @@ class ReplayRecorder extends FlxBasic {
 					data.inputs.push([time, 'KEY:SPACE', move]);
 			}
 		}
-		
+
 		if (ids == null)
 			return;
 
@@ -224,56 +200,70 @@ class ReplayRecorder extends FlxBasic {
 		}
 	}
 
-	function recordKeyMobileC(time:Float, IDs:Array<MobileInputID>, move:Int) {
-		if (IDs == null || IDs.length < 0)
-			return;
-
-		if(IDs.length == 1 && !REGISTER_BINDS.contains(IDs[0].toString().toLowerCase()))
-		{
-			switch(IDs[0])
+	public function recordKeyMobileC(time:Float, IDs:Array<String>, move:Int) {
+		trace(time + ' | ' + IDs + ' | ' + move);
+		if (IDs != null || IDs.length >= 0) {
+			var fixedID:String = IDs[0].toLowerCase().replace(" ", "").split("=")[0];
+			if(IDs.length == 1 && !REGISTER_BINDS.contains(fixedID))
 			{
-				case EXTRA_1:
-					if (state.hitbox.buttonExtra1 != null)
-						data.inputs.push([time, 'KEY:' + state.hitbox.buttonExtra1.returnedButton.toUpperCase(), move]);
-				case EXTRA_2:
-					if (state.hitbox.buttonExtra2 != null)
-						data.inputs.push([time, 'KEY:' + state.hitbox.buttonExtra2.returnedButton.toUpperCase(), move]);
-				case EXTRA_3:
-					if (state.hitbox.buttonExtra3 != null)
-						data.inputs.push([time, 'KEY:' + state.hitbox.buttonExtra3.returnedButton.toUpperCase(), move]);
-				case EXTRA_4:
-					if (state.hitbox.buttonExtra4 != null)
-						data.inputs.push([time, 'KEY:' + state.hitbox.buttonExtra4.returnedButton.toUpperCase(), move]);
-				case EXTRA_5:
-					if (state.hitbox.buttonExtra5 != null)
-						data.inputs.push([time, 'KEY:' + state.hitbox.buttonExtra5.returnedButton.toUpperCase(), move]);
-				case EXTRA_6:
-					if (state.hitbox.buttonExtra6 != null)
-						data.inputs.push([time, 'KEY:' + state.hitbox.buttonExtra6.returnedButton.toUpperCase(), move]);
-				case EXTRA_7:
-					if (state.hitbox.buttonExtra7 != null)
-						data.inputs.push([time, 'KEY:' + state.hitbox.buttonExtra7.returnedButton.toUpperCase(), move]);
-				case EXTRA_8:
-					if (state.hitbox.buttonExtra8 != null)
-						data.inputs.push([time, 'KEY:' + state.hitbox.buttonExtra8.returnedButton.toUpperCase(), move]);
-				case EXTRA_9:
-					if (state.hitbox.buttonExtra9 != null)
-						data.inputs.push([time, 'KEY:' + state.hitbox.buttonExtra9.returnedButton.toUpperCase(), move]);
-				default:
-					// nothing
+				switch(IDs[0])
+				{
+					case 'EXTRA_1':
+						if (state.mobileManager.hitbox.getButton('buttonExtra1') != null)
+							data.inputs.push([time, 'KEY:' + state.mobileManager.hitbox.getButton('buttonExtra1').returnedKey.toUpperCase(), move]);
+					case 'EXTRA_2':
+						if (state.mobileManager.hitbox.getButton('buttonExtra2') != null)
+							data.inputs.push([time, 'KEY:' + state.mobileManager.hitbox.getButton('buttonExtra2').returnedKey.toUpperCase(), move]);
+					case 'EXTRA_3':
+						if (state.mobileManager.hitbox.getButton('buttonExtra3') != null)
+							data.inputs.push([time, 'KEY:' + state.mobileManager.hitbox.getButton('buttonExtra3').returnedKey.toUpperCase(), move]);
+					case 'EXTRA_4':
+						if (state.mobileManager.hitbox.getButton('buttonExtra4') != null)
+							data.inputs.push([time, 'KEY:' + state.mobileManager.hitbox.getButton('buttonExtra4').returnedKey.toUpperCase(), move]);
+					case 'EXTRA_5':
+						if (state.mobileManager.hitbox.getButton('buttonExtra5') != null)
+							data.inputs.push([time, 'KEY:' + state.mobileManager.hitbox.getButton('buttonExtra5').returnedKey.toUpperCase(), move]);
+					case 'EXTRA_6':
+						if (state.mobileManager.hitbox.getButton('buttonExtra6') != null)
+							data.inputs.push([time, 'KEY:' + state.mobileManager.hitbox.getButton('buttonExtra6').returnedKey.toUpperCase(), move]);
+					case 'EXTRA_7':
+						if (state.mobileManager.hitbox.getButton('buttonExtra7') != null)
+							data.inputs.push([time, 'KEY:' + state.mobileManager.hitbox.getButton('buttonExtra7').returnedKey.toUpperCase(), move]);
+					case 'EXTRA_8':
+						if (state.mobileManager.hitbox.getButton('buttonExtra8') != null)
+							data.inputs.push([time, 'KEY:' + state.mobileManager.hitbox.getButton('buttonExtra8').returnedKey.toUpperCase(), move]);
+					case 'EXTRA_9':
+						if (state.mobileManager.hitbox.getButton('buttonExtra9') != null)
+							data.inputs.push([time, 'KEY:' + state.mobileManager.hitbox.getButton('buttonExtra9').returnedKey.toUpperCase(), move]);
+					default:
+						// nothing
+				}
+				return;
 			}
-			return;
+
+			for (id in IDs)
+			{
+				var idName:String = id.toLowerCase();
+
+				if (idName == null || state.paused || !REGISTER_BINDS.contains(idName))
+					continue;
+
+				data.inputs.push([time, idName, move]);
+			}
 		}
+	}
 
-		for (id in IDs)
-		{
-			var idName:String = id.toString().toLowerCase();
-
-			if (idName == null || state.paused || !REGISTER_BINDS.contains(idName))
-				continue;
-
-			data.inputs.push([time, idName, move]);
+	//TODO: add extra key support
+	public function getDirectionNameFromData(noteData:Dynamic)
+	{
+		var directions = ["note_left", "note_down", "note_up", "note_right"];
+		if (Note.maniaKeys != 4) {
+			directions = [];
+			for (key in 0...Note.maniaKeys) {
+				directions.push('${Note.maniaKeys}k_note_${key + 1}');
+			}
 		}
+		return directions[noteData];
 	}
 
 	public function save():Float {
@@ -306,7 +296,7 @@ class ReplayRecorder extends FlxBasic {
 		trace("Saved a replay!");
 
 		return upload();
-    }
+	}
 
 	public function upload():Float {
 		if (!Note.rankedManiaKeysList.contains(data.keys) || ClientPrefs.data.disableSubmiting) {

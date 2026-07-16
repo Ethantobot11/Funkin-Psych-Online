@@ -26,8 +26,8 @@ import openfl.utils.Assets as OpenFlAssets;
 @:build(lumod.LuaScriptClass.build())
 #end
 @:publicFields
-#if interpret @:nullSafety(Off) #end
-class RoomState extends MusicBeatState #if interpret implements interpret.Interpretable #end {
+/*#if interpret @:nullSafety(Off) #end*/
+class RoomState extends MusicBeatState /*#if interpret implements interpret.Interpretable #end */ {
 	var verifyMod:FlxText;
 	var verifyModBg:FlxSprite;
 	var roomCodeBg:FlxSprite;
@@ -489,9 +489,9 @@ class RoomState extends MusicBeatState #if interpret implements interpret.Interp
 
 		GameClient.send("status", "In the Lobby");
 
-		addMobilePad('FULL', 'B_C_Y_T_M');
-		addMobilePadCamera();
-		mobilePad.y -= 300;
+		mobileManager.addMobilePad('FULL', 'B_C_Y_T_M');
+		mobileManager.addMobilePadCamera();
+		mobileManager.mobilePad.y -= 300;
 
 		registerMessages();
 	}
@@ -504,7 +504,7 @@ class RoomState extends MusicBeatState #if interpret implements interpret.Interp
 				return;
 			}
 
-			if (FileSystem.exists(Paths.mods('${GameClient.room.state.stageMod}/stages/${GameClient.room.state.stageName}.json')) ||
+			if (FunkinFileSystem.exists(Paths.mods('${GameClient.room.state.stageMod}/stages/${GameClient.room.state.stageName}.json')) ||
 				OpenFlAssets.exists(Paths.getPath('stages/${GameClient.room.state.stageName}.json'), TEXT)) {
 				hasStage = true;
 				return;
@@ -524,7 +524,7 @@ class RoomState extends MusicBeatState #if interpret implements interpret.Interp
 	}
 
 	function checkNoteSkin(player:Player, ?manualDownload:Bool = false) {
-		if (!FileSystem.exists(Paths.mods(player.noteSkinMod)) && player.noteSkinURL != null) {
+		if (!FunkinFileSystem.exists(Paths.mods(player.noteSkinMod)) && player.noteSkinURL != null) {
 			OnlineMods.downloadMod(player.noteSkinURL, manualDownload, function(_) {
 				Mods.updatedOnState = false;
 				Mods.parseList();
@@ -558,7 +558,7 @@ class RoomState extends MusicBeatState #if interpret implements interpret.Interp
 	override function update(elapsed:Float) {
 		super.update(elapsed);
 
-		mobilePad.buttonLeft.visible = mobilePad.buttonRight.visible = mobilePad.buttonUp.visible = mobilePad.buttonDown.visible = mobilePad.buttonT.visible = mobilePad.buttonM.visible = mobilePad.buttonY.pressed;
+		mobileManager.mobilePad.getButton('buttonLeft').visible = mobileManager.mobilePad.getButton('buttonRight').visible = mobileManager.mobilePad.getButton('buttonUp').visible = mobileManager.mobilePad.getButton('buttonDown').visible = mobileManager.mobilePad.getButton('buttonT').visible = mobileManager.mobilePad.getButton('buttonM').visible = mobileButtonPressed('Y');
 
 		if (FlxG.keys.justPressed.F11) {
 			GameClient.reconnect();
@@ -677,18 +677,18 @@ class RoomState extends MusicBeatState #if interpret implements interpret.Interp
 
 			// trace('playerHold = ' + playerHold + ', oppHold = ' + oppHold);
 
-			if (mobilePad.buttonY.pressed || FlxG.keys.pressed.ALT) { // useless, but why not?
-				var suffix = (mobilePad.buttonM.pressed || FlxG.keys.pressed.CONTROL) ? 'miss' : '';
-				if (mobilePad.buttonLeft.justPressed || controls.NOTE_LEFT_P) {
+			if (mobileButtonPressed('Y') || FlxG.keys.pressed.ALT) { // useless, but why not?
+				var suffix = (mobileButtonPressed('M') || FlxG.keys.pressed.CONTROL) ? 'miss' : '';
+				if (mobileButtonJustPressed('LEFT') || controls.NOTE_LEFT_P) {
 					playerAnim('singLEFT' + suffix);
 				}
-				if (mobilePad.buttonRight.justPressed || controls.NOTE_RIGHT_P) {
+				if (mobileButtonJustPressed('RIGHT') || controls.NOTE_RIGHT_P) {
 					playerAnim('singRIGHT' + suffix);
 				}
-				if (mobilePad.buttonUp.justPressed || controls.NOTE_UP_P) {
+				if (mobileButtonJustPressed('UP') || controls.NOTE_UP_P) {
 					playerAnim('singUP' + suffix);
 				}
-				if (mobilePad.buttonDown.justPressed || controls.NOTE_DOWN_P) {
+				if (mobileButtonJustPressed('DOWN') || controls.NOTE_DOWN_P) {
 					playerAnim('singDOWN' + suffix);
 				}
 				if (controls.TAUNT) {
@@ -718,7 +718,7 @@ class RoomState extends MusicBeatState #if interpret implements interpret.Interp
 				}
 			}
 			
-			if (((!FlxG.keys.pressed.ALT || !mobilePad.buttonY.pressed) && controls.ACCEPT) || FlxG.mouse.justPressed) {
+			if (((!FlxG.keys.pressed.ALT || !mobileButtonPressed('Y')) && controls.ACCEPT) || FlxG.mouse.justPressed) {
 				switch (curSelected) {
 					case 0:
 						openSubState(new RoomSettingsSubstate());
@@ -967,7 +967,7 @@ class RoomState extends MusicBeatState #if interpret implements interpret.Interp
 		itemTipBg.updateHitbox();
     }
 
-	@interpret
+	// @interpret
 	function updateCharacters() {
 		if (destroyed)
 			return;
@@ -1182,7 +1182,7 @@ class LobbyCharacter extends FlxTypedGroup<FlxObject> {
 			character = null;
 		}
 
-		if (FileSystem.exists(Paths.mods(player.skinMod))) {
+		if (FunkinFileSystem.exists(Paths.mods(player.skinMod))) {
 			if (player.skinMod != null)
 				Mods.currentModDirectory = player.skinMod;
 

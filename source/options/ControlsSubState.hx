@@ -85,7 +85,7 @@ class ControlsSubState extends MusicBeatSubstate
 		add(text);
 
 		createTexts();
-		addMobilePad('NONE', 'B');
+		mobileManager.addMobilePad('NONE', 'B');
 	}
 
 	var lastID:Int = 0;
@@ -304,7 +304,7 @@ class ControlsSubState extends MusicBeatSubstate
 
 		if(!binding)
 		{
-			if(mobilePad.buttonB.justPressed || FlxG.keys.justPressed.ESCAPE || FlxG.gamepads.anyJustPressed(B))
+			if(mobileButtonJustPressed('B') || FlxG.keys.justPressed.ESCAPE || FlxG.gamepads.anyJustPressed(B))
 			{
 				controls.isInSubstate = false;
 				close();
